@@ -1,0 +1,62 @@
+<div class="form-container">
+    <form>
+        <mat-form-field>
+          <label>
+            Title of the book
+            <input matInput placeholder="Title of the book" aria-label="Title of the book" required [(ngModel)]="book.title" name="bookTitle">
+          </label>
+        </mat-form-field>
+      
+        <mat-form-field>
+          <label>
+            Author of the book
+            <input matInput placeholder="Author of the book" aria-label="Author of the book" required [(ngModel)]="book.author" name="bookAuthor">
+          </label>
+        </mat-form-field>
+      
+        <mat-form-field>
+          <label>
+            Title of the recipe
+            <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required [(ngModel)]="recipe.title" name="recipeTitle">
+          </label>
+        </mat-form-field>
+      
+        <mat-form-field>
+          <label>
+            Instructions for the recipe
+            <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe" required [(ngModel)]="recipe.instructions" name="recipeInstructions"></textarea>
+          </label>
+        </mat-form-field>
+      
+        <div *ngFor="let ingredient of ingredients">
+          <mat-form-field>
+            <label>
+              Name of the ingredient
+              <input matInput placeholder="Name of the ingredient" aria-label="Name of the ingredient" required [(ngModel)]="ingredient.name" name="ingredientName">
+            </label>
+          </mat-form-field>
+      
+          <mat-form-field>
+            <label>
+              Quantity of the ingredient
+              <input matInput placeholder="Quantity of the ingredient" aria-label="Quantity of the ingredient" required [(ngModel)]="ingredient.quantity" name="ingredientQuantity">
+            </label>
+          </mat-form-field>
+      
+          <mat-form-field>
+            <label>
+              Unit of the ingredient
+              <input matInput placeholder="Unit of the ingredient" aria-label="Unit of the ingredient" required [(ngModel)]="ingredient.unit" name="ingredientUnit">
+            </label>
+          </mat-form-field>
+      
+          <button mat-icon-button color="warn" (click)="removeIngredient(ingredient)">
+            <mat-icon>remove_circle_outline</mat-icon>
+          </button>
+        </div>
+      
+        <button mat-raised-button color="warn" (click)="addIngredient()">Add Ingredient</button>
+    
+        <button mat-raised-button color="primary" (click)="submitForm()">Submit</button>
+    </form>
+</div>

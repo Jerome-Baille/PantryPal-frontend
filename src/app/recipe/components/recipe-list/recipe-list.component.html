@@ -1,0 +1,4 @@
+<mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)">
+    <mat-card-title>{{ recipe.title }}</mat-card-title>
+    <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
+</mat-card>
