@@ -6,13 +6,15 @@ import { RecipeCreateComponent } from './components/recipe-create/recipe-create.
 import { SharedModule } from '../shared/shared.module';
 import { RecipeListComponent } from './components/recipe-list/recipe-list.component';
 import { RecipeDetailComponent } from './components/recipe-detail/recipe-detail.component';
+import { RecipeUpdateComponent } from './components/recipe-update/recipe-update.component';
 
 
 @NgModule({
   declarations: [
     RecipeCreateComponent,
     RecipeListComponent,
-    RecipeDetailComponent
+    RecipeDetailComponent,
+    RecipeUpdateComponent
   ],
   imports: [
     CommonModule,

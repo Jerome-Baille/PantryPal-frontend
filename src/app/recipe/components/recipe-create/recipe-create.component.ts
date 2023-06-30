@@ -10,6 +10,14 @@ interface Ingredient {
 interface Recipe {
   title: string;
   instructions: string;
+  preparationTime: number;
+  preparationUnit: string;
+  cookingTime: number;
+  cookingUnit: string;
+  fridgeTime: number;
+  fridgeUnit: string;
+  waitingTime: number;
+  waitingUnit: string;
 }
 
 interface Book {
@@ -26,7 +34,7 @@ export class RecipeCreateComponent {
   constructor(private http: HttpClient) { }
 
   ingredients: Ingredient[] = [];
-  recipe: Recipe = { title: '', instructions: '' };
+  recipe: Recipe = { title: '', instructions: '', preparationTime: 0, preparationUnit: '', cookingTime: 0, cookingUnit: '', fridgeTime: 0, fridgeUnit: '', waitingTime: 0, waitingUnit: '' };
   book: Book = { title: '', author: '' };
 
   addIngredient() {
@@ -50,6 +58,14 @@ export class RecipeCreateComponent {
         this.http.post('http://localhost:3000/api/recipes', { 
           title: this.recipe.title, 
           instructions: this.recipe.instructions, 
+          preparationTime: this.recipe.preparationTime,
+          preparationUnit: this.recipe.preparationUnit,
+          cookingTime: this.recipe.cookingTime,
+          cookingUnit: this.recipe.cookingUnit,
+          fridgeTime: this.recipe.fridgeTime,
+          fridgeUnit: this.recipe.fridgeUnit,
+          waitingTime: this.recipe.waitingTime,
+          waitingUnit: this.recipe.waitingUnit,
           bookId: bookId 
         })
           .subscribe((recipeResponse: any) => {
@@ -91,7 +107,15 @@ export class RecipeCreateComponent {
     
     this.recipe = {
       title: '',
-      instructions: ''
+      instructions: '',
+      preparationTime: 0,
+      preparationUnit: '',
+      cookingTime: 0,
+      cookingUnit: '',
+      fridgeTime: 0,
+      fridgeUnit: '',
+      waitingTime: 0,
+      waitingUnit: ''
     };
     
     this.ingredients = [];

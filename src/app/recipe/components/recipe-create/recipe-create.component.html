@@ -20,6 +20,62 @@
             <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required [(ngModel)]="recipe.title" name="recipeTitle">
           </label>
         </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            Preparation time
+          </label>
+          <div class="time-unit-container">
+              <input matInput placeholder="Preparation time" aria-label="Preparation time" required [(ngModel)]="recipe.preparationTime" name="recipePreparationTime">
+              <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.preparationUnit" name="recipePreparationUnit">
+                <mat-option value=null></mat-option>
+                <mat-option value="min">Minutes</mat-option>
+                <mat-option value="h">Hours</mat-option>
+              </mat-select>
+          </div>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            Cooking time
+          </label>
+          <div class="time-unit-container">
+            <input matInput placeholder="Cooking time" aria-label="Cooking time" required [(ngModel)]="recipe.cookingTime" name="recipeCookingTime">
+            <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.cookingUnit" name="recipeCookingUnit">
+              <mat-option value=null></mat-option>
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="h">Hours</mat-option>
+            </mat-select>
+          </div>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            Fridge time
+          </label>
+          <div class="time-unit-container">
+            <input matInput placeholder="Fridge time" aria-label="Fridge time" required [(ngModel)]="recipe.fridgeTime" name="recipeFridgeTime">
+            <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.fridgeUnit" name="recipeFridgeUnit">
+              <mat-option value=null></mat-option>
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="h">Hours</mat-option>
+            </mat-select>
+          </div>
+        </mat-form-field>
+
+        <mat-form-field>
+          <label>
+            Waiting time
+          </label>
+          <div class="time-unit-container">
+            <input matInput placeholder="Waiting time" aria-label="Waiting time" required [(ngModel)]="recipe.waitingTime" name="recipeWaitingTime">
+            <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.waitingUnit" name="recipeWaitingUnit">
+              <mat-option value=null></mat-option>
+              <mat-option value="min">Minutes</mat-option>
+              <mat-option value="h">Hours</mat-option>
+            </mat-select>
+          </div>
+        </mat-form-field>
       
         <mat-form-field>
           <label>
@@ -28,26 +84,17 @@
           </label>
         </mat-form-field>
       
-        <div *ngFor="let ingredient of ingredients">
+        <div *ngFor="let ingredient of ingredients" class="ingredient-row">
           <mat-form-field>
-            <label>
-              Name of the ingredient
-              <input matInput placeholder="Name of the ingredient" aria-label="Name of the ingredient" required [(ngModel)]="ingredient.name" name="ingredientName">
-            </label>
+              <input matInput placeholder="Name" aria-label="Name of the ingredient" required [(ngModel)]="ingredient.name" name="ingredientName">
           </mat-form-field>
       
           <mat-form-field>
-            <label>
-              Quantity of the ingredient
-              <input matInput placeholder="Quantity of the ingredient" aria-label="Quantity of the ingredient" required [(ngModel)]="ingredient.quantity" name="ingredientQuantity">
-            </label>
+              <input matInput placeholder="Quantity" aria-label="Quantity of the ingredient" required [(ngModel)]="ingredient.quantity" name="ingredientQuantity">
           </mat-form-field>
       
           <mat-form-field>
-            <label>
-              Unit of the ingredient
-              <input matInput placeholder="Unit of the ingredient" aria-label="Unit of the ingredient" required [(ngModel)]="ingredient.unit" name="ingredientUnit">
-            </label>
+              <input matInput placeholder="Unit" aria-label="Unit of the ingredient" required [(ngModel)]="ingredient.unit" name="ingredientUnit">
           </mat-form-field>
       
           <button mat-icon-button color="warn" (click)="removeIngredient(ingredient)">

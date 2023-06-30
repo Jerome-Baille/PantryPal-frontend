@@ -1,8 +1,9 @@
 /* Form container styles */
-.form-container {
+.container {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
     height: 100vh;
     margin-top: 20px;
   }
@@ -13,7 +14,6 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 20px;
-    width: 500px; /* Adjust the width as needed */
     padding: 20px;
     background-color: #f5f5f5;
     border-radius: 4px;
@@ -73,8 +73,28 @@
       background-color: #dc3545;
     }
   }
-  
-  /* Additional styles for time-unit-container */
+
+  .ingredient-row {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 20px;
+  }
+
+/* Updated styles for textarea */
+textarea.mat-input-element {
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 40px; /* Set a minimum height to avoid it becoming too small */
+  overflow-y: hidden; /* Hide vertical scrollbar */
+}
+
+/* Additional styles for time-unit-container */
 .time-unit-container {
   display: flex;
   align-items: center;
@@ -90,11 +110,4 @@
 /* Additional styles for mat-select inside time-unit-container */
 .time-unit-container mat-select {
   width: 100px; /* Adjust the width as needed */
-}
-
-.ingredient-row {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 20px;
 }
