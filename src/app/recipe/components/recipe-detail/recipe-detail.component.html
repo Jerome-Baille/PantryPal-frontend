@@ -1,20 +1,23 @@
 <ng-container *ngIf="recipe">
-    <mat-card>
-      <mat-card-title>{{ recipe.title }}</mat-card-title>
-      <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
-      <mat-card-content>
-        <p *ngIf="recipe.preparationTime">Temps de préparation : {{ recipe.preparationTime }} {{ recipe.preparationUnit }}</p>
-        <p *ngIf="recipe.cookingTime">Temps de cuisson : {{ recipe.cookingTime }} {{ recipe.cookingUnit }}</p>
-        <p *ngIf="recipe.fridgeTime">Temps de réfrigération : {{ recipe.fridgeTime }} {{ recipe.fridgeUnit }}</p>
-        <p *ngIf="recipe.waitingTime">Temps de repos : {{ recipe.waitingTime }} {{ recipe.waitingUnit }}</p>
-        <p class="instructions">{{ recipe.instructions }}</p>
-        <ul>
-          <li *ngFor="let ingredient of recipe.Ingredients">
-            {{ ingredient.name }} - {{ ingredient.quantity | number:'1.0-0' }} {{ ingredient.unit }}
-          </li>
-        </ul>
+  <mat-card>
+    <mat-card-title>{{ recipe.title }}</mat-card-title>
+    <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
+    <mat-card-content>
+      <p *ngIf="recipe.preparationTime">Temps de préparation : {{ recipe.preparationTime }} {{ recipe.preparationUnit }}</p>
+      <p *ngIf="recipe.cookingTime">Temps de cuisson : {{ recipe.cookingTime }} {{ recipe.cookingUnit }}</p>
+      <p *ngIf="recipe.fridgeTime">Temps de réfrigération : {{ recipe.fridgeTime }} {{ recipe.fridgeUnit }}</p>
+      <p *ngIf="recipe.waitingTime">Temps de repos : {{ recipe.waitingTime }} {{ recipe.waitingUnit }}</p>
+      <p class="instructions">{{ recipe.instructions }}</p>
+      <ul>
+        <li *ngFor="let ingredient of recipe.Ingredients">
+          {{ ingredient.name }} - {{ ingredient.quantity | number:'1.0-0' }} {{ ingredient.unit }}
+        </li>
+      </ul>
+      <div class="card-button">
         <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe.id }}">Update Recipe</button>
         <button mat-raised-button color="warn" (click)="deleteRecipe()">Delete Recipe</button>
-      </mat-card-content>
-    </mat-card>
-  </ng-container>
+        <button mat-raised-button color="accent" routerLink="/recipe/list">Back</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

@@ -1,15 +1,5 @@
-<mat-toolbar>
-    <span>PantryPal</span>
-    <button
-        [routerLink]="'recipe/list'"
-        [routerLinkActive]="['active']"
-    >
-        List
-    </button>
-    <button
-        [routerLink]="'recipe/create'"
-        [routerLinkActive]="['active']"
-    >
-        Create
-    </button>
-</mat-toolbar>
+<mat-toolbar class="toolbar">
+    <span class="toolbar__title">PantryPal</span>
+    <button mat-button routerLink="/recipe/list">List</button>
+    <button mat-button routerLink="/recipe/create">Create</button>
+  </mat-toolbar>

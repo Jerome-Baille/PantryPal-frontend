@@ -39,3 +39,8 @@ mat-card {
   .instructions {
     white-space: pre-wrap;
   }
+
+  .card-button {
+    display: flex;
+    justify-content: space-between;
+  }
