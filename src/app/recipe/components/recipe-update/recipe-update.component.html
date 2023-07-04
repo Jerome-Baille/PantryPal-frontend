@@ -1,72 +1,91 @@
-<div class="container">
-  <h1>Update Recipe</h1>
-  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
-    <mat-form-field>
-      <input matInput placeholder="Book Title" formControlName="bookTitle" (input)="onInput()">
-    </mat-form-field>
-    <mat-form-field>
-      <input matInput placeholder="Book Author" formControlName="bookAuthor" (input)="onInput()">
-    </mat-form-field>
-    <mat-form-field>
-      <input matInput placeholder="Title" formControlName="title" (input)="onInput()">
-    </mat-form-field>
-    <mat-form-field>
-      <div class="time-unit-container">
-        <input matInput placeholder="Preparation Time" formControlName="preparationTime" (input)="onInput()">
-        <mat-select placeholder="Unit" formControlName="preparationUnit" (input)="onInput()">
-          <mat-option value="min">Minutes</mat-option>
-          <mat-option value="h">Hours</mat-option>
-        </mat-select>
-      </div>
-    </mat-form-field>
-    <mat-form-field>
-      <div class="time-unit-container">
-        <input matInput placeholder="Cooking Time" formControlName="cookingTime" (input)="onInput()">
-        <mat-select placeholder="Unit" formControlName="cookingUnit" (input)="onInput()">
-          <mat-option value="min">Minutes</mat-option>
-          <mat-option value="h">Hours</mat-option>
-        </mat-select>
-      </div>
-    </mat-form-field>
-    <mat-form-field>
-      <div class="time-unit-container">
-        <input matInput placeholder="Fridge Time" formControlName="fridgeTime" (input)="onInput()">
-        <mat-select placeholder="Unit" formControlName="fridgeUnit" (input)="onInput()">
-          <mat-option value="min">Minutes</mat-option>
-          <mat-option value="h">Hours</mat-option>
-        </mat-select>
-      </div>
-    </mat-form-field>
-    <mat-form-field>
-      <div class="time-unit-container">
-        <input matInput placeholder="Waiting Time" formControlName="waitingTime" (input)="onInput()">
-        <mat-select placeholder="Unit" formControlName="waitingUnit" (input)="onInput()">
-          <mat-option value="min">Minutes</mat-option>
-          <mat-option value="h">Hours</mat-option>
-        </mat-select>
-      </div>
-    </mat-form-field>
-    <mat-form-field>
-      <textarea matInput placeholder="Instructions" formControlName="instructions" rows="5" (input)="onInput()"></textarea>
-    </mat-form-field>
-    <!-- Ingredients -->
-    <div formArrayName="ingredients">
-      <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i" class="ingredient-row">
-        <mat-form-field>
-          <input matInput placeholder="Ingredient Name" formControlName="name" (input)="onInput()">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Quantity" formControlName="quantity" (input)="onInput()">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Unit" formControlName="unit" (input)="onInput()">
-        </mat-form-field>
-        <button mat-icon-button color="warn" (click)="removeIngredient(i)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </div>
+<ng-container *ngIf="!error; else notAuthorizedCard">
+    <div class="container">
+        <h1>Update Recipe</h1>
+        <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+            <mat-form-field>
+                <input matInput placeholder="Book Title" formControlName="bookTitle" (input)="onInput()">
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Book Author" formControlName="bookAuthor" (input)="onInput()">
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Title" formControlName="title" (input)="onInput()">
+            </mat-form-field>
+            <mat-form-field>
+                <div class="time-unit-container">
+                    <input matInput placeholder="Preparation Time" formControlName="preparationTime"
+                        (input)="onInput()">
+                    <mat-select placeholder="Unit" formControlName="preparationUnit" (input)="onInput()">
+                        <mat-option value="min">Minutes</mat-option>
+                        <mat-option value="h">Hours</mat-option>
+                    </mat-select>
+                </div>
+            </mat-form-field>
+            <mat-form-field>
+                <div class="time-unit-container">
+                    <input matInput placeholder="Cooking Time" formControlName="cookingTime" (input)="onInput()">
+                    <mat-select placeholder="Unit" formControlName="cookingUnit" (input)="onInput()">
+                        <mat-option value="min">Minutes</mat-option>
+                        <mat-option value="h">Hours</mat-option>
+                    </mat-select>
+                </div>
+            </mat-form-field>
+            <mat-form-field>
+                <div class="time-unit-container">
+                    <input matInput placeholder="Fridge Time" formControlName="fridgeTime" (input)="onInput()">
+                    <mat-select placeholder="Unit" formControlName="fridgeUnit" (input)="onInput()">
+                        <mat-option value="min">Minutes</mat-option>
+                        <mat-option value="h">Hours</mat-option>
+                    </mat-select>
+                </div>
+            </mat-form-field>
+            <mat-form-field>
+                <div class="time-unit-container">
+                    <input matInput placeholder="Waiting Time" formControlName="waitingTime" (input)="onInput()">
+                    <mat-select placeholder="Unit" formControlName="waitingUnit" (input)="onInput()">
+                        <mat-option value="min">Minutes</mat-option>
+                        <mat-option value="h">Hours</mat-option>
+                    </mat-select>
+                </div>
+            </mat-form-field>
+            <mat-form-field>
+                <textarea matInput placeholder="Instructions" formControlName="instructions" rows="5"
+                    (input)="onInput()"></textarea>
+            </mat-form-field>
+            <!-- Ingredients -->
+            <div formArrayName="ingredients">
+                <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i"
+                    class="ingredient-row">
+                    <mat-form-field>
+                        <input matInput placeholder="Ingredient Name" formControlName="name" (input)="onInput()">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Quantity" formControlName="quantity" (input)="onInput()">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Unit" formControlName="unit" (input)="onInput()">
+                    </mat-form-field>
+                    <button mat-icon-button color="warn" (click)="removeIngredient(i)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="button-container">
+                <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add Ingredient</button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="!isFormModified">Update Recipe</button>
+            </div>
+        </form>
     </div>
-    <button mat-raised-button color="primary" type="button" (click)="addIngredient()">Add Ingredient</button>
-    <button mat-raised-button color="primary" type="submit" [disabled]="!isFormModified">Update Recipe</button>
-  </form>
-</div>
+</ng-container>
+
+<ng-template #notAuthorizedCard>
+    <!-- Not Authorized Card -->
+    <mat-card>
+        <mat-card-content>
+            <p class="instructions">You are not authorized to view the recipe data.</p>
+            <div class="card-button">
+                <button mat-raised-button color="primary" routerLink="/auth/login">Login</button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

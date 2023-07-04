@@ -6,10 +6,10 @@
     flex-direction: column;
     height: 100vh;
     margin-top: 20px;
-  }
-  
-  /* Form styles */
-  form {
+}
+
+/* Form styles */
+form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -18,96 +18,115 @@
     background-color: #f5f5f5;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Input styles */
-  .mat-mdc-form-field {
+}
+
+/* Input styles */
+.mat-mdc-form-field {
     width: 100%;
-  }
-  
-  input.mat-input-element,
-  textarea.mat-input-element {
+}
+
+input.mat-input-element,
+textarea.mat-input-element {
     background-color: #fff;
     border: none;
     border-radius: 4px;
     padding: 10px;
     font-size: 14px;
     line-height: 1.5;
-  }
-  
-  /* Button styles */
-  button.mat-raised-button {
+}
+
+/* Button styles */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button.mat-raised-button {
     font-size: 14px;
     padding: 10px 20px;
     border-radius: 4px;
-  }
-  
-  button.mat-raised-button.color-primary {
+}
+
+button.mat-raised-button.color-primary {
     background-color: #007bff;
     color: #fff;
-  }
-  
-  button.mat-raised-button.color-warn {
+}
+
+button.mat-raised-button.color-warn {
     background-color: #dc3545;
     color: #fff;
-  }
-  
-  /* Remove button styles */
-  button.mat-icon-button {
+}
+
+/* Updated styles for "Add Ingredient" button */
+button.mat-raised-button.color-accent {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+/* Remove button styles */
+button.mat-icon-button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-  }
-  
-  /* Error message styles */
-  .mat-form-field.mat-form-field-invalid {
-    .mat-input-container {
-      color: #dc3545;
-    }
-  
-    .mat-form-field-underline {
-      background-color: #dc3545;
-    }
-  
-    .mat-form-field-ripple {
-      background-color: #dc3545;
-    }
-  }
+}
 
-  .ingredient-row {
+
+/* Error message styles */
+.mat-form-field.mat-form-field-invalid {
+    .mat-input-container {
+        color: #dc3545;
+    }
+
+    .mat-form-field-underline {
+        background-color: #dc3545;
+    }
+
+    .mat-form-field-ripple {
+        background-color: #dc3545;
+    }
+}
+
+.ingredient-row {
     display: flex;
     width: 100%;
     align-items: center;
     gap: 20px;
-  }
+}
 
 /* Updated styles for textarea */
 textarea.mat-input-element {
-  background-color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 14px;
-  line-height: 1.5;
-  resize: vertical; /* Allow vertical resizing */
-  min-height: 40px; /* Set a minimum height to avoid it becoming too small */
-  overflow-y: hidden; /* Hide vertical scrollbar */
+    background-color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    /* Allow vertical resizing */
+    min-height: 40px;
+    /* Set a minimum height to avoid it becoming too small */
+    overflow-y: hidden;
+    /* Hide vertical scrollbar */
 }
 
 /* Additional styles for time-unit-container */
 .time-unit-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
 }
 
 /* Additional styles for mat-form-field inside time-unit-container */
 .time-unit-container mat-form-field {
-  flex: 1;
+    flex: 1;
 }
 
 /* Additional styles for mat-select inside time-unit-container */
 .time-unit-container mat-select {
-  width: 100px; /* Adjust the width as needed */
+    width: 100px;
+    /* Adjust the width as needed */
 }

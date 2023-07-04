@@ -1,0 +1,38 @@
+<div class="login-container">
+    <div class="form-container" *ngIf="activeForm === 'login'">
+      <h1>Login</h1>
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" formControlName="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" required>
+        </div>
+        <button type="submit" [disabled]="!loginForm.valid">Login</button>
+      </form>
+      <p>Don't have an account? <button class="switch-button" (click)="switchToRegisterForm()">Register</button></p>
+    </div>
+  
+    <div class="form-container" *ngIf="activeForm === 'register'">
+      <h1>Register</h1>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" formControlName="username" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" formControlName="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" formControlName="password" required>
+        </div>
+        <button type="submit" [disabled]="!registerForm.valid">Register</button>
+      </form>
+      <p>Already have an account? <button class="switch-button" (click)="switchToLoginForm()">Login</button></p>
+    </div>
+  </div>
+  

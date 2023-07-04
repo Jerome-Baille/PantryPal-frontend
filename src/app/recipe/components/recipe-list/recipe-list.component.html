@@ -1,4 +1,10 @@
-<mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">
-    <mat-card-title>{{ recipe.title }}</mat-card-title>
-    <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
-  </mat-card>
+<ng-container *ngIf="recipes.length > 0; else noRecipes">
+    <mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">
+        <mat-card-title>{{ recipe.title }}</mat-card-title>
+        <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
+    </mat-card>
+</ng-container>
+
+<ng-template #noRecipes>
+    <p>You are not authorized to view the recipe data.</p>
+</ng-template>
