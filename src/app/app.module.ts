@@ -6,8 +6,9 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CookieService } from './shared/cookie.service';
+import { TokenInterceptor } from './interceptors/token-interceptor.interceptor';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CookieService } from './shared/cookie.service';
     HttpClientModule
   ],
   providers: [
-    CookieService
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

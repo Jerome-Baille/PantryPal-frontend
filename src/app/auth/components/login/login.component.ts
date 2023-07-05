@@ -1,13 +1,16 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { CookieService } from '../../../shared/cookie.service';
 
 interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   userId: string;
+  accessTokenExpireDate: Date;
+  refreshTokenExpireDate: Date;
+  userIdExpireDate: Date;
 }
 
 @Component({
@@ -49,9 +52,9 @@ export class LoginComponent {
 
       this.http.post<LoginResponse>(loginEndpoint, body, { headers }).subscribe({
         next: (response) => {
-          this.cookieService.set('PPaccessToken', response.accessToken);
-          this.cookieService.set('PPrefreshToken', response.refreshToken);
-          this.cookieService.set('PPuserId', response.userId);
+          this.cookieService.setCookie('PPaccessToken', response.accessToken, response.accessTokenExpireDate);
+          this.cookieService.setCookie('PPrefreshToken', response.refreshToken, response.refreshTokenExpireDate);
+          this.cookieService.setCookie('PPuserId', response.userId, response.userIdExpireDate);
         },
         error: (error) => {
           // Handle login error, e.g., display error message

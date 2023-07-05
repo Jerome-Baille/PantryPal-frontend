@@ -8,9 +8,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card'; 
 import { MatSelectModule } from '@angular/material/select';
+import { LoaderComponent } from './components/loader/loader.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    LoaderComponent
+  ],
   imports: [
     CommonModule,
     MatToolbarModule,
@@ -21,7 +25,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressSpinnerModule
   ],
   exports: [
     MatToolbarModule,
@@ -32,7 +37,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    LoaderComponent
   ]
 })
 export class SharedModule { }
