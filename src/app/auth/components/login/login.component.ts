@@ -1,17 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CookieService } from '../../../shared/cookie.service';
-
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  userId: string;
-  accessTokenExpireDate: Date;
-  refreshTokenExpireDate: Date;
-  userIdExpireDate: Date;
-}
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -24,11 +15,12 @@ export class LoginComponent {
 
   loginForm: FormGroup;
   registerForm: FormGroup;
+  isLogged: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private http: HttpClient,
     private cookieService: CookieService,
+    private authService: AuthService,
     private router: Router
   ) {
 
@@ -42,19 +34,22 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]]
     });
+
+    // Check if user is logged in
+    const userIdCookie = this.cookieService.getCookie('PPuserId');
+    if (userIdCookie) {
+      this.isLogged = true;
+    }
   }
 
   onLoginSubmit() {
     if (this.loginForm.valid) {
-      const loginEndpoint = 'http://localhost:3000/api/auth/login';
-      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      const body = JSON.stringify(this.loginForm.value);
-
-      this.http.post<LoginResponse>(loginEndpoint, body, { headers }).subscribe({
+      this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           this.cookieService.setCookie('PPaccessToken', response.accessToken, response.accessTokenExpireDate);
           this.cookieService.setCookie('PPrefreshToken', response.refreshToken, response.refreshTokenExpireDate);
           this.cookieService.setCookie('PPuserId', response.userId, response.userIdExpireDate);
+          this.isLogged = true;
         },
         error: (error) => {
           // Handle login error, e.g., display error message
@@ -62,7 +57,6 @@ export class LoginComponent {
         },
         complete: () => {
           // Handle successful login, e.g., redirect to dashboard
-          console.log('Login successful!');
           this.router.navigate(['/recipe/list']);
         }
       });
@@ -71,21 +65,22 @@ export class LoginComponent {
 
   onRegisterSubmit() {
     if (this.registerForm.valid) {
-      const registerEndpoint = 'http://localhost:3000/api/users';
-      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      const body = JSON.stringify(this.registerForm.value);
-
-      this.http.post(registerEndpoint, body, { headers }).subscribe(
-        (response) => {
+      this.authService.register(this.registerForm.value).subscribe({
+        next: (response) => {
           // Handle successful registration, e.g., redirect to login page with success message
           console.log('Registration successful:', response);
         },
-        (error) => {
+        error: (error) => {
           // Handle registration error, e.g., display error message
           console.error('Registration failed:', error);
         }
-      );
+      })
     }
+  }
+
+  onLogout() {
+    this.authService.logout();
+    this.isLogged = false;
   }
 
   // Switch to the login form

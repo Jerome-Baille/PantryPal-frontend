@@ -1,19 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { CookieService } from '../shared/cookie.service';
 import { Router } from '@angular/router';
+import { API_ENDPOINTS } from 'config/api-endpoints';
+
+
+interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  userId: string;
+  accessTokenExpireDate: Date;
+  refreshTokenExpireDate: Date;
+  userIdExpireDate: Date;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api/auth';
   private accessTokenSubject = new BehaviorSubject<string>('');
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private cookieService: CookieService,
     private router: Router
   ) {
@@ -40,7 +50,7 @@ export class AuthService {
       this.logout();
       return throwError(() => 'Refresh token not found');
     }
-    return this.http.post<any>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
+    return this.http.post<any>(`${API_ENDPOINTS.auth}/refresh`, { refreshToken }).pipe(
       switchMap((response: any) => {
         const newAccessToken = response.accessToken;
         this.cookieService.setCookie('PPaccessToken', newAccessToken, response.accessTokenExpireDate);
@@ -58,9 +68,34 @@ export class AuthService {
   logout(): void {
     this.cookieService.deleteCookie('PPaccessToken');
     this.cookieService.deleteCookie('PPrefreshToken');
+    this.cookieService.deleteCookie('PPuserId');
     this.accessTokenSubject.next(null || '');
     // Redirect to login page
     this.router.navigate(['/auth/login']);
-    
+  }
+
+  // Method to handle user login
+  login(loginForm: any): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${API_ENDPOINTS.auth}/login`, loginForm).pipe(
+      tap((response: LoginResponse) => {
+        const newAccessToken = response.accessToken;
+        this.cookieService.setCookie('PPaccessToken', newAccessToken, response.accessTokenExpireDate);
+        this.accessTokenSubject.next(newAccessToken);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Method to handle user registration
+  register(registerForm: any): Observable<any> {
+    const registerEndpoint = `${API_ENDPOINTS.users}`;
+
+    return this.http.post(registerEndpoint, registerForm).pipe(
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
   }
 }

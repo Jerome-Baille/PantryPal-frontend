@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CookieService } from '../../../shared/cookie.service';
+import { RecipeService } from '../../../services/recipe.service';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -16,24 +15,15 @@ export class RecipeDetailComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
-    private cookieService: CookieService
+    private recipeService: RecipeService
   ) { }
 
   ngOnInit(): void {
-    // Get the token from cookies
-    const token = this.cookieService.getCookie('PPaccessToken');
-
-    // Set up the headers with the authorization token
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     // Get the recipe ID from the route parameters
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
 
-    // Make the API call with the headers and recipe ID
-    this.http.get<any>(`http://localhost:3000/api/recipes/${id}`, { headers }).subscribe({
+    // Make the API call with the recipe ID
+    this.recipeService.getRecipe(id).subscribe({
       next: (response) => {
         this.recipe = response;
         this.error = null;
@@ -47,19 +37,11 @@ export class RecipeDetailComponent {
   }
 
   deleteRecipe(): void {
-    // Get the token from cookies
-    const token = this.cookieService.getCookie('PPaccessToken');
-
-    // Set up the headers with the authorization token
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     // Get the recipe ID from the route parameters
-    const id = this.route.snapshot.paramMap.get('id');
+    const id = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
 
-    // Make the API call with the headers and recipe ID
-    this.http.delete(`http://localhost:3000/api/recipes/${id}`, { headers }).subscribe({
+    // Make the API call with the recipe ID
+    this.recipeService.deleteRecipe(id).subscribe({
       next: () => {
         this.router.navigate(['/recipe/list']);
       },

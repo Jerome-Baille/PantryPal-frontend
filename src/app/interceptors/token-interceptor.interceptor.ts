@@ -8,7 +8,10 @@ import { LoaderService } from '../services/loader.service';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService, private loaderService: LoaderService) {}
+  constructor(
+    private authService: AuthService,
+    private loaderService: LoaderService
+  ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.loaderService.showLoader(); // Show the loader
@@ -22,7 +25,7 @@ export class TokenInterceptor implements HttpInterceptor {
     }
     return next.handle(request).pipe(
       catchError(error => {
-        if (error.status === 403 && !request.url.endsWith('/refresh')) {
+        if ((error.status === 403 || error.status === 401) && !request.url.endsWith('/refresh')) {
           return this.authService.refreshToken().pipe(
             switchMap(() => {
               const newAuthHeader = this.authService.getAuthorizationHeader();

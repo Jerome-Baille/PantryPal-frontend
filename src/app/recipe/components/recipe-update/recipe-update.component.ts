@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { CookieService } from 'src/app/shared/cookie.service';
+import { RecipeService } from 'src/app/services/recipe.service';
 
 @Component({
   selector: 'app-recipe-update',
@@ -32,35 +31,26 @@ export class RecipeUpdateComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private cookieService: CookieService
+    private recipeService: RecipeService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    // Get the token from cookies
-    const token = this.cookieService.getCookie('PPaccessToken');
-
-    // Set up the headers with the authorization token
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     this.route.params.subscribe(params => {
       const recipeId = params['id']; // Get the recipe ID from the URL
 
       // Fetch the recipe data from the server using HTTP request
-      this.http.get('http://localhost:3000/api/recipes/' + recipeId, { headers }).subscribe(
-        (response: any) => {
+      this.recipeService.getRecipe(recipeId).subscribe({
+        next: (response: any) => {
           this.recipe = response;
           this.initializeForm();
           this.error = false; // Set the error flag to false when API call is successful
         },
-        (error) => {
+        error: (error) => {
           console.log('Error fetching recipe data:', error);
           this.error = true; // Set the error flag to true when API call fails
         }
-      );
+      })
     });
   }
 
@@ -114,52 +104,37 @@ export class RecipeUpdateComponent implements OnInit {
   }
 
   onSubmit() {
-    // Get the token from cookies
-    const token = this.cookieService.getCookie('PPaccessToken');
-
-    // Set up the headers with the authorization token
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     const bookId = this.recipe.Book.id;
     const recipeId = this.recipe.id;
     const updatedRecipe = { ...this.recipe, ...this.recipeForm.value };
     const ingredients = updatedRecipe.Ingredients;
     delete updatedRecipe.Ingredients;
 
-    interface ApiResponse {
-      message: string;
-    }
-
     // Update bookTitle and bookAuthor
     if (updatedRecipe.bookTitle !== this.recipe.bookTitle || updatedRecipe.bookAuthor !== this.recipe.bookAuthor) {
-      this.http.put<ApiResponse>('http://localhost:3000/api/books/' + bookId, {
-        title: updatedRecipe.bookTitle,
-        author: updatedRecipe.bookAuthor
-      }, { headers }).subscribe(
-        (response) => {
+      this.recipeService.updateBook(bookId, updatedRecipe.bookTitle, updatedRecipe.bookAuthor).subscribe({
+        next: (response) => {
           console.log(response.message);
         },
-        (error) => {
+        error: (error) => {
           console.log('Error updating book:', error);
         }
-      );
+      })
     } else {
       console.log('Book is already up to date');
     }
 
     // Update recipe
     if (JSON.stringify(updatedRecipe) !== JSON.stringify(this.recipe)) {
-      this.http.put<ApiResponse>('http://localhost:3000/api/recipes/' + recipeId, updatedRecipe, { headers }).subscribe(
-        (response) => {
+      this.recipeService.updateRecipe(recipeId, updatedRecipe).subscribe({
+        next: (response) => {
           console.log(response.message);
           this.recipe = updatedRecipe;
         },
-        (error) => {
+        error: (error) => {
           console.log('Error updating recipe:', error);
         }
-      );
+      })
     } else {
       console.log('Recipe is already up to date');
     }
@@ -172,15 +147,15 @@ export class RecipeUpdateComponent implements OnInit {
       this.ingredients.controls.forEach((control, index) => {
         const ingredient = ingredients[index];
         const updatedIngredient = control.value;
-        this.http.put<ApiResponse>('http://localhost:3000/api/ingredients/' + ingredient.id, updatedIngredient, { headers }).subscribe(
-          (response) => {
+        this.recipeService.updateIngredient(ingredient.id, updatedIngredient).subscribe({
+          next: (response) => {
             ingredients[index] = updatedIngredient;
             console.log(response.message);
           },
-          (error) => {
+          error: (error) => {
             console.log('Error updating ingredient:', error);
           }
-        );
+        })
       });
     }
   }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CookieService } from '../../../shared/cookie.service';
+import { RecipeService } from '../../../services/recipe.service';
 
 @Component({
     selector: 'app-recipe-list',
@@ -12,22 +11,12 @@ export class RecipeListComponent implements OnInit {
     recipes: any[] = [];
 
     constructor(
-        private http: HttpClient,
         private router: Router,
-        private cookieService: CookieService
+        private recipeService: RecipeService
     ) { }
 
     ngOnInit() {
-        // Get the token from cookies
-        const token = this.cookieService.getCookie('PPaccessToken');
-
-        // Set up the headers with the authorization token
-        const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-        });
-
-        // Make the API call with the headers
-        this.http.get<any[]>('http://localhost:3000/api/recipes', { headers }).subscribe({
+        this.recipeService.getRecipes().subscribe({
             next: (response) => {
                 this.recipes = response;
             },
