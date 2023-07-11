@@ -93,6 +93,15 @@ export class RecipeService {
       })
   }
 
+  addIngredient(recipeId: number, ingredient: Ingredient): Observable<any> {
+    return this.http.post(API_ENDPOINTS.ingredients, {
+      name: ingredient.name,
+      quantity: ingredient.quantity,
+      unit: ingredient.unit,
+      recipeId: recipeId
+    });
+  }
+
   getRecipes(): Observable<any> {
     return this.http.get<any[]>(API_ENDPOINTS.recipes);
   }
@@ -115,5 +124,9 @@ export class RecipeService {
 
   deleteRecipe(id: number): Observable<any> {
     return this.http.delete(`${API_ENDPOINTS.recipes}/${id}`);
+  }
+
+  deleteIngredient(id: number): Observable<any> {
+    return this.http.delete(`${API_ENDPOINTS.ingredients}/${id}`);
   }
 }

@@ -1,6 +1,14 @@
 <div class="login-container">
   <div *ngIf="isLogged">
-    <button mat-raised-button color="primary" (click)="onLogout()">Logout</button>
+    <mat-card>
+      <mat-card-title>Welcome!</mat-card-title>
+      <mat-card-subtitle>What would you like to do?</mat-card-subtitle>
+      <mat-card-actions>
+        <button mat-raised-button color="accent" routerLink="/recipe/list">View Recipes</button>
+        <!-- <button mat-raised-button color="primary" routerLink="/books">View Books</button> -->
+        <button mat-raised-button color="primary" (click)="onLogout()">Logout</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 
   <div *ngIf="!isLogged">

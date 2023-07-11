@@ -11,6 +11,8 @@ import { RecipeService } from 'src/app/services/recipe.service';
 export class RecipeUpdateComponent implements OnInit {
   recipe: any;
   error: boolean = false; // Flag to indicate API call success
+  isFormModified = false;
+  isIngredientDeleted = false;
 
   recipeForm: FormGroup = this.fb.group({
     bookTitle: [''],
@@ -27,7 +29,7 @@ export class RecipeUpdateComponent implements OnInit {
     instructions: [''],
     ingredients: this.fb.array([])
   });
-  isFormModified = false;
+
 
   constructor(
     private fb: FormBuilder,
@@ -95,8 +97,24 @@ export class RecipeUpdateComponent implements OnInit {
     });
     this.ingredients.push(ingredientGroup);
   }
+
   removeIngredient(index: number) {
-    this.ingredients.removeAt(index);
+    const ingredient = this.ingredients.at(index).value;
+    if (ingredient.id) {
+      this.recipeService.deleteIngredient(ingredient.id).subscribe({
+        next: (response) => {
+          console.log(response.message);
+          this.ingredients.removeAt(index);
+          this.isIngredientDeleted = true;
+        },
+        error: (error) => {
+          console.log('Error deleting ingredient:', error);
+        }
+      });
+    } else {
+      this.ingredients.removeAt(index);
+      this.isIngredientDeleted = false;
+    }
   }
 
   onInput() {
@@ -104,6 +122,10 @@ export class RecipeUpdateComponent implements OnInit {
   }
 
   onSubmit() {
+    if (!this.isFormModified || this.isIngredientDeleted) { // Check if the form or ingredients have been modified
+      return;
+    }
+
     const bookId = this.recipe.Book.id;
     const recipeId = this.recipe.id;
     const updatedRecipe = { ...this.recipe, ...this.recipeForm.value };
@@ -146,16 +168,29 @@ export class RecipeUpdateComponent implements OnInit {
     } else {
       this.ingredients.controls.forEach((control, index) => {
         const ingredient = ingredients[index];
-        const updatedIngredient = control.value;
-        this.recipeService.updateIngredient(ingredient.id, updatedIngredient).subscribe({
-          next: (response) => {
-            ingredients[index] = updatedIngredient;
-            console.log(response.message);
-          },
-          error: (error) => {
-            console.log('Error updating ingredient:', error);
-          }
-        })
+        if (ingredient && ingredient.id) {
+          const updatedIngredient = control.value;
+          this.recipeService.updateIngredient(ingredient.id, updatedIngredient).subscribe({
+            next: (response) => {
+              ingredients[index] = updatedIngredient;
+              console.log(response.message);
+            },
+            error: (error) => {
+              console.log('Error updating ingredient:', error);
+            }
+          });
+        } else {
+          const newIngredient = control.value;
+          this.recipeService.addIngredient(recipeId, newIngredient).subscribe({
+            next: (response) => {
+              ingredients[index] = response;
+              console.log(response.message);
+            },
+            error: (error) => {
+              console.log('Error adding ingredient:', error);
+            }
+          });
+        }
       });
     }
   }
