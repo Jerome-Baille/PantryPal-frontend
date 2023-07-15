@@ -14,6 +14,7 @@ interface Ingredient {
 interface Recipe {
   title: string;
   instructions: string;
+  notes: string;
   preparationTime: number;
   preparationUnit: string;
   cookingTime: number;
@@ -64,6 +65,7 @@ export class RecipeService {
     return this.http.post(API_ENDPOINTS.recipes, {
       title: recipe.title,
       instructions: recipe.instructions,
+      notes: recipe.notes,
       preparationTime: recipe.preparationTime,
       preparationUnit: recipe.preparationUnit,
       cookingTime: recipe.cookingTime,

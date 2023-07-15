@@ -74,10 +74,19 @@
 
       <mat-form-field>
         <mat-label>Instructions for the recipe</mat-label>
-        <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe" required
+        <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe" rows="3" required
           formControlName="instructions"></textarea>
         <mat-error
           *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">Instructions
+          are required.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Notes for the recipe</mat-label>
+        <textarea matInput placeholder="Notes for the recipe" aria-label="Notes for the recipe"
+          formControlName="notes" rows="3"></textarea>
+        <mat-error
+          *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">Notes
           are required.</mat-error>
       </mat-form-field>
     </div>

@@ -29,6 +29,7 @@ export class RecipeUpdateComponent implements OnInit {
     waitingTime: [''],
     waitingUnit: [''],
     instructions: [''],
+    notes: [''],
     ingredients: this.fb.array([])
   });
 
@@ -74,7 +75,8 @@ export class RecipeUpdateComponent implements OnInit {
         fridgeUnit: this.recipe.fridgeUnit,
         waitingTime: this.recipe.waitingTime,
         waitingUnit: this.recipe.waitingUnit,
-        instructions: this.recipe.instructions
+        instructions: this.recipe.instructions,
+        notes: this.recipe.notes
       });
 
       // Initialize the ingredients FormArray
@@ -93,6 +95,12 @@ export class RecipeUpdateComponent implements OnInit {
   }
 
   addIngredient(id: number = 0, name: string = '', quantity: number = 0, unit: string = '') {
+    const decimalPlaces = quantity.toString().split('.')[1]?.length || 0;
+    if (decimalPlaces > 0) {
+      quantity = parseFloat(quantity.toFixed(2));
+    } else {
+      quantity = parseFloat(quantity.toFixed(0));
+    }
     const ingredientGroup = this.fb.group({
       id: [id],
       name: [name],
