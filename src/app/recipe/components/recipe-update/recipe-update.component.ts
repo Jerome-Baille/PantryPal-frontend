@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { BookService } from 'src/app/services/book.service';
 import { RecipeService } from 'src/app/services/recipe.service';
+import { IngredientService } from 'src/app/services/ingredient.service';
 
 @Component({
   selector: 'app-recipe-update',
@@ -33,7 +35,9 @@ export class RecipeUpdateComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private bookService: BookService,
     private recipeService: RecipeService,
+    private ingredientService: IngredientService,
     private route: ActivatedRoute
   ) { }
 
@@ -101,7 +105,7 @@ export class RecipeUpdateComponent implements OnInit {
   removeIngredient(index: number) {
     const ingredient = this.ingredients.at(index).value;
     if (ingredient.id) {
-      this.recipeService.deleteIngredient(ingredient.id).subscribe({
+      this.ingredientService.deleteIngredient(ingredient.id).subscribe({
         next: (response) => {
           console.log(response.message);
           this.ingredients.removeAt(index);
@@ -134,7 +138,7 @@ export class RecipeUpdateComponent implements OnInit {
 
     // Update bookTitle and bookAuthor
     if (updatedRecipe.bookTitle !== this.recipe.bookTitle || updatedRecipe.bookAuthor !== this.recipe.bookAuthor) {
-      this.recipeService.updateBook(bookId, updatedRecipe.bookTitle, updatedRecipe.bookAuthor).subscribe({
+      this.bookService.updateBook(bookId, updatedRecipe.bookTitle, updatedRecipe.bookAuthor).subscribe({
         next: (response) => {
           console.log(response.message);
         },
@@ -167,10 +171,10 @@ export class RecipeUpdateComponent implements OnInit {
       return;
     } else {
       this.ingredients.controls.forEach((control, index) => {
-        const ingredient = ingredients[index];
-        if (ingredient && ingredient.id) {
+        const ingredient = ingredients.find((i: any) => i.id === control.value.id);
+        if (ingredient) {
           const updatedIngredient = control.value;
-          this.recipeService.updateIngredient(ingredient.id, updatedIngredient).subscribe({
+          this.ingredientService.updateIngredient(ingredient.id, updatedIngredient).subscribe({
             next: (response) => {
               ingredients[index] = updatedIngredient;
               console.log(response.message);
@@ -181,7 +185,7 @@ export class RecipeUpdateComponent implements OnInit {
           });
         } else {
           const newIngredient = control.value;
-          this.recipeService.addIngredient(recipeId, newIngredient).subscribe({
+          this.ingredientService.createIngredient(recipeId, newIngredient).subscribe({
             next: (response) => {
               ingredients[index] = response;
               console.log(response.message);

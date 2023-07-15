@@ -1,125 +1,91 @@
 <div class="form-container">
-    <form>
-        <mat-form-field>
-            <label>
-                Title of the book
-                <input matInput placeholder="Title of the book" aria-label="Title of the book" required
-                    [(ngModel)]="book.title" name="bookTitle">
-            </label>
-        </mat-form-field>
+  <form [formGroup]="recipeForm">
+    <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)" class="full-width"></app-book-form>
 
-        <mat-form-field>
-            <label>
-                Author of the book
-                <input matInput placeholder="Author of the book" aria-label="Author of the book" required
-                    [(ngModel)]="book.author" name="bookAuthor">
-            </label>
-        </mat-form-field>
+    <div formGroupName="recipe" class="full-width">
+      <mat-form-field>
+        <mat-label>Title of the recipe</mat-label>
+        <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
+          formControlName="title">
+        <mat-error *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">Title is
+          required.</mat-error>
+      </mat-form-field>
 
-        <mat-form-field>
-            <label>
-                Title of the recipe
-                <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
-                    [(ngModel)]="recipe.title" name="recipeTitle">
-            </label>
-        </mat-form-field>
-
-        <mat-form-field>
-            <label>
-                Preparation time
-            </label>
-            <div class="time-unit-container">
-                <input matInput placeholder="Preparation time" aria-label="Preparation time" required
-                    [(ngModel)]="recipe.preparationTime" name="recipePreparationTime">
-                <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.preparationUnit"
-                    name="recipePreparationUnit">
-                    <mat-option value=null></mat-option>
-                    <mat-option value="min">Minutes</mat-option>
-                    <mat-option value="h">Hours</mat-option>
-                </mat-select>
-            </div>
-        </mat-form-field>
-
-        <mat-form-field>
-            <label>
-                Cooking time
-            </label>
-            <div class="time-unit-container">
-                <input matInput placeholder="Cooking time" aria-label="Cooking time" required
-                    [(ngModel)]="recipe.cookingTime" name="recipeCookingTime">
-                <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.cookingUnit"
-                    name="recipeCookingUnit">
-                    <mat-option value=null></mat-option>
-                    <mat-option value="min">Minutes</mat-option>
-                    <mat-option value="h">Hours</mat-option>
-                </mat-select>
-            </div>
-        </mat-form-field>
-
-        <mat-form-field>
-            <label>
-                Fridge time
-            </label>
-            <div class="time-unit-container">
-                <input matInput placeholder="Fridge time" aria-label="Fridge time" required
-                    [(ngModel)]="recipe.fridgeTime" name="recipeFridgeTime">
-                <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.fridgeUnit"
-                    name="recipeFridgeUnit">
-                    <mat-option value=null></mat-option>
-                    <mat-option value="min">Minutes</mat-option>
-                    <mat-option value="h">Hours</mat-option>
-                </mat-select>
-            </div>
-        </mat-form-field>
-
-        <mat-form-field>
-            <label>
-                Waiting time
-            </label>
-            <div class="time-unit-container">
-                <input matInput placeholder="Waiting time" aria-label="Waiting time" required
-                    [(ngModel)]="recipe.waitingTime" name="recipeWaitingTime">
-                <mat-select placeholder="Unit" aria-label="Unit" required [(ngModel)]="recipe.waitingUnit"
-                    name="recipeWaitingUnit">
-                    <mat-option value=null></mat-option>
-                    <mat-option value="min">Minutes</mat-option>
-                    <mat-option value="h">Hours</mat-option>
-                </mat-select>
-            </div>
-        </mat-form-field>
-
-        <mat-form-field>
-            <label>
-                Instructions for the recipe
-                <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe"
-                    required [(ngModel)]="recipe.instructions" name="recipeInstructions"></textarea>
-            </label>
-        </mat-form-field>
-
-        <div *ngFor="let ingredient of ingredients" class="ingredient-row">
-            <mat-form-field>
-                <input matInput placeholder="Name" aria-label="Name of the ingredient" required
-                    [(ngModel)]="ingredient.name" name="ingredientName">
-            </mat-form-field>
-
-            <mat-form-field>
-                <input matInput placeholder="Quantity" aria-label="Quantity of the ingredient" required
-                    [(ngModel)]="ingredient.quantity" name="ingredientQuantity">
-            </mat-form-field>
-
-            <mat-form-field>
-                <input matInput placeholder="Unit" aria-label="Unit of the ingredient" required
-                    [(ngModel)]="ingredient.unit" name="ingredientUnit">
-            </mat-form-field>
-
-            <button mat-icon-button color="warn" (click)="removeIngredient(ingredient)">
-                <mat-icon>remove_circle_outline</mat-icon>
-            </button>
+      <mat-form-field>
+        <mat-label>Preparation time</mat-label>
+        <div class="time-unit-container">
+          <input matInput placeholder="Preparation time" aria-label="Preparation time"
+            formControlName="preparationTime">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="preparationUnit">
+            <mat-option value=null></mat-option>
+            <mat-option value="min">Minutes</mat-option>
+            <mat-option value="h">Hours</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="recipeForm.get('recipe.preparationTime')?.invalid && recipeForm.get('recipe.preparationTime')?.touched">Preparation
+            time is required.</mat-error>
         </div>
+      </mat-form-field>
 
-        <div class="button-container">
-            <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add Ingredient</button>
-            <button mat-raised-button color="primary" (click)="submitForm()">Submit</button>
+      <mat-form-field>
+        <mat-label>Cooking time</mat-label>
+        <div class="time-unit-container">
+          <input matInput placeholder="Cooking time" aria-label="Cooking time" formControlName="cookingTime">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="cookingUnit">
+            <mat-option value=null></mat-option>
+            <mat-option value="min">Minutes</mat-option>
+            <mat-option value="h">Hours</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="recipeForm.get('recipe.cookingTime')?.invalid && recipeForm.get('recipe.cookingTime')?.touched">Cooking
+            time is required.</mat-error>
         </div>
-    </form>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Fridge time</mat-label>
+        <div class="time-unit-container">
+          <input matInput placeholder="Fridge time" aria-label="Fridge time" formControlName="fridgeTime">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="fridgeUnit">
+            <mat-option value=null></mat-option>
+            <mat-option value="min">Minutes</mat-option>
+            <mat-option value="h">Hours</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="recipeForm.get('recipe.fridgeTime')?.invalid && recipeForm.get('recipe.fridgeTime')?.touched">Fridge
+            time is required.</mat-error>
+        </div>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Waiting time</mat-label>
+        <div class="time-unit-container">
+          <input matInput placeholder="Waiting time" aria-label="Waiting time" formControlName="waitingTime">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="waitingUnit">
+            <mat-option value=null></mat-option>
+            <mat-option value="min">Minutes</mat-option>
+            <mat-option value="h">Hours</mat-option>
+          </mat-select>
+          <mat-error
+            *ngIf="recipeForm.get('recipe.waitingTime')?.invalid && recipeForm.get('recipe.waitingTime')?.touched">Waiting
+            time is required.</mat-error>
+        </div>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Instructions for the recipe</mat-label>
+        <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe" required
+          formControlName="instructions"></textarea>
+        <mat-error
+          *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">Instructions
+          are required.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <app-ingredient-form class="full-width" [recipeForm]="recipeForm"></app-ingredient-form>
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" (click)="submitForm()">Submit</button>
+    </div>
+  </form>
 </div>

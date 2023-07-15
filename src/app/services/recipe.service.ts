@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../../config/api-endpoints';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, mergeMap, throwError } from 'rxjs';
+import { BookService } from './book.service';
+import { IngredientService } from './ingredient.service';
 
 interface Ingredient {
   name: string;
@@ -32,74 +34,53 @@ interface Book {
 })
 export class RecipeService {
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private bookService: BookService,
+    private ingredientService: IngredientService,
   ) { }
 
-  createRecipe(book: Book, recipe: Recipe, ingredients: Ingredient[]) {
-    // Create the book
-    this.http.post(API_ENDPOINTS.books, { title: book.title, author: book.author })
-      .subscribe({
-        next: (bookResponse: any) => {
-          const bookId = bookResponse.id;
-
-          // Create the recipe
-          this.http.post(API_ENDPOINTS.recipes, {
-            title: recipe.title,
-            instructions: recipe.instructions,
-            preparationTime: recipe.preparationTime,
-            preparationUnit: recipe.preparationUnit,
-            cookingTime: recipe.cookingTime,
-            cookingUnit: recipe.cookingUnit,
-            fridgeTime: recipe.fridgeTime,
-            fridgeUnit: recipe.fridgeUnit,
-            waitingTime: recipe.waitingTime,
-            waitingUnit: recipe.waitingUnit,
-            bookId: bookId
+  createRecipe(book: Book, recipe: Recipe, ingredients: Ingredient[]): Observable<any> {
+    return this.bookService.createBook(book).pipe(
+      mergeMap((bookResponse: any) => {
+        const bookId = bookResponse.id;
+        return this.createRecipeWithBookId(recipe, bookId);
+      }),
+      mergeMap((recipeResponse: any) => {
+        const recipeId = recipeResponse.id;
+        return this.ingredientService.createIngredients(ingredients, recipeId).pipe(
+          map((ingredientsResponse: any) => {
+            return ingredientsResponse;
+          }),
+          catchError((error) => {
+            return throwError(() => error);
           })
-            .subscribe({
-              next: (recipeResponse: any) => {
-                const recipeId = recipeResponse.id;
-
-                // Create the ingredients
-                for (const ingredient of ingredients) {
-                  this.http.post(API_ENDPOINTS.ingredients, {
-                    name: ingredient.name,
-                    quantity: ingredient.quantity,
-                    unit: ingredient.unit,
-                    recipeId: recipeId
-                  })
-                    .subscribe({
-                      next: (ingredientResponse: any) => {
-                        console.log("The ingredient has been created: " + ingredientResponse);
-                      },
-                      error: (error) => {
-                        // Handle error
-                        console.error("The ingredient has not been created: " + error);
-                      }
-                    });
-                }
-              },
-              error: (error) => {
-                // Handle error
-                console.error("The recipe has not been created: " + error);
-              }
-
-            })
-        },
-        error: (error) => {
-          // Handle error
-          console.error("The book has not been created: " + error);
-        }
+        )
       })
+    );
   }
+  
 
-  addIngredient(recipeId: number, ingredient: Ingredient): Observable<any> {
-    return this.http.post(API_ENDPOINTS.ingredients, {
-      name: ingredient.name,
-      quantity: ingredient.quantity,
-      unit: ingredient.unit,
-      recipeId: recipeId
-    });
+  createRecipeWithBookId(recipe: Recipe, bookId: number): Observable<any> {
+    return this.http.post(API_ENDPOINTS.recipes, {
+      title: recipe.title,
+      instructions: recipe.instructions,
+      preparationTime: recipe.preparationTime,
+      preparationUnit: recipe.preparationUnit,
+      cookingTime: recipe.cookingTime,
+      cookingUnit: recipe.cookingUnit,
+      fridgeTime: recipe.fridgeTime,
+      fridgeUnit: recipe.fridgeUnit,
+      waitingTime: recipe.waitingTime,
+      waitingUnit: recipe.waitingUnit,
+      bookId: bookId
+    }).pipe(
+      map((response: any) => {
+        return response;
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
   }
 
   getRecipes(): Observable<any> {
@@ -110,23 +91,11 @@ export class RecipeService {
     return this.http.get<any>(`${API_ENDPOINTS.recipes}/${id}`);
   }
 
-  updateBook(id: number, title: string, author: string): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.books}/${id}`, { title: title, author: author });
-  }
-
-  updateIngredient(id: number, ingredient: Ingredient): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.ingredients}/${id}`, ingredient);
-  }
-
   updateRecipe(id: number, recipe: Recipe): Observable<any> {
     return this.http.put(`${API_ENDPOINTS.recipes}/${id}`, recipe);
   }
 
   deleteRecipe(id: number): Observable<any> {
     return this.http.delete(`${API_ENDPOINTS.recipes}/${id}`);
-  }
-
-  deleteIngredient(id: number): Observable<any> {
-    return this.http.delete(`${API_ENDPOINTS.ingredients}/${id}`);
   }
 }

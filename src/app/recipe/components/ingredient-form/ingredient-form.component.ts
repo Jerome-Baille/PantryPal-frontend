@@ -1,0 +1,34 @@
+import { Component, Input } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
+
+@Component({
+  selector: 'app-ingredient-form',
+  templateUrl: './ingredient-form.component.html',
+  styleUrls: ['./ingredient-form.component.scss']
+})
+export class IngredientFormComponent {
+  @Input() recipeForm!: FormGroup;
+  ingredients!: FormArray;
+
+
+  constructor(
+    private formBuilder: FormBuilder
+  ) { }
+
+  ngOnInit() {
+    this.ingredients = this.recipeForm.get('ingredients') as FormArray;
+  }
+
+  addIngredient() {
+    const ingredientForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      quantity: [0],
+      unit: ['']
+    });
+    this.ingredients.push(ingredientForm);
+  }
+
+  onRemoveIngredient(index: number) {
+    this.ingredients.removeAt(index);
+  }
+}

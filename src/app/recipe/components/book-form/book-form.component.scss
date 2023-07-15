@@ -1,0 +1,16 @@
+.book-form-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.new-book-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    gap: 20px;
+}

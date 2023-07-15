@@ -1,0 +1,31 @@
+<div [formGroup]="recipeForm">
+    <div formArrayName="ingredients">
+        <div *ngFor="let ingredientForm of ingredients.controls; let i = index" [formGroupName]="i" class="ingredient-container">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" placeholder="Enter ingredient name">
+                <mat-error *ngIf="ingredientForm.get('name')?.invalid">Name is required.</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Quantity</mat-label>
+                <input matInput formControlName="quantity" placeholder="Enter quantity">
+                <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">Quantity is required.</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Unit</mat-label>
+                <input matInput formControlName="unit" placeholder="Enter unit">
+                <mat-error *ngIf="ingredientForm.get('unit')?.invalid">Unit is required.</mat-error>
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" (click)="onRemoveIngredient(i)">
+                <mat-icon>remove_circle</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add Ingredient</button>
+    </div>
+</div>

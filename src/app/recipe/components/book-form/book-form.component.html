@@ -1,0 +1,36 @@
+<div [formGroup]="recipeForm">
+    <mat-radio-group formControlName="bookSelection" class="book-form-header">
+        <mat-radio-button value="existing">Select an existing book</mat-radio-button>
+        <mat-radio-button value="new">Add a new book</mat-radio-button>
+    </mat-radio-group>
+
+    <div *ngIf="recipeForm.get('bookSelection')?.value === 'existing'" formGroupName="existingBook" class="full-width">
+        <mat-form-field class="full-width">
+            <mat-label>Select a book</mat-label>
+            <mat-select formControlName="bookId" (selectionChange)="onBookSelectionChange()">
+                <mat-option *ngFor="let book of books" [value]="book.id">{{ book.title }} by {{ book.author }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="recipeForm.get('existingBook.bookId')?.invalid && recipeForm.get('existingBook.bookId')?.touched">
+                Book selection is required.
+            </mat-error>
+        </mat-form-field>
+    </div>
+
+    <div *ngIf="recipeForm.get('bookSelection')?.value === 'new'" formGroupName="newBook" class="full-width new-book-container">
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter book title" aria-label="Title of the book" required (change)="onBookSelectionChange()">
+            <mat-error *ngIf="recipeForm.get('newBook.title')?.invalid && recipeForm.get('newBook.title')?.touched">
+                Title is required.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Author</mat-label>
+            <input matInput formControlName="author" placeholder="Enter author" aria-label="Author of the book" required (change)="onBookSelectionChange()">
+            <mat-error *ngIf="recipeForm.get('newBook.author')?.invalid && recipeForm.get('newBook.author')?.touched">
+                Author is required.
+            </mat-error>
+        </mat-form-field>
+    </div>
+</div>
