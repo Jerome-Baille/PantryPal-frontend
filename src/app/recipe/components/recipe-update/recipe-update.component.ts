@@ -95,12 +95,6 @@ export class RecipeUpdateComponent implements OnInit {
   }
 
   addIngredient(id: number = 0, name: string = '', quantity: number = 0, unit: string = '') {
-    const decimalPlaces = quantity.toString().split('.')[1]?.length || 0;
-    if (decimalPlaces > 0) {
-      quantity = parseFloat(quantity.toFixed(2));
-    } else {
-      quantity = parseFloat(quantity.toFixed(0));
-    }
     const ingredientGroup = this.fb.group({
       id: [id],
       name: [name],

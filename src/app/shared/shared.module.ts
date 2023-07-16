@@ -12,6 +12,10 @@ import { LoaderComponent } from './components/loader/loader.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatTableModule} from '@angular/material/table';
+import {MatListModule} from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -30,7 +34,11 @@ import {MatRadioModule} from '@angular/material/radio';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    MatRadioModule
+    MatRadioModule,
+    MatGridListModule,
+    MatTableModule,
+    MatListModule, 
+    MatDividerModule
   ],
   exports: [
     MatToolbarModule,
@@ -45,7 +53,11 @@ import {MatRadioModule} from '@angular/material/radio';
     MatProgressSpinnerModule,
     LoaderComponent,
     MatSnackBarModule,
-    MatRadioModule
+    MatRadioModule,
+    MatGridListModule,
+    MatTableModule,
+    MatListModule,
+    MatDividerModule
   ]
 })
 export class SharedModule { }
