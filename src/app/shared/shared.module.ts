@@ -16,6 +16,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatGridListModule,
     MatTableModule,
     MatListModule, 
-    MatDividerModule
+    MatDividerModule,
+    FontAwesomeModule
   ],
   exports: [
     MatToolbarModule,
@@ -57,7 +59,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatGridListModule,
     MatTableModule,
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    FontAwesomeModule
   ]
 })
 export class SharedModule { }

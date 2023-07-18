@@ -34,6 +34,8 @@ interface Book {
   providedIn: 'root'
 })
 export class RecipeService {
+  searchResults: any[] = []; // Added property for search results
+
   constructor(
     private http: HttpClient,
     private bookService: BookService,
@@ -99,5 +101,21 @@ export class RecipeService {
 
   deleteRecipe(id: number): Observable<any> {
     return this.http.delete(`${API_ENDPOINTS.recipes}/${id}`);
+  }
+
+  searchRecipes(search: string): Observable<any> {
+    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}/search?title=${search}`).pipe(
+      map((recipes) => {
+        this.searchResults = recipes; // Assign search results to searchResults property
+        return recipes;
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getSearchResults(): any[] {
+    return this.searchResults;
   }
 }

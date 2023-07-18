@@ -1,6 +1,32 @@
 <mat-toolbar class="toolbar">
     <span class="toolbar__title" routerLink="/">PantryPal</span>
-    <button mat-button routerLink="/recipe/list">List</button>
-    <button mat-button routerLink="/recipe/create">Create</button>
-    <button mat-button routerLink="/auth/login">Login</button>
-  </mat-toolbar>
+    <form [formGroup]="searchForm" class="search-bar">
+        <input type="text" placeholder="Search..." aria-label="Search a recipe." formControlName="search">
+        <button (click)="submitSearch()">
+            <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </button>
+    </form>
+    <div class="full-menu">
+        <button mat-button routerLink="/recipe/list">List</button>
+        <button mat-button routerLink="/recipe/create">Create</button>
+        <button mat-button routerLink="/auth/login">Login</button>
+    </div>
+
+    <button mat-button class="hamburger-button" (click)="toggleDropdownMenu()">
+        <mat-icon>menu</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div *ngIf="isDropdownMenuOpen" class="dropdown-menu">
+    <div class="dropdown-content">
+        <form [formGroup]="searchForm" class="search-bar">
+            <input type="text" placeholder="Search..." aria-label="Search a recipe." formControlName="search">
+            <button (click)="submitSearch()">
+                <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+            </button>
+        </form>
+        <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">List</button>
+        <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">Create</button>
+        <button mat-button routerLink="/auth/login" (click)="toggleDropdownMenu()">Login</button>
+    </div>
+</div>
