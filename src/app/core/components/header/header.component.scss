@@ -1,15 +1,17 @@
 .toolbar {
-    .toolbar__title {
-      flex: 1;
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
-      cursor: pointer;
-    }
-  
-    button {
-      color: #333;
-      margin-left: 10px;
-      margin-right: 10px;
-    }
+  background-color: white !important;
+
+  .toolbar__title {
+    flex: 1;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
   }
+
+  button {
+    color: #333;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}

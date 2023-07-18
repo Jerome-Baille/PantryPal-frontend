@@ -1,12 +1,31 @@
-<ng-container *ngIf="recipes.length > 0; else noRecipes">
-    <div class="recipe-container">
-        <mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">
-            <mat-card-title>{{ recipe.title }}</mat-card-title>
-            <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
-        </mat-card>
-    </div>
-</ng-container>
+<div class="main-container">
+    <ng-container *ngIf="recipes.length > 0; else noRecipes">
+        <div class="container">
+            <div class="recipe-container">
+                <mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">
+                    <mat-card-title>{{ recipe.title }}</mat-card-title>
+                    <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
+                </mat-card>
+            </div>
 
-<ng-template #noRecipes>
-    <p>You are not authorized to view the recipe data.</p>
-</ng-template>
+            <div class="pagination-container">
+                <div class="pagination">
+                    <button mat-icon-button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+                        <mat-icon>chevron_left</mat-icon>
+                    </button>
+
+                    <span class="current-page">{{ currentPage }}</span>
+
+                    <button mat-icon-button (click)="onPageChange(currentPage + 1)"
+                        [disabled]="recipes.length < itemsPerPage">
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #noRecipes>
+        <p>You are not authorized to view the recipe data.</p>
+    </ng-template>
+</div>

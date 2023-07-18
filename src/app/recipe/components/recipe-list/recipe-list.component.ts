@@ -9,6 +9,8 @@ import { RecipeService } from '../../../services/recipe.service';
 })
 export class RecipeListComponent implements OnInit {
     recipes: any[] = [];
+    currentPage: number = 1;
+    itemsPerPage: number = 12;
 
     constructor(
         private router: Router,
@@ -16,18 +18,30 @@ export class RecipeListComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.loadRecipes();
+    }
+
+    loadRecipes() {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        
         this.recipeService.getRecipes().subscribe({
             next: (response) => {
-                this.recipes = response;
+                this.recipes = response.slice(startIndex, endIndex);
             },
             error: (error) => {
                 console.error(error);
                 this.recipes = [];
             }
-        })
+        });
     }
 
     goToRecipeDetails(id: number): void {
         this.router.navigate(['/recipe/detail', id]);
+    }
+
+    onPageChange(page: number): void {
+        this.currentPage = page;
+        this.loadRecipes();
     }
 }
