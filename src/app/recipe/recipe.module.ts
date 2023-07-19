@@ -9,6 +9,7 @@ import { RecipeDetailComponent } from './components/recipe-detail/recipe-detail.
 import { RecipeUpdateComponent } from './components/recipe-update/recipe-update.component';
 import { IngredientFormComponent } from './components/ingredient-form/ingredient-form.component';
 import { BookFormComponent } from './components/book-form/book-form.component';
+import { FiltersComponent } from './components/filters/filters.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { BookFormComponent } from './components/book-form/book-form.component';
     RecipeDetailComponent,
     RecipeUpdateComponent,
     IngredientFormComponent,
-    BookFormComponent
+    BookFormComponent,
+    FiltersComponent
   ],
   imports: [
     CommonModule,

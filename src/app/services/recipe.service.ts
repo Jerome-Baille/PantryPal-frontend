@@ -87,8 +87,11 @@ export class RecipeService {
     );
   }
 
-  getRecipes(): Observable<any> {
-    return this.http.get<any[]>(API_ENDPOINTS.recipes);
+  getRecipes(bookId?: number): Observable<any> {
+    if(!bookId){
+      return this.http.get<any[]>(API_ENDPOINTS.recipes);
+    }
+    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}?bookId=${bookId}`);
   }
 
   getRecipe(id: number): Observable<any> {

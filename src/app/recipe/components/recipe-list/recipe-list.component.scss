@@ -98,7 +98,8 @@
   display: flex;
   flex-direction: column;
   min-height: calc(100% - 64px);
-  box-sizing: border-box; /* Include padding and border in the height calculation */
+  box-sizing: border-box;
+  /* Include padding and border in the height calculation */
 
   @media screen and (max-width: 600px) {
     min-height: calc(100% - 56px);
@@ -106,6 +107,15 @@
   }
 
   .container {
-    flex: 1; /* Make the container grow to fill the available space */
+    flex: 1;
+    /* Make the container grow to fill the available space */
   }
+}
+
+.filter-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 25px;
+  align-items: baseline;
+  margin-top: 10px;
 }

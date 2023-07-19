@@ -17,6 +17,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatTableModule,
     MatListModule, 
     MatDividerModule,
+    MatAutocompleteModule,
     FontAwesomeModule
   ],
   exports: [
@@ -60,7 +62,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MatTableModule,
     MatListModule,
     MatDividerModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatAutocompleteModule
   ]
 })
 export class SharedModule { }

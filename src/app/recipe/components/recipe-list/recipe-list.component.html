@@ -1,4 +1,10 @@
 <div class="main-container">
+    <div class="filter-container">
+        <app-filters (bookSelected)="onBookSelect($event)"></app-filters> 
+        <button mat-mini-fab color="primary" (click)="onReset()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
     <ng-container *ngIf="recipes.length > 0; else noRecipes">
         <div class="container">
             <div class="recipe-container">

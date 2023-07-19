@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
 import { SearchService } from '../../../services/search.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BookService } from '../../../services/book.service';
 
 @Component({
     selector: 'app-recipe-list',
@@ -14,12 +15,15 @@ export class RecipeListComponent implements OnInit {
     currentPage: number = 1;
     itemsPerPage: number = 12;
     isSearchActive: boolean = false;
+    books: any[] = [];
+    selectedBook?: number;
 
     constructor(
         private router: Router,
         private recipeService: RecipeService,
-        private searchService: SearchService, // Inject SearchService
-        private snackBar: MatSnackBar // Inject MatSnackBar
+        private searchService: SearchService,
+        private snackBar: MatSnackBar,
+        private bookService: BookService
     ) { }
 
     ngOnInit() {
@@ -39,7 +43,7 @@ export class RecipeListComponent implements OnInit {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
 
-        this.recipeService.getRecipes().subscribe({
+        this.recipeService.getRecipes(this.selectedBook).subscribe({
             next: (response) => {
                 this.recipes = response.slice(startIndex, endIndex);
             },
@@ -77,5 +81,15 @@ export class RecipeListComponent implements OnInit {
                 this.isSearchActive = false;
             }
         });
+    }
+
+    onBookSelect(bookId: number): void {
+        this.selectedBook = bookId;
+        this.loadRecipes();
+    }
+
+    onReset(): void {
+        this.selectedBook = undefined;
+        this.loadRecipes();
     }
 }
