@@ -1,12 +1,12 @@
-<div class="form-container">
-  <form [formGroup]="recipeForm">
+<div class="main-container">
+  <form [formGroup]="recipeForm" class="container">
     <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)" class="full-width"></app-book-form>
 
     <div formGroupName="recipe" class="full-width">
       <mat-form-field>
         <mat-label>Title of the recipe</mat-label>
         <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
-          formControlName="title">
+          formControlName="title" class="recipe-title">
         <mat-error *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">Title is
           required.</mat-error>
       </mat-form-field>
@@ -17,7 +17,6 @@
           <input matInput placeholder="Preparation time" aria-label="Preparation time"
             formControlName="preparationTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="preparationUnit">
-            <mat-option value=null></mat-option>
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>
@@ -32,7 +31,6 @@
         <div class="time-unit-container">
           <input matInput placeholder="Cooking time" aria-label="Cooking time" formControlName="cookingTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="cookingUnit">
-            <mat-option value=null></mat-option>
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>
@@ -47,7 +45,6 @@
         <div class="time-unit-container">
           <input matInput placeholder="Fridge time" aria-label="Fridge time" formControlName="fridgeTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="fridgeUnit">
-            <mat-option value=null></mat-option>
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>
@@ -62,7 +59,6 @@
         <div class="time-unit-container">
           <input matInput placeholder="Waiting time" aria-label="Waiting time" formControlName="waitingTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="waitingUnit">
-            <mat-option value=null></mat-option>
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>

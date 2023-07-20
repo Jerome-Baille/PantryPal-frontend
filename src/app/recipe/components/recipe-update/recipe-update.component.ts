@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BookService } from 'src/app/services/book.service';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-recipe-update',
@@ -12,9 +14,10 @@ import { IngredientService } from 'src/app/services/ingredient.service';
 })
 export class RecipeUpdateComponent implements OnInit {
   recipe: any;
-  error: boolean = false; // Flag to indicate API call success
+  error: boolean = false;
   isFormModified = false;
   isIngredientDeleted = false;
+  isIngredientModified = false;
 
   recipeForm: FormGroup = this.fb.group({
     bookTitle: [''],
@@ -39,7 +42,9 @@ export class RecipeUpdateComponent implements OnInit {
     private bookService: BookService,
     private recipeService: RecipeService,
     private ingredientService: IngredientService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -127,8 +132,23 @@ export class RecipeUpdateComponent implements OnInit {
     this.isFormModified = true;
   }
 
+  updateIngredientFlag() {
+    this.isFormModified = true;
+    this.isIngredientModified = this.ingredients.controls.some(
+      (control, index) => {
+        const ingredient = this.recipe.Ingredients[index];
+        return (
+          ingredient &&
+          (ingredient.name !== control.value.name ||
+            ingredient.quantity !== control.value.quantity ||
+            ingredient.unit !== control.value.unit)
+        );
+      }
+    );
+  }
+
   onSubmit() {
-    if (!this.isFormModified || this.isIngredientDeleted) { // Check if the form or ingredients have been modified
+    if (!this.isFormModified && !this.isIngredientDeleted && !this.isIngredientModified) {
       return;
     }
 
@@ -138,66 +158,55 @@ export class RecipeUpdateComponent implements OnInit {
     const ingredients = updatedRecipe.Ingredients;
     delete updatedRecipe.Ingredients;
 
+    const observables = [];
+
     // Update bookTitle and bookAuthor
-    if (updatedRecipe.bookTitle !== this.recipe.bookTitle || updatedRecipe.bookAuthor !== this.recipe.bookAuthor) {
-      this.bookService.updateBook(bookId, updatedRecipe.bookTitle, updatedRecipe.bookAuthor).subscribe({
-        next: (response) => {
-          console.log(response.message);
-        },
-        error: (error) => {
-          console.log('Error updating book:', error);
-        }
-      })
-    } else {
-      console.log('Book is already up to date');
+    if (updatedRecipe.bookTitle !== this.recipe.Book.title || updatedRecipe.bookAuthor !== this.recipe.Book.author) {
+      observables.push(this.bookService.updateBook(bookId, updatedRecipe.bookTitle, updatedRecipe.bookAuthor));
     }
 
     // Update recipe
     if (JSON.stringify(updatedRecipe) !== JSON.stringify(this.recipe)) {
-      this.recipeService.updateRecipe(recipeId, updatedRecipe).subscribe({
-        next: (response) => {
-          console.log(response.message);
-          this.recipe = updatedRecipe;
-        },
-        error: (error) => {
-          console.log('Error updating recipe:', error);
-        }
-      })
-    } else {
-      console.log('Recipe is already up to date');
+      observables.push(this.recipeService.updateRecipe(recipeId, updatedRecipe));
     }
 
     // Update ingredients
-    if (this.ingredients.length === 0) {
-      console.log('No ingredients to update');
-      return;
-    } else {
-      this.ingredients.controls.forEach((control, index) => {
-        const ingredient = ingredients.find((i: any) => i.id === control.value.id);
-        if (ingredient) {
-          const updatedIngredient = control.value;
-          this.ingredientService.updateIngredient(ingredient.id, updatedIngredient).subscribe({
-            next: (response) => {
-              ingredients[index] = updatedIngredient;
-              console.log(response.message);
-            },
-            error: (error) => {
-              console.log('Error updating ingredient:', error);
-            }
-          });
-        } else {
-          const newIngredient = control.value;
-          this.ingredientService.createIngredient(recipeId, newIngredient).subscribe({
-            next: (response) => {
-              ingredients[index] = response;
-              console.log(response.message);
-            },
-            error: (error) => {
-              console.log('Error adding ingredient:', error);
-            }
-          });
-        }
-      });
+    if (this.isIngredientModified || this.isIngredientDeleted) {
+      if (this.ingredients.length !== 0) {
+        this.ingredients.controls.forEach((control, index) => {
+          const ingredient = ingredients.find((i: any) => i.id === control.value.id);
+          if (ingredient) {
+            const updatedIngredient = control.value;
+            observables.push(this.ingredientService.updateIngredient(ingredient.id, updatedIngredient));
+          } else {
+            const newIngredient = control.value;
+            observables.push(this.ingredientService.createIngredient(recipeId, newIngredient));
+          }
+        });
+      }
     }
+
+    forkJoin(observables).subscribe({
+      next: () => {
+        this.recipe = updatedRecipe;
+        this.snackBar.open('Recipe updated successfully', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center'
+        });
+      },
+      error: (error) => {
+        console.log('Error updating recipe:', error);
+        this.snackBar.open('Error updating recipe', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center'
+        });
+      },
+      complete: () => {
+        // Redirect to the recipe details page
+        this.router.navigate(['/recipe/detail', this.recipe.id]);
+      }
+    });
   }
 }

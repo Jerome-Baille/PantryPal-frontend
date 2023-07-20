@@ -10,63 +10,65 @@
 </ng-container>
 
 <ng-template #recipeDetails>
-    <mat-card>
-        <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
-        <mat-card-subtitle class="card-subtitle">{{ recipe?.Book?.title }} by {{ recipe?.Book?.author
-            }}</mat-card-subtitle>
-        <mat-card-content>
+    <div class="main-container">
+        <mat-card>
+            <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
+            <mat-card-subtitle class="card-subtitle">{{ recipe?.Book?.title }} by {{ recipe?.Book?.author
+                }}</mat-card-subtitle>
+            <mat-card-content class="card-content">
 
-            <div class="time-container">
-                <mat-card *ngFor="let element of recipeTime">
-                    <mat-card-title>{{ element.name }}</mat-card-title>
-                    <mat-card-content>{{ element.time }} {{ element.unit }}</mat-card-content>
+                <div class="time-container">
+                    <mat-card *ngFor="let element of recipeTime">
+                        <mat-card-title>{{ element.name }}</mat-card-title>
+                        <mat-card-content>{{ element.time | number:'1.0-2' }} {{ element.unit }}</mat-card-content>
+                    </mat-card>
+                </div>
+
+                <mat-card>
+                    <mat-card-title>Ingredients</mat-card-title>
+                    <mat-card-content>
+                        <table mat-table [dataSource]="recipe?.Ingredients">
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef>Name</th>
+                                <td mat-cell *matCellDef="let ingredient">{{ ingredient.name }}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="quantity">
+                                <th mat-header-cell *matHeaderCellDef>Quantity</th>
+                                <td mat-cell *matCellDef="let ingredient">{{ ingredient.quantity | number:'1.0-2' }} {{
+                                    ingredient.unit }}</td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="['name', 'quantity']"></tr>
+                            <tr mat-row *matRowDef="let row; columns: ['name', 'quantity']"></tr>
+                        </table>
+                    </mat-card-content>
                 </mat-card>
-            </div>
 
-            <mat-card>
-                <mat-card-title>Ingredients</mat-card-title>
-                <mat-card-content>
-                    <table mat-table [dataSource]="recipe?.Ingredients">
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef>Name</th>
-                            <td mat-cell *matCellDef="let ingredient">{{ ingredient.name }}</td>
+                <mat-card>
+                    <mat-card-title>Instructions</mat-card-title>
+                    <mat-card-content>
+                        <ng-container *ngFor="let instruction of isolatedInstructions; let last = last">
+                            <p>
+                                {{ instruction }}
+                            </p>
+                            <mat-divider *ngIf="!last"></mat-divider>
                         </ng-container>
-                        <ng-container matColumnDef="quantity">
-                            <th mat-header-cell *matHeaderCellDef>Quantity</th>
-                            <td mat-cell *matCellDef="let ingredient">{{ ingredient.quantity | number:'1.0-0' }} {{
-                                ingredient.unit }}</td>
-                        </ng-container>
-                        <tr mat-header-row *matHeaderRowDef="['name', 'quantity']"></tr>
-                        <tr mat-row *matRowDef="let row; columns: ['name', 'quantity']"></tr>
-                    </table>
-                </mat-card-content>
-            </mat-card>
+                    </mat-card-content>
+                </mat-card>
 
-            <mat-card>
-                <mat-card-title>Instructions</mat-card-title>
-                <mat-card-content>
-                    <ng-container *ngFor="let instruction of isolatedInstructions; let last = last">
-                        <p>
-                            {{ instruction }}
-                        </p>
-                        <mat-divider *ngIf="!last"></mat-divider>
-                    </ng-container>
-                </mat-card-content>
-            </mat-card>
+                <mat-card>
+                    <mat-card-title>Notes</mat-card-title>
+                    <mat-card-content>
+                        <p class="instructions">{{ recipe?.notes }}</p>
+                    </mat-card-content>
+                </mat-card>
 
-            <mat-card>
-                <mat-card-title>Notes</mat-card-title>
-                <mat-card-content>
-                    <p class="instructions">{{ recipe?.notes }}</p>
-                </mat-card-content>
-            </mat-card>
-
-            <div class="card-button">
-                <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">Update
-                    Recipe</button>
-                <button mat-raised-button color="warn" (click)="deleteRecipe()">Delete Recipe</button>
-                <button mat-raised-button color="accent" routerLink="/recipe/list">Back</button>
-            </div>
-        </mat-card-content>
-    </mat-card>
+                <div class="card-button">
+                    <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">Update
+                        Recipe</button>
+                    <button mat-raised-button color="warn" (click)="deleteRecipe()">Delete Recipe</button>
+                    <button mat-raised-button color="accent" routerLink="/recipe/list">Back</button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
 </ng-template>

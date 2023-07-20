@@ -1,7 +1,6 @@
 <ng-container *ngIf="!error; else notAuthorizedCard">
-    <div class="container">
-        <h1>Update Recipe</h1>
-        <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+    <div class="main-container">
+        <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="container">
             <mat-form-field>
                 <mat-label>Book Title</mat-label>
                 <input matInput placeholder="Book Title" formControlName="bookTitle" (input)="onInput()">
@@ -71,15 +70,17 @@
                     class="ingredient-row">
                     <mat-form-field>
                         <mat-label>Ingredient Name</mat-label>
-                        <input matInput placeholder="Ingredient Name" formControlName="name" (input)="onInput()">
+                        <input matInput placeholder="Ingredient Name" formControlName="name"
+                            (input)="updateIngredientFlag()">
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Quantity</mat-label>
-                        <input matInput placeholder="Quantity" formControlName="quantity" (input)="onInput()">
+                        <input matInput placeholder="Quantity" formControlName="quantity"
+                            (input)="updateIngredientFlag()">
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Unit</mat-label>
-                        <input matInput placeholder="Unit" formControlName="unit" (input)="onInput()">
+                        <input matInput placeholder="Unit" formControlName="unit" (input)="updateIngredientFlag()">
                     </mat-form-field>
                     <button mat-icon-button color="warn" (click)="removeIngredient(i)">
                         <mat-icon>delete</mat-icon>
@@ -87,7 +88,8 @@
                 </div>
             </div>
             <div class="button-container">
-                <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add Ingredient</button>
+                <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add
+                    Ingredient</button>
                 <button mat-raised-button color="primary" type="submit" [disabled]="!isFormModified">Update
                     Recipe</button>
             </div>

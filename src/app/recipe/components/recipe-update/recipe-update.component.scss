@@ -1,12 +1,7 @@
 /* Form container styles */
 .container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    margin-top: 20px;
     width: 100%;
+    margin: auto;
 }
 
 /* Form styles */
@@ -16,10 +11,9 @@ form {
     align-items: flex-start;
     gap: 20px;
     padding: 20px;
-    background-color: #f5f5f5;
+    background-color: white;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
     max-width: 800px;
 }
 
