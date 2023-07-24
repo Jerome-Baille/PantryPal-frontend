@@ -1,0 +1,23 @@
+.sharing-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+
+    button {
+        background-color: transparent;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        margin-right: 0.5rem;
+    }
+}
+
+.whatsapp-button fa-icon {
+    color: #25D366;
+}
+
+@media screen and (max-width: 768px) {
+    .whatsapp-button {
+        display: none;
+    }
+}

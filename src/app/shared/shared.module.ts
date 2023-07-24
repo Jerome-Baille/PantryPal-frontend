@@ -18,10 +18,12 @@ import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ShareOptionsComponent } from './components/share-options/share-options.component';
 
 @NgModule({
   declarations: [
-    LoaderComponent
+    LoaderComponent,
+    ShareOptionsComponent
   ],
   imports: [
     CommonModule,
@@ -63,7 +65,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatListModule,
     MatDividerModule,
     FontAwesomeModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    ShareOptionsComponent
   ]
 })
 export class SharedModule { }

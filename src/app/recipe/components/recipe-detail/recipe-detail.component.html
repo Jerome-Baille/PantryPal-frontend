@@ -12,6 +12,8 @@
 <ng-template #recipeDetails>
     <div class="main-container">
         <mat-card>
+            <app-share-options [recipe]="recipe"></app-share-options>
+            
             <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
             <mat-card-subtitle class="card-subtitle">{{ recipe?.Book?.title }} by {{ recipe?.Book?.author
                 }}</mat-card-subtitle>
