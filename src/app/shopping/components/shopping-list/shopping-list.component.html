@@ -53,7 +53,7 @@
                 </mat-card-title>
                 <mat-card-content>
                     <mat-selection-list>
-                        <mat-list-option *ngFor="let item of doneList" [ngClass]="{ 'strikethrough': true }">
+                        <mat-list-option *ngFor="let item of doneList" [ngClass]="{ 'strikethrough': true }" (click)="onDoneItemSelected(item.key)">
                             <strong>{{ item.key }}:</strong>
                             <ng-container *ngFor="let ingredient of item.value; let last = last">
                                 <span>

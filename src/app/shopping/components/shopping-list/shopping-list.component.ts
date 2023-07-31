@@ -32,10 +32,6 @@ export class ShoppingListComponent implements OnInit {
       const savedRecipeIds = getLocalStorageData('savedRecipeIds');
       const shoppingList = getLocalStorageData('shoppingList');
 
-      console.log(requiredIngredients, savedRecipeIds, shoppingList)
-
-      console.log(JSON.stringify(savedRecipeIds) === JSON.stringify(shoppingList))
-
       if (requiredIngredients && savedRecipeIds && shoppingList && JSON.stringify(savedRecipeIds) === JSON.stringify(shoppingList)) {
         this.shoppingList = requiredIngredients;
       } else {
@@ -94,7 +90,10 @@ export class ShoppingListComponent implements OnInit {
       }
     } else {
       // If the item is deselected, remove it from the "Done" list
-      this.removeFromDoneList(itemKey);
+      const doneItemIndex = this.doneList.findIndex((item) => item.key === itemKey);
+      if (doneItemIndex !== -1) {
+        this.removeFromDoneList(doneItemIndex, itemKey);
+      }
     }
 
     setLocalStorageData('requiredIngredients', this.shoppingList);
@@ -110,12 +109,65 @@ export class ShoppingListComponent implements OnInit {
 
     // Remove the selected item from the "shoppingList" array
     this.shoppingList = this.shoppingList.filter((shoppingItem) => shoppingItem.key !== item.key);
+
+    // Update the selected state in the main list
+    this.selectedItems[item.key] = false;
   }
 
-  removeFromDoneList(itemKey: string): void {
-    // Find the item in the "Done" list and remove it
-    this.doneList = this.doneList.filter((doneItem) => doneItem.key !== itemKey);
+  removeFromDoneList(doneItemIndex: number, itemKey: string): void {
+    // Remove the item from the "Done" list
+    this.doneList.splice(doneItemIndex, 1);
+
+    // Save the updated "Done" list to local storage
     setLocalStorageData('doneList', this.doneList);
+
+    // Find the item in the "shoppingList" array to add it back
+    const mainListItem = this.doneList.find((item) => item.key === itemKey);
+
+    // Insert the item back to the main list while maintaining alphabetical order
+    if (mainListItem) {
+      const insertionIndex = this.findInsertionIndex(mainListItem);
+      this.shoppingList.splice(insertionIndex, 0, mainListItem);
+    }
+
+    // Update the selected state in the main list
+    this.selectedItems[itemKey] = true;
+  }
+
+  findInsertionIndex(item: { key: string, value: any }): number {
+    // Find the correct insertion index to maintain alphabetical order
+    return this.shoppingList.findIndex((shoppingItem) => item.key.localeCompare(shoppingItem.key) < 0);
+  }
+
+  onDoneItemSelected(itemKey: string): void {
+    // Remove the item from the "Done" list
+    const doneItemIndex = this.doneList.findIndex((item) => item.key === itemKey);
+    if (doneItemIndex !== -1) {
+      const removedItem = this.doneList.splice(doneItemIndex, 1)[0];
+
+      // Find the correct insertion index in the main list to maintain alphabetical order
+      const insertionIndex = this.findInsertionIndex(removedItem);
+      this.shoppingList.splice(insertionIndex, 0, removedItem);
+
+      // Update the selected state in the main list
+      this.selectedItems[removedItem.key] = false;
+    } else {
+      // The item is selected in the main list
+      // We should move it to the "Done" list
+      const mainItemIndex = this.shoppingList.findIndex((item) => item.key === itemKey);
+      if (mainItemIndex !== -1) {
+        const removedItem = this.shoppingList.splice(mainItemIndex, 1)[0];
+        this.doneList.push(removedItem);
+
+        // Update the selected state in the main list
+        this.selectedItems[removedItem.key] = true;
+      }
+    }
+
+    // Save the updated "Done" list to local storage
+    setLocalStorageData('doneList', this.doneList);
+    // Save the updated main list to local storage
+    setLocalStorageData('requiredIngredients', this.shoppingList);
   }
 
   isItemSelected(itemKey: string): boolean {
