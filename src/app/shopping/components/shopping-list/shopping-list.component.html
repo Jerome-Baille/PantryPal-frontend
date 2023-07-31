@@ -1,0 +1,71 @@
+<ng-container *ngIf="shoppingList.length === 0 && doneList.length === 0; else shoppingListTemplate">
+    <div class="main-container">
+        <mat-card>
+            <mat-card-content>
+                <p>
+                    Select recipes to generate your shopping list.
+                </p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</ng-container>
+
+<ng-template #shoppingListTemplate>
+    <div class="main-container">
+        <mat-card>
+            <mat-card-title class="card-title">
+                <div class="title">
+                    Shopping List
+                </div>
+                <div class="action-buttons">
+                    <button mat-icon-button (click)="refreshList()">
+                        <mat-icon class="refresh">refresh</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="clearList()">
+                        <mat-icon class="reset">close</mat-icon>
+                    </button>
+                </div>
+            </mat-card-title>
+            <mat-card-content>
+                <mat-selection-list>
+                    <mat-list-option *ngFor="let item of shoppingList"
+                        [ngClass]="{ 'strikethrough': isItemSelected(item.key) }"
+                        (click)="toggleItemSelection(item.key)">
+                        <strong>{{ item.key }}:</strong>
+                        <ng-container *ngFor="let ingredient of item.value; let last = last">
+                            <span>
+                                {{ ingredient.quantity | number: '1.0-2' }} {{ ingredient.unit }}
+                            </span>
+                            <span *ngIf="!last"> + </span>
+                        </ng-container>
+                    </mat-list-option>
+                </mat-selection-list>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- New code for the "Done" list -->
+        <ng-container *ngIf="isAnyItemSelected() || doneList.length !== 0">
+            <mat-card>
+                <mat-card-title class="card-title">
+                    <div class="title">
+                        Done
+                    </div>
+                </mat-card-title>
+                <mat-card-content>
+                    <mat-selection-list>
+                        <mat-list-option *ngFor="let item of doneList" [ngClass]="{ 'strikethrough': true }">
+                            <strong>{{ item.key }}:</strong>
+                            <ng-container *ngFor="let ingredient of item.value; let last = last">
+                                <span>
+                                    {{ ingredient.quantity | number: '1.0-2' }} {{ ingredient.unit }}
+                                </span>
+                                <span *ngIf="!last"> + </span>
+                            </ng-container>
+                        </mat-list-option>
+                    </mat-selection-list>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
+        <!-- End of the "Done" list -->
+    </div>
+</ng-template>

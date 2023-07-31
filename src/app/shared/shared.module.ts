@@ -19,6 +19,8 @@ import {MatDividerModule} from '@angular/material/divider';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ShareOptionsComponent } from './components/share-options/share-options.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { ShareOptionsComponent } from './components/share-options/share-options.
     MatListModule, 
     MatDividerModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
+    MatSidenavModule,
     FontAwesomeModule
   ],
   exports: [
@@ -66,6 +70,8 @@ import { ShareOptionsComponent } from './components/share-options/share-options.
     MatDividerModule,
     FontAwesomeModule,
     MatAutocompleteModule,
+    MatCheckboxModule,
+    MatSidenavModule,
     ShareOptionsComponent
   ]
 })

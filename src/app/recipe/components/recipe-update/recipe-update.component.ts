@@ -16,8 +16,8 @@ export class RecipeUpdateComponent implements OnInit {
   recipe: any;
   error: boolean = false;
   isFormModified = false;
-  isIngredientDeleted = false;
-  isIngredientModified = false;
+  isIngredientListModified = false;
+  originalIngredients: any[] = [];
 
   recipeForm: FormGroup = this.fb.group({
     bookTitle: [''],
@@ -89,6 +89,9 @@ export class RecipeUpdateComponent implements OnInit {
         this.recipe.Ingredients.forEach((ingredient: any) => {
           this.addIngredient(ingredient.id, ingredient.name, ingredient.quantity, ingredient.unit);
         });
+
+        // Store the original ingredient values in the 'originalIngredients' array
+        this.originalIngredients = this.recipe.Ingredients.map((ingredient: any) => ({ ...ingredient }));
       }
     }
   }
@@ -107,7 +110,12 @@ export class RecipeUpdateComponent implements OnInit {
       unit: [unit]
     });
     this.ingredients.push(ingredientGroup);
+
+    // Mark the form and ingredient list as modified when a new ingredient is added
+    this.isFormModified = true;
+    this.isIngredientListModified = true;
   }
+
 
   removeIngredient(index: number) {
     const ingredient = this.ingredients.at(index).value;
@@ -116,7 +124,6 @@ export class RecipeUpdateComponent implements OnInit {
         next: (response) => {
           console.log(response.message);
           this.ingredients.removeAt(index);
-          this.isIngredientDeleted = true;
         },
         error: (error) => {
           console.log('Error deleting ingredient:', error);
@@ -124,7 +131,10 @@ export class RecipeUpdateComponent implements OnInit {
       });
     } else {
       this.ingredients.removeAt(index);
-      this.isIngredientDeleted = false;
+
+      // Mark the form and ingredient list as modified when an ingredient is removed
+      this.isFormModified = true;
+      this.isIngredientListModified = true;
     }
   }
 
@@ -132,23 +142,8 @@ export class RecipeUpdateComponent implements OnInit {
     this.isFormModified = true;
   }
 
-  updateIngredientFlag() {
-    this.isFormModified = true;
-    this.isIngredientModified = this.ingredients.controls.some(
-      (control, index) => {
-        const ingredient = this.recipe.Ingredients[index];
-        return (
-          ingredient &&
-          (ingredient.name !== control.value.name ||
-            ingredient.quantity !== control.value.quantity ||
-            ingredient.unit !== control.value.unit)
-        );
-      }
-    );
-  }
-
   onSubmit() {
-    if (!this.isFormModified && !this.isIngredientDeleted && !this.isIngredientModified) {
+    if (!this.isFormModified && !this.isIngredientListModified) {
       return;
     }
 
@@ -171,15 +166,23 @@ export class RecipeUpdateComponent implements OnInit {
     }
 
     // Update ingredients
-    if (this.isIngredientModified || this.isIngredientDeleted) {
+    if (this.isIngredientListModified) {
       if (this.ingredients.length !== 0) {
         this.ingredients.controls.forEach((control, index) => {
           const ingredient = ingredients.find((i: any) => i.id === control.value.id);
           if (ingredient) {
             const updatedIngredient = control.value;
+
+            // Check if the ingredient details have been modified
+            if (!this.isIngredientModified(updatedIngredient, index)) {
+              return; // Skip the PUT API call if the ingredient details are unchanged
+            }
+
+            // Make a PUT API call to update the existing ingredient
             observables.push(this.ingredientService.updateIngredient(ingredient.id, updatedIngredient));
           } else {
             const newIngredient = control.value;
+            // Make a POST API call to create the new ingredient
             observables.push(this.ingredientService.createIngredient(recipeId, newIngredient));
           }
         });
@@ -208,5 +211,16 @@ export class RecipeUpdateComponent implements OnInit {
         this.router.navigate(['/recipe/detail', this.recipe.id]);
       }
     });
+  }
+
+  // Helper method to check if an ingredient has been modified
+  isIngredientModified(updatedIngredient: any, index: number): boolean {
+    const originalIngredient = this.originalIngredients[index];
+
+    return (
+      updatedIngredient.name !== originalIngredient.name ||
+      updatedIngredient.quantity !== originalIngredient.quantity ||
+      updatedIngredient.unit !== originalIngredient.unit
+    );
   }
 }

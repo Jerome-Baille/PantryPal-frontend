@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../../config/api-endpoints';
-import { Observable, catchError, map, mergeMap, throwError } from 'rxjs';
+import { Observable, catchError, firstValueFrom, map, mergeMap, throwError } from 'rxjs';
 import { BookService } from './book.service';
 import { IngredientService } from './ingredient.service';
 
@@ -87,11 +87,11 @@ export class RecipeService {
     );
   }
 
-  getRecipes(bookId?: number): Observable<any> {
-    if (!bookId) {
+  getRecipes(bookIds?: string): Observable<any> {
+    if (!bookIds) {
       return this.http.get<any[]>(API_ENDPOINTS.recipes);
     }
-    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}?bookId=${bookId}`);
+    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}?bookIds=${bookIds}`);
   }
 
   getRecipe(id: number): Observable<any> {
@@ -124,13 +124,14 @@ export class RecipeService {
 
   downloadRecipeAsPDF(recipe: any): Observable<any> {
     return this.http.get(`${API_ENDPOINTS.recipes}/${recipe.id}/pdf`)
-    // const url = `${API_ENDPOINTS.recipes}/${recipe.id}/pdf`;
+  }
 
-    // return this.http.get(url, {
-    //   responseType: 'arraybuffer', // Set the response type to arraybuffer
-    //   headers: new HttpHeaders({
-    //     Accept: 'application/pdf' // Request PDF format
-    //   })
-    // });
+  getRecipeIdsFromLocalStorage(): number[] {
+    const shoppingList = JSON.parse(localStorage.getItem('shoppingList') || '[]');
+    return shoppingList;
+  }
+
+  getIngredientsForRecipes(recipeIds: any): Observable<any> {
+    return this.http.post<any>(`${API_ENDPOINTS.recipes}/shopping-list`, { recipeIds });
   }
 }

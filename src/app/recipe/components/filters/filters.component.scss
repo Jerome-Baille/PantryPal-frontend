@@ -1,0 +1,71 @@
+/* CSS to create off-canvas behavior */
+.off-canvas {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    left: -100%;
+    /* Start off-canvas hidden */
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    height: 100%;
+    transition: left 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    /* Add opacity transition */
+    opacity: 0;
+    /* Start off-canvas hidden */
+
+    mat-form-field {
+        width: 100%;
+    }
+
+    .filters {
+        width: 100%;
+        max-width: 300px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 40px;
+    }
+
+    .filters-form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        width: 100%;
+
+        form {
+            width: 100%;
+        }
+    }
+
+    .background-overlay {
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+}
+
+/* Show the off-canvas when the 'visible' input is true */
+.off-canvas.visible {
+    left: 0;
+    /* Slide in the off-canvas from the left */
+    opacity: 1;
+    /* Fade in the off-canvas */
+}
+
+@media screen and (max-width: 768px) {
+    .off-canvas.visible {
+        grid-template-columns: 1fr;
+
+        .background-overlay {
+            display: none;
+        }
+
+        .filters {
+            max-width: 100%;
+        }
+    }
+}

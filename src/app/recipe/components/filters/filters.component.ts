@@ -1,6 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, Input, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { BookService } from 'src/app/services/book.service';
@@ -11,11 +10,16 @@ import { BookService } from 'src/app/services/book.service';
   styleUrls: ['./filters.component.scss']
 })
 export class FiltersComponent implements OnInit {
-  @Output() bookSelected = new EventEmitter<number>(); // Change event type to string
+  @Output() bookSelected = new EventEmitter<string>();
+  @Input() visible: boolean = false;
+  @Output() dismissFiltersEvent = new EventEmitter<boolean>();
+
+  @ViewChild('bookList') bookList: any;
 
   bookControl = new FormControl();
   filteredBooks!: Observable<any[]>;
   books: any[] = [];
+  selectedBooks: Set<string> = new Set<string>();
 
   constructor(private bookService: BookService) {
     this.getBooks();
@@ -30,17 +34,36 @@ export class FiltersComponent implements OnInit {
 
   private _filterBooks(value: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.books.filter(book =>
-      book.title.toLowerCase().includes(filterValue) ||
-      book.author.toLowerCase().includes(filterValue)
+    return this.books.filter(
+      book =>
+        book.title.toLowerCase().includes(filterValue) ||
+        book.author.toLowerCase().includes(filterValue)
     );
   }
-  
-  onOptionSelected(event: MatAutocompleteSelectedEvent) {
-    const selectedBookTitle = event.option.value;
-    const selectedBookId = this.books.find(book => book.title === selectedBookTitle).id;
-    this.bookSelected.emit(selectedBookId);
-    this.bookControl.reset();
+
+  toggleSelection(bookId: string) {
+    if (this.selectedBooks.has(bookId)) {
+      this.selectedBooks.delete(bookId);
+    } else {
+      this.selectedBooks.add(bookId);
+    }
+  }
+
+  applyFilters() {
+    const selectedBookIds = Array.from(this.selectedBooks).join(',');
+    this.bookSelected.emit(selectedBookIds);
+
+    // reset the form
+    this.bookControl.setValue('');
+    this.selectedBooks.clear();
+
+    // Uncheck the selected mat-list-option elements
+    if (this.bookList) {
+      this.bookList.deselectAll();
+    }
+
+    // hide the filters
+    this.dismissFilters();
   }
 
   getBooks(): void {
@@ -53,5 +76,10 @@ export class FiltersComponent implements OnInit {
         this.books = [];
       }
     });
-  }  
+  }
+
+  dismissFilters() {
+    this.visible = !this.visible;
+    this.dismissFiltersEvent.emit(this.visible);
+  }
 }

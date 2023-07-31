@@ -1,6 +1,8 @@
 <div class="list-container">
     <div class="filter-container">
-        <app-filters (bookSelected)="onBookSelect($event)"></app-filters> 
+        <button mat-mini-fab color="primary" (click)="toggleOffCanvas()">
+            <mat-icon>filter_list</mat-icon>
+        </button>
         <button mat-mini-fab color="primary" (click)="onReset()">
             <mat-icon>refresh</mat-icon>
         </button>
@@ -11,9 +13,19 @@
                 <mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">
                     <mat-card-title>{{ recipe.title }}</mat-card-title>
                     <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
+                    <mat-card-actions align="end" class="add-button-container">
+                        <button class="add-button"
+                            (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()">
+                            <div class="icon-container">
+                                <mat-icon [@fade]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
+                                    class="checkmark-icon">check_circle</mat-icon>
+                                <mat-icon
+                                    [@fade]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">add</mat-icon>
+                            </div>
+                        </button>
+                    </mat-card-actions>
                 </mat-card>
             </div>
-
             <div class="pagination-container">
                 <div class="pagination">
                     <button mat-icon-button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
@@ -35,3 +47,5 @@
         <p>You are not authorized to view the recipe data.</p>
     </ng-template>
 </div>
+
+<app-filters [visible]="showOffCanvas" (bookSelected)="onBookSelect($event)" (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>

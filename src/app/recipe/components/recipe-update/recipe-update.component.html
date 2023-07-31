@@ -70,23 +70,22 @@
                     class="ingredient-row">
                     <mat-form-field>
                         <mat-label>Ingredient Name</mat-label>
-                        <input matInput placeholder="Ingredient Name" formControlName="name"
-                            (input)="updateIngredientFlag()">
+                        <input matInput placeholder="Ingredient Name" formControlName="name">
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Quantity</mat-label>
-                        <input matInput placeholder="Quantity" formControlName="quantity"
-                            (input)="updateIngredientFlag()">
+                        <input matInput placeholder="Quantity" formControlName="quantity">
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Unit</mat-label>
-                        <input matInput placeholder="Unit" formControlName="unit" (input)="updateIngredientFlag()">
+                        <input matInput placeholder="Unit" formControlName="unit">
                     </mat-form-field>
                     <button mat-icon-button color="warn" (click)="removeIngredient(i)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </div>
             </div>
+
             <div class="button-container">
                 <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add
                     Ingredient</button>

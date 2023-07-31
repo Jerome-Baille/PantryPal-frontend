@@ -1,11 +1,29 @@
-<form *ngIf="books.length > 0">
-    <mat-form-field>
-        <mat-label>Select a book</mat-label>
-        <input type="text" placeholder="Book" matInput [formControl]="bookControl" [matAutocomplete]="auto" />
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
-            <mat-option *ngFor="let book of filteredBooks | async" [value]="book?.title">
-                {{ book?.title }}
-            </mat-option>
-        </mat-autocomplete>
-    </mat-form-field>
-</form>
+<div class="off-canvas" [class.visible]="visible">
+    <div class="filters">
+        <div class="filters-form">
+            <form *ngIf="books.length > 0">
+                <mat-form-field>
+                    <mat-label>Select a book</mat-label>
+                    <input type="text" placeholder="Book" matInput [formControl]="bookControl" />
+                </mat-form-field>
+
+                <mat-selection-list #bookList>
+                    <mat-list-option *ngFor="let book of filteredBooks | async" [value]="book.id"
+                        (click)="toggleSelection(book.id)">
+                        {{ book.title }}
+                    </mat-list-option>
+                </mat-selection-list>
+            </form>
+
+            <button mat-button color="primary" (click)="applyFilters()">
+                Filtrer
+            </button>
+        </div>
+
+        <button mat-mini-fab color="primary" (click)="dismissFilters()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div class="background-overlay" (click)="dismissFilters()"></div>
+
+</div>
