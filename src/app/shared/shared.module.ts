@@ -21,11 +21,16 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ShareOptionsComponent } from './components/share-options/share-options.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { AddToShoppingListComponent } from './components/add-to-shopping-list/add-to-shopping-list.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
     LoaderComponent,
-    ShareOptionsComponent
+    ShareOptionsComponent,
+    AddToShoppingListComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     CommonModule,
@@ -43,12 +48,13 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatRadioModule,
     MatGridListModule,
     MatTableModule,
-    MatListModule, 
+    MatListModule,
     MatDividerModule,
     MatAutocompleteModule,
     MatCheckboxModule,
     MatSidenavModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    MatDialogModule
   ],
   exports: [
     MatToolbarModule,
@@ -72,7 +78,9 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatSidenavModule,
-    ShareOptionsComponent
+    ShareOptionsComponent,
+    AddToShoppingListComponent,
+    MatDialogModule
   ]
 })
 export class SharedModule { }

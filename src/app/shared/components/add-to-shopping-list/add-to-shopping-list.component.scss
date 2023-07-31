@@ -1,0 +1,175 @@
+.recipe-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .recipe-card {
+    margin: 16px auto;
+    width: 250px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+  
+    &:hover {
+      cursor: pointer;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      transform: translateY(-2px);
+    }
+  
+    .add-button-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+  
+    .add-button {
+      position: relative;
+      bottom: 0;
+      right: 0;
+      cursor: pointer;
+      padding: 8px;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+  
+      .icon-container {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end; // Align the icons to the right edge
+  
+        mat-icon {
+          &:hover {
+            transform: scale(1.2);
+          }
+        }
+  
+        .checkmark-icon {
+          color: #4caf50;
+        }
+      }
+    }
+  
+    mat-card-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+  
+    mat-card-subtitle {
+      font-size: 16px;
+    }
+  
+    mat-card-content {
+      font-size: 14px;
+    }
+  
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+  
+    li {
+      margin-bottom: 8px;
+    }
+  
+    li:before {
+      content: "•";
+      margin-right: 8px;
+    }
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 10px 0;
+    width: 100%;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      outline: none;
+      font-size: 1.2em;
+      color: #333;
+  
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  
+    .current-page {
+      margin: 0 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
+  }
+  
+  .list-container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100% - 64px);
+    box-sizing: border-box;
+  
+    @media screen and (max-width: 600px) {
+      min-height: calc(100% - 56px);
+      min-height: calc(100dvh - 56px);
+    }
+  
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+      row-gap: 20px;
+    }
+  }
+  
+  .filter-container {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 25px;
+    align-items: baseline;
+    margin-top: 10px;
+    padding-right: 20px;
+  }
+  
+  .drawer-container {
+    width: 500px;
+    height: 300px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+  
+  .drawer-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .drawer-sidenav {
+    padding: 20px;
+  }

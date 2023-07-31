@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -20,7 +22,8 @@ export class RecipeDetailComponent {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private recipeService: RecipeService
+        private recipeService: RecipeService,
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -52,18 +55,34 @@ export class RecipeDetailComponent {
     }
 
     deleteRecipe(): void {
-        // Get the recipe ID from the route parameters
-        const id = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
-
-        // Make the API call with the recipe ID
-        this.recipeService.deleteRecipe(id).subscribe({
-            next: () => {
-                this.router.navigate(['/recipe/list']);
-            },
-            error: (error) => {
-                console.error(error);
+        // Open the confirmation dialog
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+            width: '300px',
+            data: {
+                title: 'Delete Recipe',
+                message: 'Are you sure you want to delete this recipe?'
             }
-        })
+        });
+
+        // After the dialog is closed, check the result
+        dialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                // User confirmed, proceed with recipe deletion
+                const id = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
+
+                this.recipeService.deleteRecipe(id).subscribe({
+                    next: () => {
+                        this.router.navigate(['/recipe/list']);
+                    },
+                    error: (error) => {
+                        console.error(error);
+                    }
+                });
+            } else {
+                // User cancelled the deletion
+                // Add any additional logic or show a message if needed
+            }
+        });
     }
 
     get isolatedInstructions(): string[] {

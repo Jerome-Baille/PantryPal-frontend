@@ -3,19 +3,11 @@ import { Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
 import { SearchService } from '../../../services/search.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
     selector: 'app-recipe-list',
     templateUrl: './recipe-list.component.html',
-    styleUrls: ['./recipe-list.component.scss'],
-    animations: [
-        trigger('fade', [
-            state('visible', style({ opacity: 1, height: '*' })),
-            state('hidden', style({ opacity: 0, height: '0' })),
-            transition('visible <=> hidden', animate('300ms ease-in-out')),
-        ]),
-    ],
+    styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent implements OnInit {
     recipes: any[] = [];
@@ -98,25 +90,6 @@ export class RecipeListComponent implements OnInit {
     onReset(): void {
         this.selectedBook = undefined;
         this.loadRecipes();
-    }
-
-    addRecipeToShoppingList(recipeId: number): void {
-        const shoppingList = JSON.parse(localStorage.getItem('shoppingList') || '[]');
-        const index = shoppingList.indexOf(recipeId);
-        index === -1 ? shoppingList.push(recipeId) : shoppingList.splice(index, 1);
-        localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
-        const recipeTitle = this.recipes.find(recipe => recipe.id === recipeId)?.title;
-        const message = index === -1 ? `${recipeTitle} has been added to the shopping list.` : `${recipeTitle} has been removed from the shopping list.`;
-        this.snackBar.open(message, 'Close', {
-            duration: 3000,
-            verticalPosition: 'top'
-        });
-    }
-
-
-    isRecipeInShoppingList(recipeId: number): boolean {
-        const shoppingList = JSON.parse(localStorage.getItem('shoppingList') || '[]');
-        return shoppingList.includes(recipeId);
     }
 
     // Function to toggle the visibility of the off-canvas

@@ -14,15 +14,7 @@
                     <mat-card-title>{{ recipe.title }}</mat-card-title>
                     <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
                     <mat-card-actions align="end" class="add-button-container">
-                        <button class="add-button"
-                            (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()">
-                            <div class="icon-container">
-                                <mat-icon [@fade]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
-                                    class="checkmark-icon">check_circle</mat-icon>
-                                <mat-icon
-                                    [@fade]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">add</mat-icon>
-                            </div>
-                        </button>
+                        <app-add-to-shopping-list [recipe]="recipe" [recipes]="recipes"></app-add-to-shopping-list>
                     </mat-card-actions>
                 </mat-card>
             </div>

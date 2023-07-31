@@ -12,8 +12,11 @@
 <ng-template #recipeDetails>
     <div class="main-container">
         <mat-card>
-            <app-share-options [recipe]="recipe"></app-share-options>
-            
+            <div class="option-buttons">
+                <app-add-to-shopping-list [recipe]="recipe"></app-add-to-shopping-list>
+                <app-share-options [recipe]="recipe"></app-share-options>
+            </div>
+
             <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
             <mat-card-subtitle class="card-subtitle">{{ recipe?.Book?.title }} by {{ recipe?.Book?.author
                 }}</mat-card-subtitle>
@@ -57,7 +60,7 @@
                     </mat-card-content>
                 </mat-card>
 
-                <mat-card>
+                <mat-card *ngIf="recipe?.notes">
                     <mat-card-title>Notes</mat-card-title>
                     <mat-card-content>
                         <p class="instructions">{{ recipe?.notes }}</p>

@@ -1,0 +1,7 @@
+<button class="add-button" (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()">
+    <div class="icon-container">
+        <mat-icon [@fade]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
+            class="checkmark-icon">check_circle</mat-icon>
+        <mat-icon [@fade]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">add</mat-icon>
+    </div>
+</button>
