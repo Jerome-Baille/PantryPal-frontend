@@ -40,7 +40,7 @@ export class RecipeDetailComponent {
                     { name: 'Cooking', time: this.recipe.cookingTime, unit: this.recipe.cookingUnit },
                     { name: 'Fridge', time: this.recipe.fridgeTime, unit: this.recipe.fridgeUnit },
                     { name: 'Waiting', time: this.recipe.waitingTime, unit: this.recipe.waitingUnit }
-                ].filter(row => row.time != null && row.time !== 0);
+                ].filter(row => row.time != null && row.time !== 0 && row.unit != null && row.unit !== '');
 
                 // Create separate arrays for names and time units
                 this.names = this.recipeTime.map(row => row.name);

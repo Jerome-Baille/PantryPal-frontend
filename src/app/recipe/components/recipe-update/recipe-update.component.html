@@ -69,7 +69,7 @@
                 <div *ngFor="let ingredient of ingredients.controls; let i = index" [formGroupName]="i"
                     class="ingredient-row">
                     <mat-form-field>
-                        <mat-label>Ingredient Name</mat-label>
+                        <mat-label>Name</mat-label>
                         <input matInput placeholder="Ingredient Name" formControlName="name">
                     </mat-form-field>
                     <mat-form-field>
@@ -87,10 +87,15 @@
             </div>
 
             <div class="button-container">
-                <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add
-                    Ingredient</button>
-                <button mat-raised-button color="primary" type="submit" [disabled]="!isFormModified">Update
-                    Recipe</button>
+                <button mat-raised-button color="accent" type="button" (click)="addIngredient()">
+                    Add Ingredient
+                </button>
+                <button mat-stroked-button color="basic" type="button" routerLink="/recipe/detail/{{ recipe?.id }}">
+                    Cancel
+                </button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="!isFormModified">
+                    Submit Changes
+                </button>
             </div>
         </form>
     </div>

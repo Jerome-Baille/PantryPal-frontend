@@ -74,4 +74,6 @@ li:before {
 .option-buttons {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
+  margin-left: 20px;
 }

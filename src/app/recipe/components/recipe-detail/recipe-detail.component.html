@@ -68,10 +68,11 @@
                 </mat-card>
 
                 <div class="card-button">
-                    <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">Update
-                        Recipe</button>
+                    <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">
+                        Update Recipe
+                    </button>
+                    <button mat-stroked-button color="basic" routerLink="/recipe/list">Back</button>
                     <button mat-raised-button color="warn" (click)="deleteRecipe()">Delete Recipe</button>
-                    <button mat-raised-button color="accent" routerLink="/recipe/list">Back</button>
                 </div>
             </mat-card-content>
         </mat-card>
