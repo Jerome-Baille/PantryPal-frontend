@@ -24,6 +24,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import { AddToShoppingListComponent } from './components/add-to-shopping-list/add-to-shopping-list.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatCheckboxModule,
     MatSidenavModule,
     FontAwesomeModule,
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule
   ],
   exports: [
     MatToolbarModule,
@@ -80,7 +82,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatSidenavModule,
     ShareOptionsComponent,
     AddToShoppingListComponent,
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule
   ]
 })
 export class SharedModule { }

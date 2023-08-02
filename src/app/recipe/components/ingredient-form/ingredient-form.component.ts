@@ -31,4 +31,21 @@ export class IngredientFormComponent {
   onRemoveIngredient(index: number) {
     this.ingredients.removeAt(index);
   }
+
+  addSaltAndPepper() {
+    this.ingredients.push(
+      this.formBuilder.group({
+        name: ['Sel'],
+        quantity: [1],
+        unit: ['Unit']
+      })
+    );
+    this.ingredients.push(
+      this.formBuilder.group({
+        name: ['Poivre'],
+        quantity: [1],
+        unit: ['Unit']
+      })
+    );
+  }
 }

@@ -16,7 +16,7 @@
         <div class="time-unit-container">
           <input matInput type="number" inputmode="numeric" placeholder="Preparation time" aria-label="Preparation time"
             formControlName="preparationTime">
-          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="preparationUnit">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="preparationUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>
@@ -30,7 +30,7 @@
         <mat-label>Cooking time</mat-label>
         <div class="time-unit-container">
           <input matInput type="number" inputmode="numeric" placeholder="Cooking time" aria-label="Cooking time" formControlName="cookingTime">
-          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="cookingUnit">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="cookingUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>
@@ -44,7 +44,7 @@
         <mat-label>Fridge time</mat-label>
         <div class="time-unit-container">
           <input matInput type="number" inputmode="numeric" placeholder="Fridge time" aria-label="Fridge time" formControlName="fridgeTime">
-          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="fridgeUnit">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="fridgeUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>
@@ -58,7 +58,7 @@
         <mat-label>Waiting time</mat-label>
         <div class="time-unit-container">
           <input matInput type="number" inputmode="numeric" placeholder="Waiting time" aria-label="Waiting time" formControlName="waitingTime">
-          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="waitingUnit">
+          <mat-select placeholder="Unit" aria-label="Unit" required formControlName="waitingUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
           </mat-select>

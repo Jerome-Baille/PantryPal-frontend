@@ -1,15 +1,24 @@
 <mat-toolbar class="toolbar">
     <span class="toolbar__title" routerLink="/">PantryPal</span>
     <form [formGroup]="searchForm" class="search-bar">
-        <input type="text" id="search-bar" placeholder="Search..." aria-label="Search a recipe." formControlName="search">
+        <input type="text" id="search-bar" placeholder="Search..." aria-label="Search a recipe."
+            formControlName="search">
         <button (click)="submitSearch()">
             <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
         </button>
     </form>
     <div class="full-menu">
         <button mat-button routerLink="/shopping/list">Shopping List</button>
-        <button mat-button routerLink="/recipe/list">List</button>
-        <button mat-button routerLink="/recipe/create">Create</button>
+
+        <button mat-button [matMenuTriggerFor]="recipesMenu">
+            Recipes
+            <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-menu #recipesMenu="matMenu">
+            <button mat-menu-item routerLink="/recipe/list">List</button>
+            <button mat-menu-item routerLink="/recipe/create">Create</button>
+        </mat-menu>
+
         <button mat-button routerLink="/auth/login">Login</button>
     </div>
 
@@ -26,9 +35,11 @@
                 <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
             </button>
         </form>
-        <button mat-button routerLink="/shopping/list" (click)="toggleDropdownMenu()">Shopping List</button>
-        <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">List</button>
-        <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">Create</button>
+        <button mat-button routerLink="/shopping/list" (click)="toggleDropdownMenu()">
+            Shopping List
+        </button>
+        <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">Recipe List</button>
+        <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">Create Recipe</button>
         <button mat-button routerLink="/auth/login" (click)="toggleDropdownMenu()">Login</button>
     </div>
 </div>

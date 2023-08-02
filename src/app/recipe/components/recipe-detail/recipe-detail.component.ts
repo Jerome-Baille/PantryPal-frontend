@@ -95,4 +95,12 @@ export class RecipeDetailComponent {
 
         return instructions.map((instruction: string) => instruction.replace(/^\s*\n/, ''));
     }
+
+    getHours(time: number): number {
+        return Math.floor(time);
+    }
+
+    getMinutes(time: number): number {
+        return Math.round(Math.round((time % 1) * 100));
+    }
 }
