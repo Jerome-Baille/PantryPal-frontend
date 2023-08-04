@@ -23,10 +23,11 @@
         background-color: #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: auto 1fr 1fr auto;
+        /* 'auto' for mat-form-field, '1fr' for selection-list-container, and 'auto' for the buttons */
         align-items: center;
-        row-gap: 40px;
+        height: 100%;
     }
 
     .filters-form {
@@ -34,10 +35,22 @@
         flex-direction: column;
         align-items: flex-end;
         width: 100%;
+        height: auto;
+        max-height: 300px;
+        /* Set a maximum height to limit the height of mat-form-field */
+        overflow-y: hidden;
+        /* Hide the overflow for the form container */
+        border-top: 1px solid #9e9e9e;
 
         form {
             width: 100%;
         }
+    }
+
+    .selection-list-container {
+        height: 100%;
+        width: 100%;
+        overflow-y: auto;
     }
 
     .background-overlay {
@@ -67,5 +80,32 @@
         .filters {
             max-width: 100%;
         }
+    }
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    row-gap: 5px;
+}
+
+.selected-items-container {
+    max-width: 300px;
+    overflow-x: auto;
+
+    .selected-items {
+        display: flex;
+        flex-wrap: nowrap;
+        min-width: fit-content;
+        column-gap: 5px;
+        margin: 10px 5px;
     }
 }

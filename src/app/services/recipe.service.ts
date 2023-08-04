@@ -87,11 +87,14 @@ export class RecipeService {
     );
   }
 
-  getRecipes(bookIds?: string): Observable<any> {
-    if (!bookIds) {
-      return this.http.get<any[]>(API_ENDPOINTS.recipes);
+  getRecipes(selectedQueryParams?: string[]): Observable<any> {
+    let endpoint = API_ENDPOINTS.recipes;
+  
+    if (selectedQueryParams && selectedQueryParams.length > 0) {
+      endpoint += '?' + selectedQueryParams.join('&');
     }
-    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}?bookIds=${bookIds}`);
+  
+    return this.http.get<any[]>(endpoint);
   }
 
   getRecipe(id: number): Observable<any> {

@@ -45,6 +45,10 @@ export class IngredientService {
     });
   }
 
+  getSetOfIngredients(): Observable<any> {
+    return this.http.get(`${API_ENDPOINTS.ingredients}/set`)
+  }
+
   updateIngredient(id: number, ingredient: Ingredient): Observable<any> {
     return this.http.put(`${API_ENDPOINTS.ingredients}/${id}`, ingredient);
   }

@@ -1,28 +1,84 @@
 <div class="off-canvas" [class.visible]="visible">
     <div class="filters">
-        <div class="filters-form">
-            <form *ngIf="books.length > 0">
-                <mat-form-field>
-                    <mat-label>Select a book</mat-label>
-                    <input type="text" placeholder="Book" matInput [formControl]="bookControl" />
-                </mat-form-field>
+        <!-- Filter by book -->
+        <div class="filter-group">
+            <div class="filters-form">
+                <form *ngIf="books.length > 0">
+                    <mat-form-field>
+                        <mat-label>Select a book</mat-label>
+                        <input type="text" placeholder="Book" matInput [formControl]="bookControl" />
+                    </mat-form-field>
+                </form>
 
-                <mat-selection-list #bookList>
-                    <mat-list-option *ngFor="let book of filteredBooks | async" [value]="book.id"
-                        (click)="toggleSelection(book.id)">
-                        {{ book.title }}
-                    </mat-list-option>
-                </mat-selection-list>
-            </form>
+                <!-- Wrap the mat-selection-list in a container -->
+                <div class="selection-list-container">
+                    <form *ngIf="books.length > 0">
+                        <mat-selection-list #bookList>
+                            <mat-list-option *ngFor="let book of filteredBooks | async" [value]="book.id"
+                                (click)="toggleSelection(book.id)">
+                                {{ book.title }}
+                            </mat-list-option>
+                        </mat-selection-list>
+                    </form>
+                </div>
+            </div>
 
-            <button mat-button color="primary" (click)="applyFilters()">
-                Filtrer
-            </button>
+            <!-- Display selected books -->
+            <div class="selected-items-container">
+                <div class="selected-items" aria-label="Ingredient selection">
+                    <mat-chip color="primary" *ngFor="let selectedBook of getSelectedBooks()">
+                        {{ selectedBook }}
+                    </mat-chip>
+                </div>
+            </div>
         </div>
 
-        <button mat-mini-fab color="primary" (click)="dismissFilters()">
-            <mat-icon>close</mat-icon>
-        </button>
+        <!-- Filter by ingredients -->
+        <div class="filter-group">
+            <div class="filters-form">
+                <form *ngIf="ingredients.length > 0">
+                    <mat-form-field>
+                        <mat-label>Filter by ingredients</mat-label>
+                        <input type="text" placeholder="Ingredients" matInput [formControl]="ingredientControl" />
+                    </mat-form-field>
+                </form>
+
+                <!-- Wrap the mat-selection-list in a container -->
+                <div class="selection-list-container">
+                    <form *ngIf="ingredients.length > 0">
+                        <mat-selection-list #ingredientList>
+                            <mat-list-option *ngFor="let ingredient of filteredIngredients | async" [value]="ingredient"
+                                (click)="toggleIngredientSelection(ingredient)">
+                                {{ ingredient }}
+                            </mat-list-option>
+                        </mat-selection-list>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Display selected ingredients -->
+            <div class="selected-items-container">
+                <div class="selected-items" aria-label="Ingredient selection">
+                    <mat-chip color="primary" *ngFor="let selectedIngredient of getSelectedIngredients()">
+                        {{ selectedIngredient }}
+                    </mat-chip>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button mat-stroked-button color="accent" (click)="clearFilters()">
+                Clear
+            </button>
+
+            <button mat-stroked-button color="primary" (click)="applyFilters()">
+                Filtrer
+            </button>
+
+            <button mat-stroked-button color="basic" (click)="dismissFilters()">
+                Close
+            </button>
+        </div>
     </div>
     <div class="background-overlay" (click)="dismissFilters()"></div>
 

@@ -38,8 +38,20 @@
     </ng-container>
 
     <ng-template #noRecipes>
-        <p>You are not authorized to view the recipe data.</p>
+        <div class="container">
+            <div class="recipe-container">
+                <mat-card class="recipe-card">
+                    <mat-card-title>
+                        No recipes found
+                    </mat-card-title>
+                    <mat-card-subtitle>
+                        Try changing your filters
+                    </mat-card-subtitle>
+                </mat-card>
+            </div>
+        </div>
     </ng-template>
 </div>
 
-<app-filters [visible]="showOffCanvas" (bookSelected)="onBookSelect($event)" (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>
+<app-filters [visible]="showOffCanvas" (ingredientSelected)="onIngredientSelect($event)"
+    (bookSelected)="onBookSelect($event)" (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>

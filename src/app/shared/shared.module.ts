@@ -25,6 +25,7 @@ import { AddToShoppingListComponent } from './components/add-to-shopping-list/ad
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import {MatMenuModule} from '@angular/material/menu';
     MatSidenavModule,
     FontAwesomeModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatChipsModule
   ],
   exports: [
     MatToolbarModule,
@@ -83,7 +85,8 @@ import {MatMenuModule} from '@angular/material/menu';
     ShareOptionsComponent,
     AddToShoppingListComponent,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatChipsModule
   ]
 })
 export class SharedModule { }

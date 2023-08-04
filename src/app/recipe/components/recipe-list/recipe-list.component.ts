@@ -16,6 +16,7 @@ export class RecipeListComponent implements OnInit {
     isSearchActive: boolean = false;
     books: any[] = [];
     selectedBook?: string;
+    selectedIngredient?: string;
     showOffCanvas: boolean = false;
 
     constructor(
@@ -42,7 +43,17 @@ export class RecipeListComponent implements OnInit {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
 
-        this.recipeService.getRecipes(this.selectedBook).subscribe({
+        const selectedQueryParams = [];
+
+        if (this.selectedBook) {
+            selectedQueryParams.push(`bookIds=${this.selectedBook}`);
+        }
+
+        if (this.selectedIngredient) {
+            selectedQueryParams.push(`ingredientNames=${this.selectedIngredient}`);
+        }
+
+        this.recipeService.getRecipes(selectedQueryParams).subscribe({
             next: (response) => {
                 this.recipes = response.slice(startIndex, endIndex);
             },
@@ -87,8 +98,14 @@ export class RecipeListComponent implements OnInit {
         this.loadRecipes();
     }
 
+    onIngredientSelect(ingredientIds: string): void {
+        this.selectedIngredient = ingredientIds;
+        this.loadRecipes();
+    }
+
     onReset(): void {
         this.selectedBook = undefined;
+        this.selectedIngredient = undefined;
         this.loadRecipes();
     }
 
