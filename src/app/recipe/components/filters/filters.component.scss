@@ -95,10 +95,12 @@
     justify-content: flex-start;
     align-items: flex-start;
     row-gap: 5px;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .selected-items-container {
-    max-width: 300px;
+    max-width: 100%;
     overflow-x: auto;
 
     .selected-items {
@@ -107,5 +109,6 @@
         min-width: fit-content;
         column-gap: 5px;
         margin: 10px 5px;
+        white-space: nowrap;
     }
 }

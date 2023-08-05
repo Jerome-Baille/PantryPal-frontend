@@ -69,7 +69,12 @@ export class RecipeCreateComponent {
       },
       error: (error) => {
         // Handle error
-        console.error("The recipe has not been created: " + error);
+        console.error("The recipe has not been created: " + error.error.error.errors[0].message );
+        this.snackBar.open(error.error.error.errors[0].message, "Done", {
+          duration: 3000,
+          verticalPosition: 'top',
+          horizontalPosition: 'center'
+        });
       },
       complete: () => {
         this.snackBar.open("Recipe created successfully!", "Done", {
