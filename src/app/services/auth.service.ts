@@ -10,10 +10,8 @@ import { API_ENDPOINTS } from 'config/api-endpoints';
 interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  userId: string;
   accessTokenExpireDate: Date;
   refreshTokenExpireDate: Date;
-  userIdExpireDate: Date;
 }
 
 @Injectable({
@@ -68,7 +66,6 @@ export class AuthService {
   logout(): void {
     this.cookieService.deleteCookie('PPaccessToken');
     this.cookieService.deleteCookie('PPrefreshToken');
-    this.cookieService.deleteCookie('PPuserId');
     this.accessTokenSubject.next(null || '');
     // Redirect to login page
     this.router.navigate(['/auth/login']);

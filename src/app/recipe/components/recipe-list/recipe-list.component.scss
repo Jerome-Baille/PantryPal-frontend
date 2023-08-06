@@ -5,6 +5,10 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+
+  @media screen and (max-width: 768px) {
+    padding-top: 20px;
+  }
 }
 
 .recipe-card {
@@ -15,6 +19,11 @@
   text-align: center;
   transition: all 0.2s ease-in-out;
   position: relative;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    margin: 0 auto;
+  }
 
   &:hover {
     cursor: pointer;

@@ -53,5 +53,5 @@
     </ng-template>
 </div>
 
-<app-filters [visible]="showOffCanvas" (ingredientSelected)="onIngredientSelect($event)"
-    (bookSelected)="onBookSelect($event)" (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>
+<app-filters [visible]="showOffCanvas" (filtersSelected)="onFiltersSelect($event)"
+    (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>

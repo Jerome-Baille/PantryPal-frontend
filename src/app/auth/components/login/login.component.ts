@@ -36,8 +36,8 @@ export class LoginComponent {
     });
 
     // Check if user is logged in
-    const userIdCookie = this.cookieService.getCookie('PPuserId');
-    if (userIdCookie) {
+    const accessToken = this.cookieService.getCookie('PPaccessToken');
+    if (accessToken) {
       this.isLogged = true;
     }
   }
@@ -48,7 +48,6 @@ export class LoginComponent {
         next: (response) => {
           this.cookieService.setCookie('PPaccessToken', response.accessToken, response.accessTokenExpireDate);
           this.cookieService.setCookie('PPrefreshToken', response.refreshToken, response.refreshTokenExpireDate);
-          this.cookieService.setCookie('PPuserId', response.userId, response.userIdExpireDate);
           this.isLogged = true;
         },
         error: (error) => {

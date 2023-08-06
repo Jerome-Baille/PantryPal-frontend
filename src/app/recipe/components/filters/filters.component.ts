@@ -11,8 +11,7 @@ import { IngredientService } from 'src/app/services/ingredient.service';
   styleUrls: ['./filters.component.scss']
 })
 export class FiltersComponent implements OnInit {
-  @Output() bookSelected = new EventEmitter<string>();
-  @Output() ingredientSelected = new EventEmitter<string>();
+  @Output() filtersSelected = new EventEmitter<{ bookIds?: string, ingredientNames?: string }>();
   @Input() visible: boolean = false;
   @Output() dismissFiltersEvent = new EventEmitter<boolean>();
 
@@ -88,10 +87,12 @@ export class FiltersComponent implements OnInit {
 
   applyFilters() {
     const selectedBookIds = Array.from(this.selectedBooks).join(',');
-    this.bookSelected.emit(selectedBookIds);
-
     const selectedIngredientIds = Array.from(this.selectedIngredients).join(',');
-    this.ingredientSelected.emit(selectedIngredientIds);
+
+    this.filtersSelected.emit({
+      bookIds: selectedBookIds || undefined,
+      ingredientNames: selectedIngredientIds || undefined
+    });
 
     // reset the form
     this.bookControl.setValue('');

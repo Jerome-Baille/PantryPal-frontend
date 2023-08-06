@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
 import { SearchService } from '../../../services/search.service';
@@ -15,8 +15,7 @@ export class RecipeListComponent implements OnInit {
     itemsPerPage: number = 12;
     isSearchActive: boolean = false;
     books: any[] = [];
-    selectedBook?: string;
-    selectedIngredient?: string;
+    selectedFilters: { bookIds?: string, ingredientNames?: string } = {};
     showOffCanvas: boolean = false;
 
     constructor(
@@ -45,12 +44,12 @@ export class RecipeListComponent implements OnInit {
 
         const selectedQueryParams = [];
 
-        if (this.selectedBook) {
-            selectedQueryParams.push(`bookIds=${this.selectedBook}`);
+        if (this.selectedFilters.bookIds) {
+            selectedQueryParams.push(`bookIds=${this.selectedFilters.bookIds}`);
         }
 
-        if (this.selectedIngredient) {
-            selectedQueryParams.push(`ingredientNames=${this.selectedIngredient}`);
+        if (this.selectedFilters.ingredientNames) {
+            selectedQueryParams.push(`ingredientNames=${this.selectedFilters.ingredientNames}`);
         }
 
         this.recipeService.getRecipes(selectedQueryParams).subscribe({
@@ -93,19 +92,13 @@ export class RecipeListComponent implements OnInit {
         });
     }
 
-    onBookSelect(bookIds: string): void {
-        this.selectedBook = bookIds;
-        this.loadRecipes();
-    }
-
-    onIngredientSelect(ingredientIds: string): void {
-        this.selectedIngredient = ingredientIds;
+    onFiltersSelect(selectedFilters: { bookIds?: string, ingredientNames?: string }): void {
+        this.selectedFilters = selectedFilters;
         this.loadRecipes();
     }
 
     onReset(): void {
-        this.selectedBook = undefined;
-        this.selectedIngredient = undefined;
+        this.selectedFilters = {};
         this.loadRecipes();
     }
 

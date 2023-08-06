@@ -24,7 +24,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
         display: grid;
-        grid-template-rows: auto 1fr 1fr auto;
+        grid-template-rows: auto auto auto 1fr;
         /* 'auto' for mat-form-field, '1fr' for selection-list-container, and 'auto' for the buttons */
         align-items: center;
         height: 100%;
