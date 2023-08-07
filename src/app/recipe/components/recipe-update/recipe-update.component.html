@@ -14,6 +14,15 @@
                 <input matInput placeholder="Title" formControlName="title" (input)="onInput()">
             </mat-form-field>
             <mat-form-field>
+                <mat-label>Type of Meal</mat-label>
+                <mat-select placeholder="Type of Meal" formControlName="typeOfMeal" (input)="onInput()">
+                    <mat-option value="starter">Starter</mat-option>
+                    <mat-option value="main-course">Main course</mat-option>
+                    <mat-option value="dessert">Dessert</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
                 <mat-label>Preparation Time</mat-label>
                 <div class="time-unit-container">
                     <input matInput placeholder="Preparation Time" formControlName="preparationTime"

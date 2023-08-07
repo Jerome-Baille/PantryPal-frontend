@@ -26,6 +26,7 @@ export class RecipeCreateComponent {
       }),
       recipe: this.formBuilder.group({
         title: ['', Validators.required],
+        typeOfMeal: [''],
         instructions: ['', Validators.required],
         notes: [''],
         preparationTime: [0],

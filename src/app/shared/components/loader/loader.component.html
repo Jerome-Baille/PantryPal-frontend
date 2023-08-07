@@ -1,3 +1,3 @@
-<div class="loader-container" *ngIf="isLoading">
+<div class="loader-container" *ngIf="loaderService.isLoading$ | async">
     <mat-spinner diameter="50"></mat-spinner>
 </div>

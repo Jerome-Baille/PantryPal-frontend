@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, switchMap, finalize, filter } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
@@ -72,13 +72,13 @@ export class TokenInterceptor implements HttpInterceptor {
                     } else {
                         // Token refresh failed, logout the user
                         this.authService.logout();
-                        return throwError('Token refresh failed');
+                        return throwError(() => 'Token refresh failed')
                     }
                 }),
                 catchError((error) => {
                     // Token refresh failed, logout the user
                     this.authService.logout();
-                    return throwError(error);
+                    return throwError(() => error);
                 }),
                 finalize(() => {
                     this.isRefreshingToken = false;

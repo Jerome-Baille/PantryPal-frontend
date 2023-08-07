@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { LoaderService } from '../../../services/loader.service';
 
 @Component({
@@ -6,14 +6,6 @@ import { LoaderService } from '../../../services/loader.service';
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.scss']
 })
-export class LoaderComponent implements OnInit {
-  isLoading = false;
-
-  constructor(private loaderService: LoaderService) { }
-
-  ngOnInit(): void {
-    this.loaderService.isLoading$.subscribe(isLoading => {
-      this.isLoading = isLoading;
-    });
-  }
+export class LoaderComponent {
+  constructor(public loaderService: LoaderService) { }
 }

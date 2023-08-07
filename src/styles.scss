@@ -45,3 +45,11 @@ body {
 .main-container {
   padding: 20px 0;
 }
+
+.filters-mat-expansion-panel .mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+.filters-mat-expansion-panel:not(.mat-expanded) {
+  margin: 16px 0;
+}

@@ -1,81 +1,141 @@
 <div class="off-canvas" [class.visible]="visible">
     <div class="filters">
-        <!-- Filter by book -->
-        <div class="filter-group">
-            <div class="filters-form">
-                <form *ngIf="books.length > 0">
-                    <mat-form-field>
-                        <mat-label>Select a book</mat-label>
-                        <input type="text" placeholder="Book" matInput [formControl]="bookControl" />
-                    </mat-form-field>
-                </form>
+        <mat-accordion class="mat-accordion" multi>
 
-                <!-- Wrap the mat-selection-list in a container -->
-                <div class="selection-list-container">
-                    <form *ngIf="books.length > 0">
-                        <mat-selection-list #bookList>
-                            <mat-list-option *ngFor="let book of filteredBooks | async" [value]="book.id"
-                                (click)="toggleSelection(book.id)">
-                                {{ book.title }}
-                            </mat-list-option>
-                        </mat-selection-list>
-                    </form>
+            <!-- Filter by book -->
+            <mat-expansion-panel class="filters-mat-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Filter by book
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="filter-group">
+                    <div class="filters-form">
+                        <form *ngIf="books.length > 0">
+                            <mat-form-field>
+                                <mat-label>Select a book</mat-label>
+                                <input type="text" placeholder="Book" matInput [formControl]="bookControl" />
+                            </mat-form-field>
+                        </form>
+
+                        <!-- Wrap the mat-selection-list in a container -->
+                        <div class="selection-list-container">
+                            <form *ngIf="books.length > 0">
+                                <mat-selection-list #bookList>
+                                    <mat-list-option *ngFor="let book of filteredBooks | async" [value]="book.id"
+                                        (click)="toggleSelection(book.id)">
+                                        {{ book.title }}
+                                    </mat-list-option>
+                                </mat-selection-list>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Display selected books -->
+                    <div class="selected-items-container">
+                        <div class="selected-items" aria-label="Ingredient selection">
+                            <mat-chip color="primary" *ngFor="let selectedBook of getSelectedBooks()">
+                                {{ selectedBook }}
+                            </mat-chip>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </mat-expansion-panel>
 
-            <!-- Display selected books -->
-            <div class="selected-items-container">
-                <div class="selected-items" aria-label="Ingredient selection">
-                    <mat-chip color="primary" *ngFor="let selectedBook of getSelectedBooks()">
-                        {{ selectedBook }}
-                    </mat-chip>
+            <!-- Filter by ingredients -->
+            <mat-expansion-panel class="filters-mat-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Filter by ingredients
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="filter-group">
+                    <div class="filters-form">
+                        <form *ngIf="ingredients.length > 0">
+                            <mat-form-field>
+                                <mat-label>Filter by ingredients</mat-label>
+                                <input type="text" placeholder="Ingredients" matInput
+                                    [formControl]="ingredientControl" />
+                            </mat-form-field>
+                        </form>
+
+                        <!-- Wrap the mat-selection-list in a container -->
+                        <div class="selection-list-container">
+                            <form *ngIf="ingredients.length > 0">
+                                <mat-selection-list #ingredientList>
+                                    <mat-list-option *ngFor="let ingredient of filteredIngredients | async"
+                                        [value]="ingredient" (click)="toggleIngredientSelection(ingredient)">
+                                        {{ ingredient }}
+                                    </mat-list-option>
+                                </mat-selection-list>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Display selected ingredients -->
+                    <div class="selected-items-container">
+                        <div class="selected-items" aria-label="Ingredient selection">
+                            <mat-chip color="primary" *ngFor="let selectedIngredient of getSelectedIngredients()">
+                                {{ selectedIngredient }}
+                            </mat-chip>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </mat-expansion-panel>
 
-        <!-- Filter by ingredients -->
-        <div class="filter-group">
-            <div class="filters-form">
-                <form *ngIf="ingredients.length > 0">
-                    <mat-form-field>
-                        <mat-label>Filter by ingredients</mat-label>
-                        <input type="text" placeholder="Ingredients" matInput [formControl]="ingredientControl" />
-                    </mat-form-field>
-                </form>
+            <!-- Filter by type of meal -->
+            <mat-expansion-panel class="filters-mat-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Filter by type of meal
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="filter-group">
+                    <div class="filters-form">
+                        <form *ngIf="typeOfMeals.length > 0">
+                            <mat-form-field>
+                                <mat-label>Select a type of meal</mat-label>
+                                <input type="text" placeholder="Type of meal" matInput
+                                    [formControl]="typeOfMealControl" />
+                            </mat-form-field>
+                        </form>
 
-                <!-- Wrap the mat-selection-list in a container -->
-                <div class="selection-list-container">
-                    <form *ngIf="ingredients.length > 0">
-                        <mat-selection-list #ingredientList>
-                            <mat-list-option *ngFor="let ingredient of filteredIngredients | async" [value]="ingredient"
-                                (click)="toggleIngredientSelection(ingredient)">
-                                {{ ingredient }}
-                            </mat-list-option>
-                        </mat-selection-list>
-                    </form>
+                        <!-- Wrap the mat-selection-list in a container -->
+                        <div class="selection-list-container">
+                            <form *ngIf="typeOfMeals.length > 0">
+                                <mat-selection-list #typeOfMealList [formControl]="typeOfMealControl">
+                                    <mat-list-option *ngFor="let typeOfMeal of typeOfMeals" [value]="typeOfMeal.value"
+                                        (click)="toggleTypeOfMealSelection(typeOfMeal.value)">
+                                        {{ typeOfMeal.name }}
+                                    </mat-list-option>
+                                </mat-selection-list>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Display selected type of meal -->
+                    <div class="selected-items-container">
+                        <div class="selected-items" aria-label="Type of meal selection">
+                            <mat-chip color="primary" *ngFor="let selectedTypeOfMeal of getSelectedTypeOfMeals()">
+                                {{ selectedTypeOfMeal }}
+                            </mat-chip>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </mat-expansion-panel>
 
-            <!-- Display selected ingredients -->
-            <div class="selected-items-container">
-                <div class="selected-items" aria-label="Ingredient selection">
-                    <mat-chip color="primary" *ngFor="let selectedIngredient of getSelectedIngredients()">
-                        {{ selectedIngredient }}
-                    </mat-chip>
-                </div>
-            </div>
-        </div>
+        </mat-accordion>
 
         <div class="action-buttons">
             <button mat-stroked-button color="accent" (click)="clearFilters()">
                 Clear
             </button>
 
-            <button mat-stroked-button color="primary" (click)="applyFilters()">
+            <button mat-stroked-button color="primary" (click)="applyFilters(); accordion.closeAll()">
                 Filtrer
             </button>
 
-            <button mat-stroked-button color="basic" (click)="dismissFilters()">
+            <button mat-stroked-button color="basic" (click)="dismissFilters(); accordion.closeAll()">
                 Close
             </button>
         </div>

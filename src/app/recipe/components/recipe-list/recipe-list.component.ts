@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, Input, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
 import { SearchService } from '../../../services/search.service';
@@ -10,12 +10,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent implements OnInit {
-    recipes: any[] = [];
+    recipes!: any[];
     currentPage: number = 1;
     itemsPerPage: number = 12;
     isSearchActive: boolean = false;
     books: any[] = [];
-    selectedFilters: { bookIds?: string, ingredientNames?: string } = {};
+    selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string } = {};
     showOffCanvas: boolean = false;
 
     constructor(
@@ -42,19 +42,13 @@ export class RecipeListComponent implements OnInit {
         const startIndex = (this.currentPage - 1) * this.itemsPerPage;
         const endIndex = startIndex + this.itemsPerPage;
 
-        const selectedQueryParams = [];
-
-        if (this.selectedFilters.bookIds) {
-            selectedQueryParams.push(`bookIds=${this.selectedFilters.bookIds}`);
-        }
-
-        if (this.selectedFilters.ingredientNames) {
-            selectedQueryParams.push(`ingredientNames=${this.selectedFilters.ingredientNames}`);
-        }
+        const selectedQueryParams = Object.entries(this.selectedFilters)
+            .filter(([key, value]) => value)
+            .map(([key, value]) => `${key}=${value}`);
 
         this.recipeService.getRecipes(selectedQueryParams).subscribe({
             next: (response) => {
-                this.recipes = response.slice(startIndex, endIndex);
+                this.recipes = response.length > 0 ? response.slice(startIndex, endIndex) : [];
             },
             error: (error) => {
                 console.error(error);
@@ -87,12 +81,13 @@ export class RecipeListComponent implements OnInit {
                 this.loadRecipes();
             },
             complete: () => {
+
                 this.isSearchActive = false;
             }
         });
     }
 
-    onFiltersSelect(selectedFilters: { bookIds?: string, ingredientNames?: string }): void {
+    onFiltersSelect(selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string }): void {
         this.selectedFilters = selectedFilters;
         this.loadRecipes();
     }

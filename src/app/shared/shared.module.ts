@@ -26,6 +26,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatExpansionModule} from '@angular/material/expansion';
+
 
 @NgModule({
   declarations: [
@@ -58,7 +60,8 @@ import {MatChipsModule} from '@angular/material/chips';
     FontAwesomeModule,
     MatDialogModule,
     MatMenuModule,
-    MatChipsModule
+    MatChipsModule,
+    MatExpansionModule
   ],
   exports: [
     MatToolbarModule,
@@ -86,7 +89,8 @@ import {MatChipsModule} from '@angular/material/chips';
     AddToShoppingListComponent,
     MatDialogModule,
     MatMenuModule,
-    MatChipsModule
+    MatChipsModule,
+    MatExpansionModule
   ]
 })
 export class SharedModule { }

@@ -7,7 +7,7 @@
             <mat-icon>refresh</mat-icon>
         </button>
     </div>
-    <ng-container *ngIf="recipes.length > 0; else noRecipes">
+    <ng-container *ngIf="recipes && recipes.length > 0; else noRecipes">
         <div class="container">
             <div class="recipe-container">
                 <mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">

@@ -12,6 +12,7 @@
     /* Add opacity transition */
     opacity: 0;
     /* Start off-canvas hidden */
+    overflow-y: auto;
 
     mat-form-field {
         width: 100%;
@@ -24,10 +25,11 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
         display: grid;
-        grid-template-rows: auto auto auto 1fr;
-        /* 'auto' for mat-form-field, '1fr' for selection-list-container, and 'auto' for the buttons */
+        // grid-template-rows: auto auto auto 1fr;
+        // /* 'auto' for mat-form-field, '1fr' for selection-list-container, and 'auto' for the buttons */
         align-items: center;
         height: 100%;
+        grid-gap: 20px;
     }
 
     .filters-form {
@@ -87,6 +89,7 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    margin-bottom: 20px;
 }
 
 .filter-group {
@@ -111,4 +114,8 @@
         margin: 10px 5px;
         white-space: nowrap;
     }
+}
+
+.mat-accordion {
+    max-width: 300px;
 }

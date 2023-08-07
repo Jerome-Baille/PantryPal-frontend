@@ -1,6 +1,7 @@
 <div class="main-container">
   <form [formGroup]="recipeForm" class="container">
-    <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)" class="full-width"></app-book-form>
+    <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
+      class="full-width"></app-book-form>
 
     <div formGroupName="recipe" class="full-width">
       <mat-form-field>
@@ -9,6 +10,15 @@
           formControlName="title" class="recipe-title">
         <mat-error *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">Title is
           required.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Type of Meal</mat-label>
+        <mat-select placeholder="Type of Meal" formControlName="typeOfMeal">
+          <mat-option value="starter">Starter</mat-option>
+          <mat-option value="main-course">Main course</mat-option>
+          <mat-option value="dessert">Dessert</mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field>
@@ -29,7 +39,8 @@
       <mat-form-field>
         <mat-label>Cooking time</mat-label>
         <div class="time-unit-container">
-          <input matInput type="number" inputmode="numeric" placeholder="Cooking time" aria-label="Cooking time" formControlName="cookingTime">
+          <input matInput type="number" inputmode="numeric" placeholder="Cooking time" aria-label="Cooking time"
+            formControlName="cookingTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="cookingUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
@@ -43,7 +54,8 @@
       <mat-form-field>
         <mat-label>Fridge time</mat-label>
         <div class="time-unit-container">
-          <input matInput type="number" inputmode="numeric" placeholder="Fridge time" aria-label="Fridge time" formControlName="fridgeTime">
+          <input matInput type="number" inputmode="numeric" placeholder="Fridge time" aria-label="Fridge time"
+            formControlName="fridgeTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="fridgeUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
@@ -57,7 +69,8 @@
       <mat-form-field>
         <mat-label>Waiting time</mat-label>
         <div class="time-unit-container">
-          <input matInput type="number" inputmode="numeric" placeholder="Waiting time" aria-label="Waiting time" formControlName="waitingTime">
+          <input matInput type="number" inputmode="numeric" placeholder="Waiting time" aria-label="Waiting time"
+            formControlName="waitingTime">
           <mat-select placeholder="Unit" aria-label="Unit" required formControlName="waitingUnit" value="min">
             <mat-option value="min">Minutes</mat-option>
             <mat-option value="h">Hours</mat-option>
@@ -70,8 +83,8 @@
 
       <mat-form-field>
         <mat-label>Instructions for the recipe</mat-label>
-        <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe" rows="3" required
-          formControlName="instructions"></textarea>
+        <textarea matInput placeholder="Instructions for the recipe" aria-label="Instructions for the recipe" rows="3"
+          required formControlName="instructions"></textarea>
         <mat-error
           *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">Instructions
           are required.</mat-error>
@@ -79,10 +92,9 @@
 
       <mat-form-field>
         <mat-label>Notes for the recipe</mat-label>
-        <textarea matInput placeholder="Notes for the recipe" aria-label="Notes for the recipe"
-          formControlName="notes" rows="3"></textarea>
-        <mat-error
-          *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">Notes
+        <textarea matInput placeholder="Notes for the recipe" aria-label="Notes for the recipe" formControlName="notes"
+          rows="3"></textarea>
+        <mat-error *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">Notes
           are required.</mat-error>
       </mat-form-field>
     </div>
