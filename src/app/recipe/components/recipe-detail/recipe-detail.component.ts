@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -18,6 +19,9 @@ export class RecipeDetailComponent {
     displayedColumns!: string[];
     names: string[] = [];
     timeUnits: string[] = [];
+
+    faTrash = faTrash;
+    faArrowLeft = faArrowLeft;
 
     constructor(
         private route: ActivatedRoute,

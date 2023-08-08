@@ -2,8 +2,8 @@
     <button mat-button class="whatsapp-button" (click)="shareOnWhatsApp()">
         <fa-icon [icon]="faWhatsapp" size="2x"></fa-icon>
     </button>
-    <button mat-button color="primary" (click)="downloadPDF()">
-        <fa-icon [icon]="faFilePdf" size="2x"></fa-icon>
+    <button mat-button (click)="downloadPDF()">
+        <fa-icon [icon]="faFilePdf" size="2x" style="color:#FE5050"></fa-icon>
     </button>
     <button mat-button *ngIf="isWebShareSupported" (click)="shareContent()">
         <fa-icon [icon]="faShareNodes" size="2x"></fa-icon>

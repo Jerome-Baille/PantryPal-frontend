@@ -80,10 +80,14 @@
 
                 <div class="card-button">
                     <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">
-                        Update Recipe
+                        Update
                     </button>
-                    <button mat-stroked-button color="basic" routerLink="/recipe/list">Back</button>
-                    <button mat-raised-button color="warn" (click)="deleteRecipe()">Delete Recipe</button>
+                    <button mat-stroked-button color="basic" routerLink="/recipe/list">
+                        <fa-icon [icon]="faArrowLeft"></fa-icon>
+                    </button>
+                    <button mat-raised-button color="warn" (click)="deleteRecipe()">
+                        <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
                 </div>
             </mat-card-content>
         </mat-card>

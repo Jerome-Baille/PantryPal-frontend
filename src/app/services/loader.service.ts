@@ -13,6 +13,8 @@ export class LoaderService {
   }
 
   hideLoader() {
-    this.isLoadingSubject.next(false);
+    setTimeout(() => {
+      this.isLoadingSubject.next(false);
+    }, 100);
   }
 }

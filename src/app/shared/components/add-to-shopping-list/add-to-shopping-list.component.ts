@@ -31,7 +31,7 @@ export class AddToShoppingListComponent implements OnInit {
     index === -1 ? shoppingList.push(recipeId) : shoppingList.splice(index, 1);
     localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
     const recipeTitle = this.recipes.length === 0 ? this.recipe.title : this.recipes.find(recipe => recipe.id === recipeId)?.title;
-    const message = index === -1 ? `${recipeTitle} has been added to the shopping list.` : `${recipeTitle} has been removed from the shopping list.`;
+    const message = index === -1 ? `${recipeTitle} has been added to the grocery list.` : `${recipeTitle} has been removed from the grocery list.`;
     this.snackBar.open(message, 'Close', {
       duration: 3000,
       verticalPosition: 'top'

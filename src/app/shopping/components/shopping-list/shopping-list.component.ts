@@ -38,7 +38,7 @@ export class ShoppingListComponent implements OnInit {
         this.fetchIngredients();
       }
     } catch (error) {
-      console.error('Error loading shopping list from local storage:', error);
+      console.error('Error loading grocery list from local storage:', error);
     }
   }
 
@@ -70,7 +70,7 @@ export class ShoppingListComponent implements OnInit {
       });
     } else {
       // Display a message or handle empty shopping list
-      console.log('Shopping list is empty.');
+      console.log('Grocery list is empty.');
     }
   }
 

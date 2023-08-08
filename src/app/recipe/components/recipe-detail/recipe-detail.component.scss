@@ -58,9 +58,13 @@ li:before {
   text-align: center;
 }
 
+.card-title {
+  font-size: 32px;
+}
+
 .time-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   grid-gap: 20px;
   text-align: center;
 }

@@ -11,6 +11,7 @@ import { CookieService } from './shared/cookie.service';
 import { TokenInterceptor } from './interceptors/token-interceptor.interceptor';
 import { AuthService } from './services/auth.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { LoaderService } from './services/loader.service';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
   providers: [
     AuthService,
     CookieService,
+    LoaderService,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]

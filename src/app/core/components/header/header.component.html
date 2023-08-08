@@ -8,7 +8,7 @@
         </button>
     </form>
     <div class="full-menu">
-        <button mat-button routerLink="/shopping/list">Shopping List</button>
+        <button mat-button routerLink="/shopping/list">Grocery List</button>
 
         <button mat-button [matMenuTriggerFor]="recipesMenu">
             Recipes
@@ -36,7 +36,7 @@
             </button>
         </form>
         <button mat-button routerLink="/shopping/list" (click)="toggleDropdownMenu()">
-            Shopping List
+            Grocery List
         </button>
         <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">Recipe List</button>
         <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">Create Recipe</button>

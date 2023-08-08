@@ -1,34 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../../config/api-endpoints';
-import { Observable, catchError, firstValueFrom, map, mergeMap, throwError } from 'rxjs';
+import { Observable, catchError, map, mergeMap, throwError } from 'rxjs';
 import { BookService } from './book.service';
 import { IngredientService } from './ingredient.service';
-
-interface Ingredient {
-  name: string;
-  quantity: number;
-  unit: string;
-}
-
-interface Recipe {
-  title: string;
-  instructions: string;
-  notes: string;
-  preparationTime: number;
-  preparationUnit: string;
-  cookingTime: number;
-  cookingUnit: string;
-  fridgeTime: number;
-  fridgeUnit: string;
-  waitingTime: number;
-  waitingUnit: string;
-}
-
-interface Book {
-  title: string;
-  author: string;
-}
+import { Book } from 'src/app/models/book.model';
+import { Recipe } from 'src/app/models/recipe.model';
+import { Ingredient } from 'src/app/models/ingredient.model';
 
 @Injectable({
   providedIn: 'root'

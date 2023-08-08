@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { RecipeService } from '../../../services/recipe.service';
 import { SearchService } from '../../../services/search.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
+import { Recipe } from '../../../models/recipe.model';
 
 @Component({
     selector: 'app-recipe-list',
@@ -22,7 +24,8 @@ export class RecipeListComponent implements OnInit {
         private router: Router,
         private recipeService: RecipeService,
         private searchService: SearchService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private activatedRoute: ActivatedRoute
     ) { }
 
     ngOnInit() {
@@ -31,24 +34,28 @@ export class RecipeListComponent implements OnInit {
                 this.searchRecipes(searchValue);
             } else {
                 this.isSearchActive = false;
-                this.loadRecipes();
+                this.loadRecipesFromActivatedRoute();
             }
         });
+    }
 
-        this.loadRecipes();
+    loadRecipesFromActivatedRoute() {
+        const recipesData = this.activatedRoute.snapshot.data['recipes'] as Recipe[];
+        if (recipesData && recipesData.length > 0) {
+            this.recipes = this.applyPagination(recipesData);
+        } else {
+            this.loadRecipes();
+        }
     }
 
     loadRecipes() {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-
         const selectedQueryParams = Object.entries(this.selectedFilters)
             .filter(([key, value]) => value)
             .map(([key, value]) => `${key}=${value}`);
 
         this.recipeService.getRecipes(selectedQueryParams).subscribe({
             next: (response) => {
-                this.recipes = response.length > 0 ? response.slice(startIndex, endIndex) : [];
+                this.recipes = this.applyPagination(response);
             },
             error: (error) => {
                 console.error(error);
@@ -56,6 +63,13 @@ export class RecipeListComponent implements OnInit {
             }
         });
     }
+
+    applyPagination(recipes: Recipe[]): Recipe[] {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        return recipes.slice(startIndex, endIndex);
+    }
+
 
     goToRecipeDetails(id: number): void {
         this.router.navigate(['/recipe/detail', id]);

@@ -2,6 +2,10 @@
 .container {
     width: 100%;
     margin: auto;
+
+    @media screen and (max-width: 768px) {
+        width: auto;
+    }
 }
 
 /* Form styles */
@@ -34,11 +38,54 @@ textarea.mat-input-element {
 
 /* Button styles */
 .button-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+    display: grid;
     gap: 10px;
-    margin-top: 20px;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+
+    /* On small screens, display buttons in a 2x2 grid */
+    .button-container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 20px;
+    }
+
+    .button-container button {
+        width: fit-content;
+    }
+
+    /* Position the "Add Ingredient" button at the end of the first row */
+    .button-container button:nth-child(1) {
+        grid-column: span 2;
+        margin: auto;
+    }
+
+    /* Position the "Cancel" and "Submit" buttons on the second row */
+    .button-container button:nth-child(2),
+    .button-container button:nth-child(3) {
+        grid-column: span 1;
+    }
+
+    /* Position the "Cancel" button on the left */
+    .button-container button:nth-child(2) {
+        justify-self: start;
+    }
+
+    /* Position the "Submit" button on the right */
+    .button-container button:nth-child(3) {
+        justify-self: end;
+    }
+}
+
+@media (min-width: 601px) {
+
+    /* On larger screens, display buttons in a single row with space-between */
+    .button-container {
+        grid-template-columns: repeat(3, auto);
+        justify-content: space-between;
+    }
 }
 
 button.mat-raised-button {

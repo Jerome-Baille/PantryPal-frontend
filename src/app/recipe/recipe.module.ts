@@ -10,7 +10,7 @@ import { RecipeUpdateComponent } from './components/recipe-update/recipe-update.
 import { IngredientFormComponent } from './components/ingredient-form/ingredient-form.component';
 import { BookFormComponent } from './components/book-form/book-form.component';
 import { FiltersComponent } from './components/filters/filters.component';
-
+import { RecipeResolver } from 'src/app/recipe/resolvers/recipe.resolver';
 
 @NgModule({
   declarations: [
@@ -29,6 +29,9 @@ import { FiltersComponent } from './components/filters/filters.component';
   ],
   exports: [
     RecipeCreateComponent
+  ],
+  providers: [
+    RecipeResolver
   ]
 })
 export class RecipeModule { }
