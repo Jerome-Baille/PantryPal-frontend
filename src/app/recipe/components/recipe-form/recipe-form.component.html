@@ -1,0 +1,134 @@
+<ng-container *ngIf="!error; else notAuthorizedCard">
+    <div class="main-container">
+        <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="form">
+            <!-- Book Form -->
+            <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
+                class="full-width"></app-book-form>
+
+            <!-- Recipe Form -->
+            <div formGroupName="recipe" class="full-width">
+                <mat-form-field>
+                    <mat-label>Title of the recipe</mat-label>
+                    <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
+                        formControlName="title" class="recipe-title">
+                    <mat-error
+                        *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">Title
+                        is
+                        required.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Type of Meal</mat-label>
+                    <mat-select placeholder="Type of Meal" formControlName="typeOfMeal">
+                        <mat-option value="starter">Starter</mat-option>
+                        <mat-option value="main-course">Main course</mat-option>
+                        <mat-option value="dessert">Dessert</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Preparation time</mat-label>
+                    <div class="time-unit-container">
+                        <input matInput type="number" inputmode="numeric" placeholder="Preparation time"
+                            aria-label="Preparation time" formControlName="preparationTime">
+                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="preparationUnit" value="min">
+                            <mat-option value="min">Minutes</mat-option>
+                            <mat-option value="h">Hours</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.preparationTime')?.invalid && recipeForm.get('recipe.preparationTime')?.touched">Preparation
+                            time is required.</mat-error>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Cooking time</mat-label>
+                    <div class="time-unit-container">
+                        <input matInput type="number" inputmode="numeric" placeholder="Cooking time"
+                            aria-label="Cooking time" formControlName="cookingTime">
+                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="cookingUnit" value="min">
+                            <mat-option value="min">Minutes</mat-option>
+                            <mat-option value="h">Hours</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.cookingTime')?.invalid && recipeForm.get('recipe.cookingTime')?.touched">Cooking
+                            time is required.</mat-error>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Fridge time</mat-label>
+                    <div class="time-unit-container">
+                        <input matInput type="number" inputmode="numeric" placeholder="Fridge time"
+                            aria-label="Fridge time" formControlName="fridgeTime">
+                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="fridgeUnit" value="min">
+                            <mat-option value="min">Minutes</mat-option>
+                            <mat-option value="h">Hours</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.fridgeTime')?.invalid && recipeForm.get('recipe.fridgeTime')?.touched">Fridge
+                            time is required.</mat-error>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Waiting time</mat-label>
+                    <div class="time-unit-container">
+                        <input matInput type="number" inputmode="numeric" placeholder="Waiting time"
+                            aria-label="Waiting time" formControlName="waitingTime">
+                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="waitingUnit" value="min">
+                            <mat-option value="min">Minutes</mat-option>
+                            <mat-option value="h">Hours</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.waitingTime')?.invalid && recipeForm.get('recipe.waitingTime')?.touched">Waiting
+                            time is required.</mat-error>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Instructions</mat-label>
+                    <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
+                        required formControlName="instructions"></textarea>
+                    <mat-error
+                        *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">Instructions
+                        are required.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Notes</mat-label>
+                    <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
+                        rows="5"></textarea>
+                    <mat-error
+                        *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">Notes
+                        are required.</mat-error>
+                </mat-form-field>
+            </div>
+
+            <!-- Ingredient Form -->
+            <app-ingredient-form class="full-width" [recipeForm]="recipeForm"></app-ingredient-form>
+
+            <div class="button-container" [ngClass]="isUpdateMode? '' : 'button-container__create'">
+                <button *ngIf="isUpdateMode" mat-stroked-button color="basic" type="button"
+                    routerLink="/recipe/detail/{{ recipe?.id }}">
+                    Cancel
+                </button>
+                <button mat-raised-button color="primary" type="submit" [disabled]="!isFormModified">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-container>
+
+<ng-template #notAuthorizedCard>
+    <!-- Not Authorized Card -->
+    <mat-card>
+        <mat-card-content>
+            <p class="instructions">You are not authorized to view the recipe data.</p>
+            <div class="card-button">
+                <button mat-raised-button color="primary" routerLink="/auth/login">Login</button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

@@ -1,21 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RecipeCreateComponent } from './components/recipe-create/recipe-create.component';
 import { RecipeListComponent } from './components/recipe-list/recipe-list.component';
 import { RecipeDetailComponent } from './components/recipe-detail/recipe-detail.component';
-import { RecipeUpdateComponent } from './components/recipe-update/recipe-update.component';
 import { RecipeResolver } from './resolvers/recipe.resolver';
+import { RecipeFormComponent } from './components/recipe-form/recipe-form.component';
 
 
 const routes: Routes = [
-  { path: 'create', component: RecipeCreateComponent },
+  { path: 'create', component: RecipeFormComponent },
   { 
     path: 'list', 
     component: RecipeListComponent,
     resolve: { recipes: RecipeResolver } 
   },
   { path: 'detail/:id', component: RecipeDetailComponent},
-  { path: 'update/:id', component: RecipeUpdateComponent},
+  { path: 'update/:id', component: RecipeFormComponent},
   { path: '', pathMatch: 'full', redirectTo: 'list' }
 ];
 

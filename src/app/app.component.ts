@@ -7,4 +7,20 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'pantry-pal';
+
+  constructor() {
+    this.generateCat();
+  }
+  
+
+  private generateCat() {
+    const cat = [
+      "  /\\_/\\  ",
+      " ( o.o ) ",
+      "  > ^ <  ",
+      "Pantry Pal"
+    ];
+  
+    cat.forEach(line => console.log(line));
+  }  
 }

@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../../config/api-endpoints';
 import { Observable, catchError, forkJoin, map, of, throwError } from 'rxjs';
-
-interface Ingredient {
-  name: string;
-  quantity: number;
-  unit: string;
-}
+import { Ingredient as IngredientModel } from 'src/app/models/ingredient.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +13,7 @@ export class IngredientService {
     private http: HttpClient
   ) { }
 
-  createIngredients(ingredients: Ingredient[], recipeId: number): Observable<any[]> {
+  createIngredients(ingredients: IngredientModel[], recipeId: number): Observable<any[]> {
     if (ingredients.length === 0) {
       return of([]);
     }
@@ -36,7 +31,7 @@ export class IngredientService {
     return forkJoin(ingredientObservables);
   }
 
-  createIngredient(recipeId: number, ingredient: Ingredient): Observable<any> {
+  createIngredient(recipeId: number, ingredient: IngredientModel): Observable<any> {
     return this.http.post(API_ENDPOINTS.ingredients, {
       name: ingredient.name,
       quantity: ingredient.quantity,
@@ -49,7 +44,7 @@ export class IngredientService {
     return this.http.get(`${API_ENDPOINTS.ingredients}/set`)
   }
 
-  updateIngredient(id: number, ingredient: Ingredient): Observable<any> {
+  updateIngredient(id: number, ingredient: IngredientModel): Observable<any> {
     return this.http.put(`${API_ENDPOINTS.ingredients}/${id}`, ingredient);
   }
 

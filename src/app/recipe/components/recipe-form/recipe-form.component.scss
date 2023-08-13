@@ -1,0 +1,135 @@
+/* Form styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  margin: auto;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+
+  @media screen and (max-width: 768px) {
+    width: auto;
+  }
+}
+
+/* Input styles */
+.mat-mdc-form-field {
+  width: 100%;
+
+  input.mat-input-element,
+  textarea.mat-input-element {
+    background-color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+
+    /* Add a box-shadow on focus */
+    &:focus {
+      box-shadow: 0 0 0 2px #007bff;
+    }
+  }
+}
+
+button.mat-raised-button {
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  /* Add a box-shadow on hover */
+  &:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  &.color-primary {
+    background-color: #007bff;
+    color: #fff;
+  }
+
+  /* Updated styles for "Add Ingredient" button */
+  &.color-accent {
+    background-color: #17a2b8;
+    color: #fff;
+  }
+}
+
+/* Error message styles */
+.mat-form-field.mat-form-field-invalid {
+  .mat-input-container {
+    color: #dc3545;
+  }
+
+  .mat-form-field-underline {
+    background-color: #dc3545;
+  }
+
+  .mat-form-field-ripple {
+    background-color: #dc3545;
+  }
+}
+
+/* Additional styles for time-unit-container */
+.time-unit-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+
+  mat-form-field {
+    flex: 1;
+  }
+
+  mat-select {
+    width: 100px;
+  }
+}
+
+.recipe-title {
+  text-transform: capitalize;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  &__create {
+    justify-content: flex-end;
+  }
+}
+
+/* Updated styles for textarea */
+textarea.mat-input-element {
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: vertical;
+  /* Allow vertical resizing */
+  min-height: 40px;
+  /* Set a minimum height to avoid it becoming too small */
+  overflow-y: hidden;
+  /* Hide vertical scrollbar */
+}
+
+/* Remove button styles */
+button.mat-icon-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.full-width {
+  width: 100%;
+}

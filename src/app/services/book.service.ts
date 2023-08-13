@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { API_ENDPOINTS } from '../../../config/api-endpoints';
 import { Observable } from 'rxjs';
-
-interface Book {
-  title: string;
-  author: string;
-}
+import { Book } from 'src/app/models/book.model';
 
 @Injectable({
   providedIn: 'root'
