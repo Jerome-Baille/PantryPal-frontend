@@ -4,6 +4,7 @@ import { RecipeService } from '../../../services/recipe.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { TimerService } from 'src/app/services/timer.service';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -27,7 +28,8 @@ export class RecipeDetailComponent {
         private route: ActivatedRoute,
         private router: Router,
         private recipeService: RecipeService,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        public timerService: TimerService
     ) { }
 
     ngOnInit(): void {
@@ -106,5 +108,16 @@ export class RecipeDetailComponent {
 
     getMinutes(time: number): number {
         return Math.round(Math.round((time % 1) * 100));
+    }
+
+    onShowTimer(data: object, index: number): void {
+        const id = `${this.recipe.id}-${index}`;
+
+        const timerInfo = {
+            data: data,
+            id: id
+        };
+
+        this.timerService.showTimer(timerInfo);
     }
 }

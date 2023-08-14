@@ -27,7 +27,7 @@
             <mat-card-content class="card-content">
 
                 <div class="time-container">
-                    <mat-card *ngFor="let element of recipeTime">
+                    <mat-card *ngFor="let element of recipeTime; let i = index" (click)="onShowTimer(element, i)">
                         <mat-card-title>{{ element.name }}</mat-card-title>
                         <mat-card-content>
                             <ng-container *ngIf="element.unit === 'h'; else defaultFormat">
@@ -37,6 +37,7 @@
                                 {{ element.time | number:'1.0-2' }} {{ element.unit }}
                             </ng-template>
                         </mat-card-content>
+                        <app-timer></app-timer>
                     </mat-card>
                 </div>
 

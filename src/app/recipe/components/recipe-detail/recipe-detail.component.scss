@@ -67,6 +67,10 @@ li:before {
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   grid-gap: 20px;
   text-align: center;
+
+  .mat-mdc-card {
+    cursor: pointer;
+  }
 }
 
 .card-content {

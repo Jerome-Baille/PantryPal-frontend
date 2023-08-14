@@ -1,0 +1,19 @@
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 2rem;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #FDE7E2;
+    z-index: 9999;
+}
+
+.action-buttons {
+    display: flex;
+    column-gap: 2rem;
+}

@@ -1,0 +1,21 @@
+<div class="timer-container" *ngIf="isTimerOn$ | async">
+    <p>
+        Time remaining: 
+        {{ minutes }}:{{ seconds }}
+    </p>
+    <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="startTimer()">
+            Start
+        </button>
+        <button mat-raised-button color="warn" (click)="pauseTimer()">
+            Pause
+        </button>
+        <button mat-raised-button color="accent" (click)="stopTimer()">
+            Stop
+        </button>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="hideTimer()">
+        Close
+    </button>
+</div>

@@ -27,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { TimerComponent } from './components/timer/timer.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     LoaderComponent,
     ShareOptionsComponent,
     AddToShoppingListComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    TimerComponent
   ],
   imports: [
     CommonModule,
@@ -90,7 +92,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatDialogModule,
     MatMenuModule,
     MatChipsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    TimerComponent
   ]
 })
 export class SharedModule { }
