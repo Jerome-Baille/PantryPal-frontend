@@ -11,16 +11,16 @@ export class AppComponent {
   constructor() {
     this.generateCat();
   }
-  
+
 
   private generateCat() {
     const cat = [
-      "  /\\_/\\  ",
-      " ( o.o ) ",
-      "  > ^ <  ",
-      "Pantry Pal"
+      `  /\\_/\\  
+ ( o.o ) 
+  > ^ <  
+Pantry Pal`
     ];
-  
-    cat.forEach(line => console.log(line));
-  }  
+
+    console.log(cat.join('\n'));
+  }
 }

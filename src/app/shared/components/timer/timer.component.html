@@ -1,21 +1,14 @@
-<div class="timer-container" *ngIf="isTimerOn$ | async">
-    <p>
-        Time remaining: 
-        {{ minutes }}:{{ seconds }}
-    </p>
-    <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="startTimer()">
-            Start
+<div class="timer-container">
+    <div class="timer">{{ displayTime }}</div>
+    <div class="timer-controls">
+        <button mat-icon-button (click)="startTimer()" [disabled]="timerRunning">
+            <mat-icon>play_arrow</mat-icon>
         </button>
-        <button mat-raised-button color="warn" (click)="pauseTimer()">
-            Pause
+        <button mat-icon-button (click)="pauseTimer()" [disabled]="!timerRunning">
+            <mat-icon>pause</mat-icon>
         </button>
-        <button mat-raised-button color="accent" (click)="stopTimer()">
-            Stop
+        <button mat-icon-button (click)="stopTimer()">
+            <mat-icon>stop</mat-icon>
         </button>
     </div>
-
-    <button mat-raised-button color="primary" (click)="hideTimer()">
-        Close
-    </button>
 </div>

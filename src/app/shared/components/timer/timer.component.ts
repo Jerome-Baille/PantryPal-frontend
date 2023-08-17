@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TimerService } from 'src/app/services/timer.service';
-import { interval, Subscription } from 'rxjs';
-import { map, takeWhile } from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription, timer } from 'rxjs';
 
 @Component({
   selector: 'app-timer',
@@ -9,76 +8,97 @@ import { map, takeWhile } from 'rxjs/operators';
   styleUrls: ['./timer.component.scss']
 })
 export class TimerComponent implements OnInit, OnDestroy {
-  isTimerOn$ = this.timerService.isTimerOn$;
-  data: any;
-  timeRemaining: number | undefined;
-  minutes: number | undefined;
-  seconds: number | undefined;
-  private timerSubscription: Subscription | undefined;
-  private initialTime: number | undefined;
-  private countdownPaused: boolean = false;
+  @Input() timerInfo!: any;
 
-  constructor(public timerService: TimerService) {
-    this.timerService.data$.subscribe((data) => {
-      this.data = data;
-      this.initialTime = this.convertToSeconds(data.time, data.unit);
-      this.timeRemaining = this.initialTime; // Initialize time remaining
-      this.countdownPaused = true; // Countdown starts paused
+  private timerSubscription: Subscription | null = null;
+  private remainingTimeInSeconds: number = 0;
 
-      this.minutes = Math.floor(this.initialTime / 60);
-      this.seconds = this.initialTime % 60;
-    });
+  private startTime: number = 0;
+  private timePaused: number = 0;
+
+  element!: any;
+  showTimer: boolean = false;
+  displayTime: string = '';
+  timerRunning: boolean = false;
+
+  constructor(private snackBar: MatSnackBar) {}
+
+  ngOnInit(): void {
+    this.displayTime = this.formatTime(this.timerInfo.timeInSeconds);
   }
 
-  ngOnInit() { }
-
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.timerSubscription?.unsubscribe();
-
-    // Reset minutes and seconds
-    this.minutes = undefined;
-    this.seconds = undefined;
   }
 
-  startTimer() {
-    console.log('startTimer');
-    if (this.initialTime && (this.timerSubscription === undefined || this.timerSubscription.closed)) {
-      this.countdownPaused = false; // Start the countdown
-      this.timerSubscription = interval(1000)
-        .pipe(
-          takeWhile(() => this.timeRemaining! > 0 && !this.countdownPaused),
-          map(() => --this.timeRemaining!)
-        )
-        .subscribe(() => {
-          this.minutes = Math.floor(this.timeRemaining! / 60);
-          this.seconds = this.timeRemaining! % 60;
+  private formatTime(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secondsRemaining = seconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}min`;
+    } else {
+      return `${minutes}min ${secondsRemaining}s`;
+    }
+  }
+
+  startTimer(): void {
+    if (!this.timerRunning) {
+      // Resume the timer if it was paused
+      if (this.timePaused > 0) {
+        this.startTimerWithCountdown(this.remainingTimeInSeconds - Math.floor(this.timePaused / 1000));
+        // Reset timePaused after resuming
+        this.timePaused = 0;
+      } else {
+        // Start a new timer only if there's no time remaining or the timer was stopped
+        if (this.remainingTimeInSeconds <= 0) {
+          this.startTimerWithCountdown(this.timerInfo.timeInSeconds);
+        } else {
+          this.startTimerWithCountdown(this.remainingTimeInSeconds);
+        }
+      }
+    }
+  }
+
+  pauseTimer(): void {
+    if (this.timerRunning) {
+      this.timerRunning = false;
+      this.timerSubscription?.unsubscribe();
+      this.timePaused = Date.now() - this.startTime;
+    }
+  }
+
+  stopTimer(): void {
+    this.timerRunning = false;
+    this.displayTime = this.formatTime(this.timerInfo.timeInSeconds);
+    this.timePaused = 0;
+    this.remainingTimeInSeconds = 0;
+    this.timerSubscription?.unsubscribe();
+  }
+
+  private startTimerWithCountdown(durationInSeconds: number): void {
+    this.timerRunning = true;
+    this.remainingTimeInSeconds = durationInSeconds;
+    this.startTime = Date.now() - this.timePaused; // Adjust the start time based on timePaused
+
+    this.timerSubscription = timer(0, 1000).subscribe((elapsedTime) => {
+      const remainingTime = this.remainingTimeInSeconds - elapsedTime;
+
+      if (remainingTime <= 0) {
+        this.stopTimer();
+
+        // Display notification when the timer reaches 0
+        const recipeName = this.timerInfo.recipe;
+        const timerName = this.timerInfo.name;
+        this.snackBar.open(`${timerName} timer for "${recipeName}" has finished!`, 'Dismiss', {
+          duration: 60000, // 1 minute
+          verticalPosition: 'top',
+          horizontalPosition: 'center',
         });
-    }
-  }
-
-  pauseTimer() {
-    this.countdownPaused = true;
-  }
-
-  stopTimer() {
-    this.countdownPaused = true;
-    this.timeRemaining = this.initialTime; // Reset time remaining to initial time
-    this.minutes = Math.floor(this.initialTime! / 60);
-    this.seconds = this.initialTime! % 60;
-  }
-
-  hideTimer() {
-    this.timerService.hideTimer();
-  }
-
-  private convertToSeconds(time: number, unit: string): number {
-    switch (unit) {
-      case 'min':
-        return time * 60;
-      case 'h':
-        return time * 60 * 60;
-      default:
-        return parseFloat(time.toString());
-    }
+      } else {
+        this.displayTime = this.formatTime(remainingTime);
+      }
+    });
   }
 }

@@ -29,21 +29,19 @@ export class HeaderComponent {
         this.isDropdownMenuOpen = !this.isDropdownMenuOpen;
     }
 
-    submitSearch() {
+    submitSearch(deviceSize: string) {  
         const searchValue = this.searchForm.get('search')?.value;
-
-        const currentUrl = this.router.url;
         const targetUrl = '/recipe/list';
-
-        if (currentUrl.includes(targetUrl)) {
-            this.searchService.setSearchValue(searchValue);
-            this.searchForm.reset();
-        } else {
-            this.router.navigate([targetUrl]).then(() => {
-                this.searchService.setSearchValue(searchValue);
-                this.searchForm.reset();
-            });
+    
+        if (!this.router.url.includes(targetUrl)) {
+            this.router.navigate([targetUrl]);
+        }
+    
+        this.searchService.setSearchValue(searchValue);
+        this.searchForm.reset();
+    
+        if (deviceSize === 'mobile') {
+            this.toggleDropdownMenu();
         }
     }
-
 }

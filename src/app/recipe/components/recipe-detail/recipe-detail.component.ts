@@ -4,7 +4,7 @@ import { RecipeService } from '../../../services/recipe.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { TimerService } from 'src/app/services/timer.service';
+import { convertToSeconds } from 'src/app/utils/time-utils';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -21,6 +21,9 @@ export class RecipeDetailComponent {
     names: string[] = [];
     timeUnits: string[] = [];
 
+    activeTimerId: string | null = null;
+    timerStates: { [key: string]: { running: boolean; timeInSeconds: number } } = {};
+
     faTrash = faTrash;
     faArrowLeft = faArrowLeft;
 
@@ -28,8 +31,7 @@ export class RecipeDetailComponent {
         private route: ActivatedRoute,
         private router: Router,
         private recipeService: RecipeService,
-        private dialog: MatDialog,
-        public timerService: TimerService
+        private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
@@ -42,10 +44,10 @@ export class RecipeDetailComponent {
                 this.recipe = response;
                 this.error = null;
                 this.recipeTime = [
-                    { name: 'Preparation', time: this.recipe.preparationTime, unit: this.recipe.preparationUnit },
-                    { name: 'Cooking', time: this.recipe.cookingTime, unit: this.recipe.cookingUnit },
-                    { name: 'Fridge', time: this.recipe.fridgeTime, unit: this.recipe.fridgeUnit },
-                    { name: 'Waiting', time: this.recipe.waitingTime, unit: this.recipe.waitingUnit }
+                    { name: 'Preparation', time: this.recipe.preparationTime, unit: this.recipe.preparationUnit, showTimer: false },
+                    { name: 'Cooking', time: this.recipe.cookingTime, unit: this.recipe.cookingUnit, showTimer: false },
+                    { name: 'Fridge', time: this.recipe.fridgeTime, unit: this.recipe.fridgeUnit, showTimer: false },
+                    { name: 'Waiting', time: this.recipe.waitingTime, unit: this.recipe.waitingUnit, showTimer: false }
                 ].filter(row => row.time != null && row.time !== 0 && row.unit != null && row.unit !== '');
 
                 // Create separate arrays for names and time units
@@ -110,14 +112,21 @@ export class RecipeDetailComponent {
         return Math.round(Math.round((time % 1) * 100));
     }
 
-    onShowTimer(data: object, index: number): void {
-        const id = `${this.recipe.id}-${index}`;
-
-        const timerInfo = {
-            data: data,
-            id: id
+    // Method to create a timer state for an element
+    createTimerState(element: any): any {
+        return {
+            id: `${this.recipe.id}-${element.name}`,
+            recipe: this.recipe.title,
+            name: element.name,
+            timeInSeconds: convertToSeconds(element.time, element.unit),
         };
+    }
 
-        this.timerService.showTimer(timerInfo);
+    public getTimerId(element: any): string {
+        return `${this.recipe.id}-${element.name}`;
+    }
+
+    toggleTimer(element: any): void {
+        element.showTimer = !element.showTimer;
     }
 }

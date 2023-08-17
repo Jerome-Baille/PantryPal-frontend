@@ -27,19 +27,32 @@
             <mat-card-content class="card-content">
 
                 <div class="time-container">
-                    <mat-card *ngFor="let element of recipeTime; let i = index" (click)="onShowTimer(element, i)">
-                        <mat-card-title>{{ element.name }}</mat-card-title>
-                        <mat-card-content>
-                            <ng-container *ngIf="element.unit === 'h'; else defaultFormat">
-                                {{ getHours(element.time) }}h {{ getMinutes(element.time) }}min
-                            </ng-container>
-                            <ng-template #defaultFormat>
-                                {{ element.time | number:'1.0-2' }} {{ element.unit }}
-                            </ng-template>
-                        </mat-card-content>
-                        <app-timer></app-timer>
-                    </mat-card>
+                    <ng-container *ngFor="let element of recipeTime; let i = index">
+                        <ng-container *ngIf="!element.showTimer">
+                            <mat-card (click)="toggleTimer(element)">
+                                <mat-card-title>{{ element.name }}</mat-card-title>
+                                <mat-card-content>
+                                    <ng-container *ngIf="element.unit === 'h'; else defaultFormat">
+                                        {{ getHours(element.time) }}h {{ getMinutes(element.time) }}min
+                                    </ng-container>
+                                    <ng-template #defaultFormat>
+                                        {{ element.time | number:'1.0-2' }} {{ element.unit }}
+                                    </ng-template>
+                                </mat-card-content>
+                            </mat-card>
+                        </ng-container>
+
+                        <ng-container *ngIf="element.showTimer">
+                            <div class="timer-container">
+                                <app-timer [timerInfo]="createTimerState(element)"></app-timer>
+                                <button mat-icon-button class="timer-button" (click)="toggleTimer(element)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </ng-container>
+                    </ng-container>
                 </div>
+
 
                 <mat-card>
                     <mat-card-title>Ingredients</mat-card-title>

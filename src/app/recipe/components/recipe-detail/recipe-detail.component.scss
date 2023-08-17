@@ -67,8 +67,11 @@ li:before {
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   grid-gap: 20px;
   text-align: center;
+  position: relative;
+  min-height: 109px;
 
   .mat-mdc-card {
+    position: relative;
     cursor: pointer;
   }
 }
@@ -88,4 +91,14 @@ li:before {
 
 .book-title {
   font-style: italic;
+}
+
+.timer-container {
+  position: relative;
+}
+
+.timer-button {
+  position: absolute;
+  right: 0;
+  top: 0;
 }

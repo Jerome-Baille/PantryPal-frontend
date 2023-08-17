@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { quantityValidator } from 'src/app/helpers/quantity-validator.helper';
 
 @Component({
   selector: 'app-ingredient-form',
@@ -23,7 +22,7 @@ export class IngredientFormComponent {
   addIngredient() {
     const ingredientForm = this.formBuilder.group({
       name: ['', Validators.required],
-      quantity: ['', quantityValidator()],
+      quantity: [null, Validators.required],
       unit: ['']
     });
     this.ingredients.push(ingredientForm);
