@@ -87,7 +87,7 @@ export class AuthService {
 
   // Method to handle user registration
   register(registerForm: any): Observable<any> {
-    const registerEndpoint = `${API_ENDPOINTS.users}`;
+    const registerEndpoint = `${API_ENDPOINTS.user}`;
 
     return this.http.post(registerEndpoint, registerForm).pipe(
       catchError((error) => {
