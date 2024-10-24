@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CookieService } from '../../../shared/cookie.service';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -19,7 +18,6 @@ export class LoginComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private cookieService: CookieService,
     private authService: AuthService,
     private router: Router
   ) {
@@ -34,29 +32,18 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]]
     });
-
-    // Check if user is logged in
-    const accessToken = this.cookieService.getCookie('PPaccessToken');
-    if (accessToken) {
-      this.isLogged = true;
-    }
   }
 
   onLoginSubmit() {
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value).subscribe({
+      const { email, password } = this.loginForm.value;
+      this.authService.login(email, password).subscribe({
         next: (response) => {
-          this.cookieService.setCookie('PPaccessToken', response.accessToken, response.accessTokenExpireDate);
-          this.cookieService.setCookie('PPrefreshToken', response.refreshToken, response.refreshTokenExpireDate);
-          this.isLogged = true;
+          this.router.navigate(['/recipe/list']);
         },
         error: (error) => {
           // Handle login error, e.g., display error message
           console.error('Login failed:', error);
-        },
-        complete: () => {
-          // Handle successful login, e.g., redirect to dashboard
-          this.router.navigate(['/recipe/list']);
         }
       });
     }
@@ -64,7 +51,8 @@ export class LoginComponent {
 
   onRegisterSubmit() {
     if (this.registerForm.valid) {
-      this.authService.register(this.registerForm.value).subscribe({
+      const { username, email, password } = this.registerForm.value;
+      this.authService.register(username, email, password).subscribe({
         next: (response) => {
           // Handle successful registration, e.g., redirect to login page with success message
           console.log('Registration successful:', response);
@@ -79,7 +67,6 @@ export class LoginComponent {
 
   onLogout() {
     this.authService.logout();
-    this.isLogged = false;
   }
 
   // Switch to the login form

@@ -72,7 +72,7 @@ export class RecipeService {
       endpoint += '?' + selectedQueryParams.join('&');
     }
   
-    return this.http.get<any[]>(endpoint);
+    return this.http.get<any[]>(endpoint, { withCredentials: true });
   }
 
   getRecipe(id: number): Observable<any> {

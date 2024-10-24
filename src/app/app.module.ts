@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { CookieService } from './shared/cookie.service';
 import { TokenInterceptor } from './interceptors/token-interceptor.interceptor';
 import { AuthService } from './services/auth.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -33,7 +32,6 @@ import { LoaderService } from './services/loader.service';
   ],
   providers: [
     AuthService,
-    CookieService,
     LoaderService,
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
