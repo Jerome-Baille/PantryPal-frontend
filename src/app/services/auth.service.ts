@@ -26,13 +26,13 @@ export class AuthService {
   }
 
   // Method to handle user login
-  login(email: string, password: string) {
-    return this.http.post(`${this.authURL}/login`, { email, password }, { withCredentials: true });
+  login(username: string, password: string) {
+    return this.http.post(`${this.authURL}/login`, { username, password }, { withCredentials: true });
   }
 
   // Method to handle user registration
   register(username: string, email: string, password: string) {
-    return this.http.post(`${this.authURL}/register`, { username, email, password });
+    return this.http.post(`${this.authURL}/register`, { username, email, password }, { withCredentials: true });
   }
 
     // Social Authentication

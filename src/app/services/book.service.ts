@@ -14,22 +14,22 @@ export class BookService {
   ) { }
 
   createBook(book: Book): Observable<Book> {
-    return this.http.post<Book>(API_ENDPOINTS.books, { title: book.title, author: book.author });
+    return this.http.post<Book>(API_ENDPOINTS.books, { title: book.title, author: book.author }, { withCredentials: true });
   }
 
   getBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(API_ENDPOINTS.books);
+    return this.http.get<Book[]>(API_ENDPOINTS.books, { withCredentials: true });
   }
 
   getBook(id: number): Observable<Book> {
-    return this.http.get<Book>(`${API_ENDPOINTS.books}/${id}`);
+    return this.http.get<Book>(`${API_ENDPOINTS.books}/${id}`, { withCredentials: true });
   }
 
   updateBook(id: number, title: string, author: string): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.books}/${id}`, { title: title, author: author });
+    return this.http.put(`${API_ENDPOINTS.books}/${id}`, { title: title, author: author }, { withCredentials: true });
   }
 
   deleteBook(id: number): Observable<void> {
-    return this.http.delete<void>(`${API_ENDPOINTS.books}/${id}`);
+    return this.http.delete<void>(`${API_ENDPOINTS.books}/${id}`, { withCredentials: true });
   }
 }

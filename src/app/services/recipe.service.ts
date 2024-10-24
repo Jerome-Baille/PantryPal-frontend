@@ -40,7 +40,6 @@ export class RecipeService {
     );
   }
 
-
   createRecipeWithBookId(recipe: Recipe, bookId: number): Observable<any> {
     return this.http.post(API_ENDPOINTS.recipes, {
       title: recipe.title,
@@ -55,7 +54,7 @@ export class RecipeService {
       waitingTime: recipe.waitingTime,
       waitingUnit: recipe.waitingUnit,
       bookId: bookId
-    }).pipe(
+    }, { withCredentials: true }).pipe(
       map((response: any) => {
         return response;
       }),
@@ -67,28 +66,28 @@ export class RecipeService {
 
   getRecipes(selectedQueryParams?: string[]): Observable<any> {
     let endpoint = API_ENDPOINTS.recipes;
-  
+
     if (selectedQueryParams && selectedQueryParams.length > 0) {
       endpoint += '?' + selectedQueryParams.join('&');
     }
-  
+
     return this.http.get<any[]>(endpoint, { withCredentials: true });
   }
 
   getRecipe(id: number): Observable<any> {
-    return this.http.get<any>(`${API_ENDPOINTS.recipes}/${id}`);
+    return this.http.get<any>(`${API_ENDPOINTS.recipes}/${id}`, { withCredentials: true });
   }
 
   updateRecipe(id: number, recipe: Recipe): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.recipes}/${id}`, recipe);
+    return this.http.put(`${API_ENDPOINTS.recipes}/${id}`, recipe, { withCredentials: true });
   }
 
   deleteRecipe(id: number): Observable<any> {
-    return this.http.delete(`${API_ENDPOINTS.recipes}/${id}`);
+    return this.http.delete(`${API_ENDPOINTS.recipes}/${id}`, { withCredentials: true });
   }
 
   searchRecipes(search: string): Observable<any> {
-    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}/search?title=${search}`).pipe(
+    return this.http.get<any[]>(`${API_ENDPOINTS.recipes}/search?title=${search}`, { withCredentials: true }).pipe(
       map((recipes) => {
         this.searchResults = recipes; // Assign search results to searchResults property
         return recipes;
@@ -104,7 +103,7 @@ export class RecipeService {
   }
 
   downloadRecipeAsPDF(recipe: any): Observable<any> {
-    return this.http.get(`${API_ENDPOINTS.recipes}/${recipe.id}/pdf`)
+    return this.http.get(`${API_ENDPOINTS.recipes}/${recipe.id}/pdf`, { withCredentials: true });
   }
 
   getRecipeIdsFromLocalStorage(): number[] {
@@ -113,6 +112,6 @@ export class RecipeService {
   }
 
   getIngredientsForRecipes(recipeIds: any): Observable<any> {
-    return this.http.post<any>(`${API_ENDPOINTS.recipes}/shopping-list`, { recipeIds });
+    return this.http.post<any>(`${API_ENDPOINTS.recipes}/shopping-list`, { recipeIds }, { withCredentials: true });
   }
 }

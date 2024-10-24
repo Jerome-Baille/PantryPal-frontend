@@ -37,18 +37,18 @@ export class IngredientService {
       quantity: ingredient.quantity,
       unit: ingredient.unit,
       recipeId: recipeId
-    });
+    }, { withCredentials: true });
   }
 
   getSetOfIngredients(): Observable<any> {
-    return this.http.get(`${API_ENDPOINTS.ingredients}/set`)
+    return this.http.get(`${API_ENDPOINTS.ingredients}/set`, { withCredentials: true });
   }
 
   updateIngredient(id: number, ingredient: IngredientModel): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.ingredients}/${id}`, ingredient);
+    return this.http.put(`${API_ENDPOINTS.ingredients}/${id}`, ingredient, { withCredentials: true });
   }
 
   deleteIngredient(id: number): Observable<any> {
-    return this.http.delete(`${API_ENDPOINTS.ingredients}/${id}`);
+    return this.http.delete(`${API_ENDPOINTS.ingredients}/${id}`, { withCredentials: true });
   }
 }

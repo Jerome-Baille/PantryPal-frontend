@@ -23,7 +23,7 @@ export class LoginComponent {
   ) {
 
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', Validators.required]
     });
 
@@ -36,8 +36,8 @@ export class LoginComponent {
 
   onLoginSubmit() {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
-      this.authService.login(email, password).subscribe({
+      const { username, password } = this.loginForm.value;
+      this.authService.login(username, password).subscribe({
         next: (response) => {
           this.router.navigate(['/recipe/list']);
         },
