@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { authInterceptor } from './interceptors/token-interceptor.interceptor';
+import { AuthInterceptor } from './interceptors/token-interceptor.interceptor';
 import { AuthService } from './services/auth.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoaderService } from './services/loader.service';
@@ -25,15 +25,13 @@ import { LoaderService } from './services/loader.service';
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
   ],
   providers: [
     AuthService,
     LoaderService,
-    { provide: HTTP_INTERCEPTORS, useValue: authInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

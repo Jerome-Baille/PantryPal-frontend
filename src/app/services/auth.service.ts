@@ -18,7 +18,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-  ) {  }
+  ) { }
 
   // Method to handle user logout
   logout() {
@@ -35,23 +35,23 @@ export class AuthService {
     return this.http.post(`${this.authURL}/register`, { username, email, password }, { withCredentials: true });
   }
 
-    // Social Authentication
-    loginWithGoogle() {
-      const redirectUrl = encodeURIComponent(window.location.origin + '/profile');
-      window.location.href = `${this.authURL}/google?redirectUrl=${redirectUrl}`;
-    }
-  
-    loginWithFacebook() {
-      const redirectUrl = encodeURIComponent(window.location.origin + '/profile');
-      window.location.href = `${this.authURL}/facebook?redirectUrl=${redirectUrl}`;
-    }
-  
-    loginWithGithub() {
-      const redirectUrl = encodeURIComponent(window.location.origin + '/profile');
-      window.location.href = `${this.authURL}/github?redirectUrl=${redirectUrl}`;
+  // Social Authentication
+  loginWithGoogle() {
+    const redirectUrl = encodeURIComponent(window.location.origin + '/profile');
+    window.location.href = `${this.authURL}/google?redirectUrl=${redirectUrl}`;
   }
-  
-    refreshToken() {
-      return this.http.post(`${this.authURL}/refresh`, {}, { withCredentials: true });
-    }
+
+  loginWithFacebook() {
+    const redirectUrl = encodeURIComponent(window.location.origin + '/profile');
+    window.location.href = `${this.authURL}/facebook?redirectUrl=${redirectUrl}`;
+  }
+
+  loginWithGithub() {
+    const redirectUrl = encodeURIComponent(window.location.origin + '/profile');
+    window.location.href = `${this.authURL}/github?redirectUrl=${redirectUrl}`;
+  }
+
+  refreshToken() {
+    return this.http.post(`${this.authURL}/refresh`, {}, { withCredentials: true });
+  }
 }
