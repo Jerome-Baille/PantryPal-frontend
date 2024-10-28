@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_ENDPOINTS } from '../../../config/api-endpoints';
 import { Observable, catchError, forkJoin, map, of, throwError } from 'rxjs';
 import { Ingredient as IngredientModel } from 'src/app/models/ingredient.model';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IngredientService {
+  private ingredientsURL = environment.ingredientsURL;
 
   constructor(
     private http: HttpClient
@@ -32,7 +33,7 @@ export class IngredientService {
   }
 
   createIngredient(recipeId: number, ingredient: IngredientModel): Observable<any> {
-    return this.http.post(API_ENDPOINTS.ingredients, {
+    return this.http.post(`${this.ingredientsURL}`, {
       name: ingredient.name,
       quantity: ingredient.quantity,
       unit: ingredient.unit,
@@ -41,14 +42,14 @@ export class IngredientService {
   }
 
   getSetOfIngredients(): Observable<any> {
-    return this.http.get(`${API_ENDPOINTS.ingredients}/set`, { withCredentials: true });
+    return this.http.get(`${this.ingredientsURL}/set`, { withCredentials: true });
   }
 
   updateIngredient(id: number, ingredient: IngredientModel): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.ingredients}/${id}`, ingredient, { withCredentials: true });
+    return this.http.put(`${this.ingredientsURL}/${id}`, ingredient, { withCredentials: true });
   }
 
   deleteIngredient(id: number): Observable<any> {
-    return this.http.delete(`${API_ENDPOINTS.ingredients}/${id}`, { withCredentials: true });
+    return this.http.delete(`${this.ingredientsURL}/${id}`, { withCredentials: true });
   }
 }

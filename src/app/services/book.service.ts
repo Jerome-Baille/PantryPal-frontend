@@ -1,35 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { API_ENDPOINTS } from '../../../config/api-endpoints';
 import { Observable } from 'rxjs';
 import { Book } from 'src/app/models/book.model';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookService {
+  private booksURL = environment.booksURL;
 
   constructor(
     private http: HttpClient
   ) { }
 
   createBook(book: Book): Observable<Book> {
-    return this.http.post<Book>(API_ENDPOINTS.books, { title: book.title, author: book.author }, { withCredentials: true });
+    return this.http.post<Book>(`${this.booksURL}`, { title: book.title, author: book.author }, { withCredentials: true });
   }
 
   getBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(API_ENDPOINTS.books, { withCredentials: true });
+    return this.http.get<Book[]>(`${this.booksURL}`, { withCredentials: true });
   }
 
   getBook(id: number): Observable<Book> {
-    return this.http.get<Book>(`${API_ENDPOINTS.books}/${id}`, { withCredentials: true });
+    return this.http.get<Book>(`${this.booksURL}/${id}`, { withCredentials: true });
   }
 
   updateBook(id: number, title: string, author: string): Observable<any> {
-    return this.http.put(`${API_ENDPOINTS.books}/${id}`, { title: title, author: author }, { withCredentials: true });
+    return this.http.put(`${this.booksURL}/${id}`, { title: title, author: author }, { withCredentials: true });
   }
 
   deleteBook(id: number): Observable<void> {
-    return this.http.delete<void>(`${API_ENDPOINTS.books}/${id}`, { withCredentials: true });
+    return this.http.delete<void>(`${this.booksURL}/${id}`, { withCredentials: true });
   }
 }

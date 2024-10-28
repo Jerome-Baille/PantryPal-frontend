@@ -1,9 +1,13 @@
-const apiBaseURL = 'https://auth.jerome-baille.fr/api';
+const authBaseURL = 'https://auth.jerome-baille.fr/api';
+const pantryPalBaseURL = 'https://pantry-pal.jerome-baille.fr/api';
 
 export const environment = {
   production: true,
-  apiBaseURL,
-  authURL: `${apiBaseURL}/auth`,
-  userURL: `${apiBaseURL}/user`,
-  redirectUrl: 'https://auth.jerome-baille.fr/login'
+  authBaseURL,
+  authURL: `${authBaseURL}/auth`,
+  userURL: `${authBaseURL}/user`,
+  pantryPalBaseURL,
+  recipesURL: `${pantryPalBaseURL}/recipes`,
+  booksURL: `${pantryPalBaseURL}/books`,
+  ingredientsURL: `${pantryPalBaseURL}/ingredients`,
 };
