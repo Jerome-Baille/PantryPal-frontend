@@ -8,7 +8,6 @@ import { RecipeDetailComponent } from './components/recipe-detail/recipe-detail.
 import { IngredientFormComponent } from './components/ingredient-form/ingredient-form.component';
 import { BookFormComponent } from './components/book-form/book-form.component';
 import { FiltersComponent } from './components/filters/filters.component';
-import { RecipeResolver } from 'src/app/recipe/resolvers/recipe.resolver';
 import { RecipeFormComponent } from './components/recipe-form/recipe-form.component';
 
 @NgModule({
@@ -26,8 +25,6 @@ import { RecipeFormComponent } from './components/recipe-form/recipe-form.compon
     SharedModule
   ],
   exports: [],
-  providers: [
-    RecipeResolver
-  ]
+  providers: []
 })
 export class RecipeModule { }

@@ -12,7 +12,9 @@
             <div class="recipe-container">
                 <mat-card *ngFor="let recipe of recipes" (click)="goToRecipeDetails(recipe.id)" class="recipe-card">
                     <mat-card-title>{{ recipe.title }}</mat-card-title>
-                    <mat-card-subtitle>{{ recipe.Book.title }} by {{ recipe.Book.author }}</mat-card-subtitle>
+                    <mat-card-subtitle *ngIf="recipe.Book">
+                        {{ recipe.Book.title }} by {{ recipe.Book.author }}
+                    </mat-card-subtitle>
                     <mat-card-actions align="end">
                         <div class="add-button-container">
                             <app-add-to-shopping-list [recipe]="recipe" [recipes]="recipes"></app-add-to-shopping-list>
