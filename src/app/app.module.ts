@@ -12,6 +12,7 @@ import { AuthService } from './services/auth.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoaderService } from './services/loader.service';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { LoaderInterceptor } from './interceptors/loader.interceptor';
     BrowserAnimationsModule,
     CoreModule,
     SharedModule,
+    MatSnackBarModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
