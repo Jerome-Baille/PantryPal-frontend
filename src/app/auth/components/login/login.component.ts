@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../../../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   activeForm: 'login' | 'register' = 'login'; // Tracks the active form (login or register)
 
   loginForm: FormGroup;
@@ -21,7 +21,6 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router
   ) {
-
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', Validators.required]
@@ -34,11 +33,16 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit() {
+    this.isLogged = this.authService.isLoggedIn();
+  }
+
   onLoginSubmit() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
       this.authService.login(username, password).subscribe({
         next: (response) => {
+          this.isLogged = true;
           this.router.navigate(['/recipe/list']);
         },
         error: (error) => {
@@ -66,7 +70,14 @@ export class LoginComponent {
   }
 
   onLogout() {
-    this.authService.logout();
+    this.authService.logout().subscribe({
+      next: () => {
+        this.isLogged = false;
+      },
+      error: (error) => {
+        console.error('Logout failed:', error);
+      }
+    });
   }
 
   // Switch to the login form

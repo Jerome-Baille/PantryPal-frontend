@@ -19,7 +19,8 @@
             <button mat-menu-item routerLink="/recipe/create">Create</button>
         </mat-menu>
 
-        <button mat-button routerLink="/auth/login">Login</button>
+        <button mat-button *ngIf="!isLogged" routerLink="/auth/login">Login</button>
+        <button mat-button *ngIf="isLogged" (click)="onLogout()">Logout</button>
     </div>
 
     <button mat-button class="hamburger-button" (click)="toggleDropdownMenu()">
@@ -40,6 +41,7 @@
         </button>
         <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">Recipe List</button>
         <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">Create Recipe</button>
-        <button mat-button routerLink="/auth/login" (click)="toggleDropdownMenu()">Login</button>
+        <button mat-button *ngIf="!isLogged" routerLink="/auth/login" (click)="toggleDropdownMenu()">Login</button>
+        <button mat-button *ngIf="isLogged" (click)="onLogout(); toggleDropdownMenu()">Logout</button>
     </div>
 </div>
