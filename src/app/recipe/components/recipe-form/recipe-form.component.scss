@@ -133,3 +133,36 @@ button.mat-icon-button {
 .full-width {
   width: 100%;
 }
+
+.timers-section {
+  /* Updated timers-section styles to align with template aesthetics */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  background-color: #f8f9fa;  // subtle contrasting background
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+
+  .timer-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px 0;
+    justify-content: center;
+  }
+
+  .time-input-group {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+
+  .timer-card {
+    display: flex;
+    justify-content: space-between;
+  }
+}

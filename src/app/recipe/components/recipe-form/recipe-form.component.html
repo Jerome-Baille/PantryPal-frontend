@@ -5,6 +5,38 @@
             <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
                 class="full-width"></app-book-form>
 
+            <!-- Timers Section -->
+            <div formArrayName="timers" class="timers-section">
+                <div *ngFor="let timerCtrl of timers.controls; let i = index" [formGroupName]="i" class="timer-card">
+                    <div class="timer-group">
+                        <mat-form-field>
+                            <mat-label>Timer Name</mat-label>
+                            <input matInput placeholder="Timer Name" formControlName="name">
+                        </mat-form-field>
+                        <div class="time-input-group">
+                            <mat-form-field>
+                                <mat-label>Hours</mat-label>
+                                <input matInput type="number" placeholder="Hours" formControlName="hours">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Minutes</mat-label>
+                                <input matInput type="number" placeholder="Minutes" formControlName="minutes">
+                            </mat-form-field>
+                            <mat-form-field>
+                                <mat-label>Seconds</mat-label>
+                                <input matInput type="number" placeholder="Seconds" formControlName="seconds">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="timer-group">
+                        <button mat-icon-button color="warn" (click)="removeTimer(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <button mat-raised-button type="button" (click)="addTimer()">Add Timer</button>
+            </div>
+
             <!-- Recipe Form -->
             <div formGroupName="recipe" class="full-width">
                 <mat-form-field>
@@ -24,66 +56,6 @@
                         <mat-option value="main-course">Main course</mat-option>
                         <mat-option value="dessert">Dessert</mat-option>
                     </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Preparation time</mat-label>
-                    <div class="time-unit-container">
-                        <input matInput type="number" inputmode="numeric" placeholder="Preparation time"
-                            aria-label="Preparation time" formControlName="preparationTime">
-                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="preparationUnit" value="min">
-                            <mat-option value="min">Minutes</mat-option>
-                            <mat-option value="h">Hours</mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.preparationTime')?.invalid && recipeForm.get('recipe.preparationTime')?.touched">Preparation
-                            time is required.</mat-error>
-                    </div>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Cooking time</mat-label>
-                    <div class="time-unit-container">
-                        <input matInput type="number" inputmode="numeric" placeholder="Cooking time"
-                            aria-label="Cooking time" formControlName="cookingTime">
-                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="cookingUnit" value="min">
-                            <mat-option value="min">Minutes</mat-option>
-                            <mat-option value="h">Hours</mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.cookingTime')?.invalid && recipeForm.get('recipe.cookingTime')?.touched">Cooking
-                            time is required.</mat-error>
-                    </div>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Fridge time</mat-label>
-                    <div class="time-unit-container">
-                        <input matInput type="number" inputmode="numeric" placeholder="Fridge time"
-                            aria-label="Fridge time" formControlName="fridgeTime">
-                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="fridgeUnit" value="min">
-                            <mat-option value="min">Minutes</mat-option>
-                            <mat-option value="h">Hours</mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.fridgeTime')?.invalid && recipeForm.get('recipe.fridgeTime')?.touched">Fridge
-                            time is required.</mat-error>
-                    </div>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Waiting time</mat-label>
-                    <div class="time-unit-container">
-                        <input matInput type="number" inputmode="numeric" placeholder="Waiting time"
-                            aria-label="Waiting time" formControlName="waitingTime">
-                        <mat-select placeholder="Unit" aria-label="Unit" formControlName="waitingUnit" value="min">
-                            <mat-option value="min">Minutes</mat-option>
-                            <mat-option value="h">Hours</mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.waitingTime')?.invalid && recipeForm.get('recipe.waitingTime')?.touched">Waiting
-                            time is required.</mat-error>
-                    </div>
                 </mat-form-field>
 
                 <mat-form-field>

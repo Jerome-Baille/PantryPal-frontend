@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { convertToSeconds } from 'src/app/utils/time-utils';
+import { Timer } from 'src/app/models/timer.model';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -43,16 +44,17 @@ export class RecipeDetailComponent {
             next: (response) => {
                 this.recipe = response;
                 this.error = null;
-                this.recipeTime = [
-                    { name: 'Preparation', time: this.recipe.preparationTime, unit: this.recipe.preparationUnit, showTimer: false },
-                    { name: 'Cooking', time: this.recipe.cookingTime, unit: this.recipe.cookingUnit, showTimer: false },
-                    { name: 'Fridge', time: this.recipe.fridgeTime, unit: this.recipe.fridgeUnit, showTimer: false },
-                    { name: 'Waiting', time: this.recipe.waitingTime, unit: this.recipe.waitingUnit, showTimer: false }
-                ].filter(row => row.time != null && row.time !== 0 && row.unit != null && row.unit !== '');
-
-                // Create separate arrays for names and time units
+                // Map timers without duplicating display logic
+                this.recipeTime = (this.recipe.timers || []).map((timer: any) => {
+                    const timeInSeconds = timer.timeInSeconds || timer.time_in_seconds;
+                    return {
+                        name: timer.name,
+                        time: timeInSeconds,
+                        showTimer: false
+                    };
+                });
                 this.names = this.recipeTime.map(row => row.name);
-                this.timeUnits = this.recipeTime.map(row => `${row.time} ${row.unit}`);
+                // Removed timeUnits mapping as it's not used anymore
             },
             error: (error) => {
                 console.error(error);
@@ -60,6 +62,17 @@ export class RecipeDetailComponent {
                 this.error = error;
             }
         })
+    }
+
+    // New method to format time
+    formatTime(seconds: number): string {
+        if (seconds >= 3600) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.round((seconds % 3600) / 60);
+            return `${hours} h ${minutes} min`;
+        } else {
+            return `${Math.round(seconds / 60)} min`;
+        }
     }
 
     deleteRecipe(): void {
@@ -104,21 +117,12 @@ export class RecipeDetailComponent {
         return instructions.map((instruction: string) => instruction.replace(/^\s*\n/, ''));
     }
 
-    getHours(time: number): number {
-        return Math.floor(time);
-    }
-
-    getMinutes(time: number): number {
-        return Math.round(Math.round((time % 1) * 100));
-    }
-
     // Method to create a timer state for an element
     createTimerState(element: any): any {
         return {
-            id: `${this.recipe.id}-${element.name}`,
-            recipe: this.recipe.title,
             name: element.name,
-            timeInSeconds: convertToSeconds(element.time, element.unit),
+            timeInSeconds: element.time,
+            recipe: this.recipe.title
         };
     }
 

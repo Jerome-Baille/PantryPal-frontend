@@ -26,6 +26,9 @@ export class TimerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.displayTime = this.formatTime(this.timerInfo.timeInSeconds);
 
+    console.log('Timer Info:', this.timerInfo);
+    console.log('Display Time:', this.displayTime);
+
     // Preload the audio file
     this.audio = new Audio('assets/sounds/oversimplified-alarm-clock-113180.mp3');
     this.audio.loop = true;
@@ -38,15 +41,15 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   private formatTime(seconds: number): string {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secondsRemaining = seconds % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}min`;
-    } else {
-      return `${minutes}min ${secondsRemaining}s`;
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    const paddedMins = mins < 10 ? `0${mins}` : mins;
+    const paddedSecs = secs < 10 ? `0${secs}` : secs;
+    if (hrs > 0) {
+      return `${hrs}:${paddedMins}:${paddedSecs}`;
     }
+    return `${paddedMins}:${paddedSecs}`;
   }
 
   private clearTimer(): void {
@@ -141,10 +144,10 @@ export class TimerComponent implements OnInit, OnDestroy {
             this.playAudioLoop();
           }
 
-          // Display notification when the timer reaches 0
-          const recipeName = this.timerInfo.recipe;
+          // Use timerInfo.recipe if available; otherwise, fallback to a default label.
+          const recipeLabel = this.timerInfo.recipe ? this.timerInfo.recipe : 'Recipe Timer';
           const timerName = this.timerInfo.name;
-          this.snackBar.open(`${timerName} timer for "${recipeName}" has finished!`, 'Dismiss', {
+          this.snackBar.open(`${timerName} timer for "${recipeLabel}" has finished!`, 'Dismiss', {
             duration: 60000, // 1 minute
             verticalPosition: 'top',
             horizontalPosition: 'center',

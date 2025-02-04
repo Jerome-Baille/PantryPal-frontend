@@ -32,12 +32,7 @@
                             <mat-card (click)="toggleTimer(element)">
                                 <mat-card-title>{{ element.name }}</mat-card-title>
                                 <mat-card-content>
-                                    <ng-container *ngIf="element.unit === 'h'; else defaultFormat">
-                                        {{ getHours(element.time) }}h {{ getMinutes(element.time) }}min
-                                    </ng-container>
-                                    <ng-template #defaultFormat>
-                                        {{ element.time | number:'1.0-2' }} {{ element.unit }}
-                                    </ng-template>
+                                    {{ formatTime(element.time) }}
                                 </mat-card-content>
                             </mat-card>
                         </ng-container>

@@ -68,25 +68,16 @@ export class RecipeFormComponent implements OnInit {
         title: ['', Validators.required],
         typeOfMeal: [''],
         instructions: ['', Validators.required],
-        notes: [''],
-        preparationTime: [0],
-        preparationUnit: [''],
-        cookingTime: [0],
-        cookingUnit: [''],
-        fridgeTime: [0],
-        fridgeUnit: [''],
-        waitingTime: [0],
-        waitingUnit: ['']
+        notes: ['']
       }),
-      ingredients: this.fb.array([])
+      ingredients: this.fb.array([]),
+      timers: this.fb.array([]) // timers: now with hours/minutes/seconds
     });
   }
 
   initializeCreateForm() {
     this.book = { title: '', author: '' };
-    this.recipeForm.valueChanges.subscribe(() => {
-      this.isFormModified = true;
-    })
+    this.subscribeToFormChanges();
   }
 
   initializeUpdateForm() {
@@ -98,6 +89,7 @@ export class RecipeFormComponent implements OnInit {
         next: (response: any) => {
           this.recipe = response;
           this.getInitializerUpdateForm();
+          this.subscribeToFormChanges(); // subscribe after initial patching
           this.error = false; // Set the error flag to false when API call is successful
         },
         error: (error) => {
@@ -119,23 +111,25 @@ export class RecipeFormComponent implements OnInit {
         recipe: {
           title: this.recipe.title,
           typeOfMeal: this.recipe.typeOfMeal,
-          preparationTime: this.recipe.preparationTime,
-          preparationUnit: this.recipe.preparationUnit,
-          cookingTime: this.recipe.cookingTime,
-          cookingUnit: this.recipe.cookingUnit,
-          fridgeTime: this.recipe.fridgeTime,
-          fridgeUnit: this.recipe.fridgeUnit,
-          waitingTime: this.recipe.waitingTime,
-          waitingUnit: this.recipe.waitingUnit,
           instructions: this.recipe.instructions,
           notes: this.recipe.notes
         }
-      });
-
-      this.recipeForm.get('recipe')?.valueChanges.subscribe(() => {
-        this.isFormModified = true;
-      })
-
+      }, { emitEvent: false });
+      if (this.recipe.timers && Array.isArray(this.recipe.timers)) {
+        const timersFormArray = this.recipeForm.get('timers') as FormArray;
+        this.recipe.timers.forEach((timer: any) => {
+          const total = timer.time_in_seconds;
+          const hours = Math.floor(total / 3600);
+          const minutes = Math.floor((total % 3600) / 60);
+          const seconds = total % 60;
+          timersFormArray.push(this.fb.group({
+            name: [timer.name],
+            hours: [hours],
+            minutes: [minutes],
+            seconds: [seconds]
+          }));
+        });
+      }
       // Initialize the ingredients FormArray
       if (Array.isArray(this.recipe.Ingredients)) {
         this.recipe.Ingredients.forEach((ingredient: any) => {
@@ -155,6 +149,12 @@ export class RecipeFormComponent implements OnInit {
         this.isFormModified = true;
       });
     }
+  }
+
+  private subscribeToFormChanges() {
+    this.recipeForm.valueChanges.subscribe(() => {
+      this.isFormModified = true;
+    });
   }
 
   handleBookSelected(selectedBook: BookModel) {
@@ -215,8 +215,13 @@ export class RecipeFormComponent implements OnInit {
   handleCreateSubmit() {
     const recipe = this.recipeForm.get('recipe')!.value;
     const ingredients = (this.recipeForm.get('ingredients') as FormArray).value;
+    const timersRaw = (this.recipeForm.get('timers') as FormArray).value;
+    const timers = timersRaw.map((t: any) => ({
+      name: t.name,
+      timeInSeconds: (Number(t.hours) * 3600) + (Number(t.minutes) * 60) + Number(t.seconds)
+    }));
 
-    this.recipeService.createRecipe(this.book, recipe, ingredients).subscribe({
+    this.recipeService.createRecipe(this.book, recipe, ingredients, timers).subscribe({
       next: () => {
         this.resetForm();
       },
@@ -235,15 +240,25 @@ export class RecipeFormComponent implements OnInit {
     if (!this.isFormModified && !this.isIngredientListModified) {
       return;
     }
-
     const recipeId = this.recipe.id;
-    const updatedRecipe = { ...this.recipe, ...this.recipeForm.value };
+    // Convert timers before merging into update payload
+    const timersRaw = (this.recipeForm.get('timers') as FormArray).value;
+    const timers = timersRaw.map((t: any) => ({
+      name: t.name,
+      timeInSeconds: (Number(t.hours) * 3600) + (Number(t.minutes) * 60) + Number(t.seconds)
+    }));
+    const updatedRecipe = { ...this.recipe, ...this.recipeForm.value, timers };
     const ingredients = updatedRecipe.Ingredients;
     delete updatedRecipe.Ingredients;
+    
+    const updatePayload = { 
+      ...updatedRecipe.recipe, 
+      timers: updatedRecipe.timers // merge timers into the payload for backend processing
+    };
 
     const observables: Observable<any>[] = [];
 
-    // Update book
+    // Update book if changed
     if (
       updatedRecipe.Book.title !== this.recipe.Book.title ||
       updatedRecipe.Book.author !== this.recipe.Book.author
@@ -251,9 +266,9 @@ export class RecipeFormComponent implements OnInit {
       updatedRecipe.bookId = updatedRecipe.Book.id;
     }
 
-    // Update recipe
-    if (JSON.stringify(updatedRecipe) !== JSON.stringify(this.recipe)) {
-      observables.push(this.recipeService.updateRecipe(recipeId, updatedRecipe.recipe));
+    // Update recipe if any change (including timers)
+    if (JSON.stringify(updatePayload) !== JSON.stringify(this.recipe)) {
+      observables.push(this.recipeService.updateRecipe(recipeId, updatePayload));
     }
 
     // Update ingredients
@@ -264,15 +279,13 @@ export class RecipeFormComponent implements OnInit {
     forkJoin(observables).subscribe({
       next: () => {
         this.recipe = updatedRecipe;
-
         this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
       },
       error: (error) => {
         this.handleSnackBar(error);
-        console.error('Error while updating recipe: ', error)
+        console.error('Error while updating recipe: ', error);
       },
       complete: () => {
-        // Redirect to the recipe details page
         this.router.navigate(['/recipe/detail', this.recipe.id]);
       }
     });
@@ -328,5 +341,25 @@ export class RecipeFormComponent implements OnInit {
     Object.keys(recipeGroup.controls).forEach((key) => {
       recipeGroup.get(key)?.setErrors(null);
     });
+  }
+
+  // Add a getter for timers FormArray for convenience
+  get timers(): FormArray {
+    return this.recipeForm.get('timers') as FormArray;
+  }
+
+  addTimer() {
+    this.timers.push(this.fb.group({
+      name: [''],
+      hours: [0],
+      minutes: [0],
+      seconds: [0]
+    }));
+    this.isFormModified = true;
+  }
+
+  removeTimer(index: number) {
+    this.timers.removeAt(index);
+    this.isFormModified = true;
   }
 }

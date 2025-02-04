@@ -21,11 +21,11 @@ export class RecipeService {
     private ingredientService: IngredientService,
   ) { }
 
-  createRecipe(book: Book, recipe: Recipe, ingredients: Ingredient[]): Observable<any> {
+  createRecipe(book: Book, recipe: any, ingredients: any[], timers: any[]): Observable<any> {
     return this.bookService.createBook(book).pipe(
       mergeMap((bookResponse: any) => {
         const bookId = bookResponse.id;
-        return this.createRecipeWithBookId(recipe, bookId);
+        return this.createRecipeWithBookId(recipe, bookId, timers);
       }),
       mergeMap((recipeResponse: any) => {
         const recipeId = recipeResponse.id;
@@ -41,7 +41,7 @@ export class RecipeService {
     );
   }
 
-  createRecipeWithBookId(recipe: Recipe, bookId: number): Observable<any> {
+  createRecipeWithBookId(recipe: any, bookId: number, timers: any[]): Observable<any> {
     return this.http.post(`${this.recipesURL}`, {
       title: recipe.title,
       instructions: recipe.instructions,
@@ -54,7 +54,8 @@ export class RecipeService {
       fridgeUnit: recipe.fridgeUnit,
       waitingTime: recipe.waitingTime,
       waitingUnit: recipe.waitingUnit,
-      bookId: bookId
+      bookId: bookId,
+      timers: timers // <-- include timers payload
     }, { withCredentials: true }).pipe(
       map((response: any) => {
         return response;
@@ -80,6 +81,7 @@ export class RecipeService {
   }
 
   updateRecipe(id: number, recipe: Recipe): Observable<any> {
+    // The recipe payload now includes a 'timers' array which will be processed by the backend.
     return this.http.put(`${this.recipesURL}/${id}`, recipe, { withCredentials: true });
   }
 
