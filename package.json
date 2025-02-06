@@ -25,7 +25,6 @@
     "@capacitor/android": "^5.7.4",
     "@capacitor/cli": "^5.7.4",
     "@capacitor/core": "^5.7.4",
-    "@fortawesome/angular-fontawesome": "^0.15.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
