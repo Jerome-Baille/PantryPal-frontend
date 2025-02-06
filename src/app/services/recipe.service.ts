@@ -5,7 +5,6 @@ import { BookService } from './book.service';
 import { IngredientService } from './ingredient.service';
 import { Book } from 'src/app/models/book.model';
 import { Recipe } from 'src/app/models/recipe.model';
-import { Ingredient } from 'src/app/models/ingredient.model';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -25,7 +24,7 @@ export class RecipeService {
     return this.bookService.createBook(book).pipe(
       mergeMap((bookResponse: any) => {
         const bookId = bookResponse.id;
-        return this.createRecipeWithBookId(recipe, bookId, timers);
+        return this.createRecipeWithBookId(recipe, bookId);
       }),
       mergeMap((recipeResponse: any) => {
         const recipeId = recipeResponse.id;
@@ -41,7 +40,7 @@ export class RecipeService {
     );
   }
 
-  createRecipeWithBookId(recipe: any, bookId: number, timers: any[]): Observable<any> {
+  createRecipeWithBookId(recipe: any, bookId: number): Observable<any> {
     return this.http.post(`${this.recipesURL}`, {
       title: recipe.title,
       instructions: recipe.instructions,
@@ -55,14 +54,10 @@ export class RecipeService {
       waitingTime: recipe.waitingTime,
       waitingUnit: recipe.waitingUnit,
       bookId: bookId,
-      timers: timers // <-- include timers payload
+      // Removed timers payload – timers will be created separately.
     }, { withCredentials: true }).pipe(
-      map((response: any) => {
-        return response;
-      }),
-      catchError((error) => {
-        return throwError(() => error);
-      })
+      map((response: any) => response),
+      catchError((error) => throwError(() => error))
     );
   }
 

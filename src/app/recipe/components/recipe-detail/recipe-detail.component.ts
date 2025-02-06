@@ -4,8 +4,6 @@ import { RecipeService } from '../../../services/recipe.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { convertToSeconds } from 'src/app/utils/time-utils';
-import { Timer } from 'src/app/models/timer.model';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -132,5 +130,17 @@ export class RecipeDetailComponent {
 
     toggleTimer(element: any): void {
         element.showTimer = !element.showTimer;
+    }
+
+    // Add a getter to group ingredients by section
+    get groupedIngredients(): { section: string, ingredients: any[] }[] {
+        if (!this.recipe?.RecipeIngredients) return [];
+        const groups: { [key: string]: any[] } = {};
+        this.recipe.RecipeIngredients.forEach((item: any) => {
+            const key = item.section ? item.section.name : '';
+            groups[key] = groups[key] || [];
+            groups[key].push(item);
+        });
+        return Object.keys(groups).map(key => ({ section: key, ingredients: groups[key] }));
     }
 }

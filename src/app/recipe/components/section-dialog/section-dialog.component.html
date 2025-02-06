@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>Create New Section</h2>
+<mat-dialog-content>
+    <form [formGroup]="sectionForm">
+        <mat-form-field>
+            <mat-label>Section Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter section name">
+            <mat-error *ngIf="sectionForm.get('name')?.errors?.['required']">
+                Section name is required
+            </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field>
+            <mat-label>Display Order</mat-label>
+            <input matInput type="number" formControlName="displayOrder">
+            <mat-error *ngIf="sectionForm.get('displayOrder')?.errors?.['required']">
+                Display order is required
+            </mat-error>
+            <mat-error *ngIf="sectionForm.get('displayOrder')?.errors?.['min']">
+                Display order must be greater than 0
+            </mat-error>
+        </mat-form-field>
+
+        <div *ngIf="errorMessage" class="error-message mat-error">
+            {{ errorMessage }}
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+    <button mat-raised-button color="primary" 
+            (click)="onSubmit()" 
+            [disabled]="sectionForm.invalid || isLoading">
+        <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+        <span *ngIf="!isLoading">Create</span>
+    </button>
+</mat-dialog-actions>

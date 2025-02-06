@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, forkJoin, map, of, throwError } from 'rxjs';
-import { Ingredient as IngredientModel } from 'src/app/models/ingredient.model';
+import { RecipeIngredient } from 'src/app/models/recipe-ingredient.model';
 import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
@@ -14,30 +14,27 @@ export class IngredientService {
     private http: HttpClient
   ) { }
 
-  createIngredients(ingredients: IngredientModel[], recipeId: number): Observable<any[]> {
+  createIngredients(ingredients: RecipeIngredient[], recipeId: number): Observable<any[]> {
     if (ingredients.length === 0) {
       return of([]);
     }
 
     const ingredientObservables = ingredients.map((ingredient) => {
       return this.createIngredient(recipeId, ingredient).pipe(
-        map((response) => {
-          return response;
-        }),
-        catchError((error) => {
-          return throwError(() => error);
-        })
+        map((response) => response),
+        catchError((error) => throwError(() => error))
       );
     });
     return forkJoin(ingredientObservables);
   }
 
-  createIngredient(recipeId: number, ingredient: IngredientModel): Observable<any> {
+  createIngredient(recipeId: number, ingredient: RecipeIngredient): Observable<any> {
     return this.http.post(`${this.ingredientsURL}`, {
-      name: ingredient.name,
+      name: ingredient.Ingredient?.name || '',
+      recipeId: recipeId,
       quantity: ingredient.quantity,
       unit: ingredient.unit,
-      recipeId: recipeId
+      recipeSectionId: ingredient.recipeSectionId || null
     }, { withCredentials: true });
   }
 
@@ -45,7 +42,7 @@ export class IngredientService {
     return this.http.get(`${this.ingredientsURL}/set`, { withCredentials: true });
   }
 
-  updateIngredient(id: number, ingredient: IngredientModel): Observable<any> {
+  updateIngredient(id: number, ingredient: { name: string }): Observable<any> {
     return this.http.put(`${this.ingredientsURL}/${id}`, ingredient, { withCredentials: true });
   }
 

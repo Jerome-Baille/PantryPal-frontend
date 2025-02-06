@@ -9,6 +9,7 @@ import { IngredientFormComponent } from './components/ingredient-form/ingredient
 import { BookFormComponent } from './components/book-form/book-form.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { RecipeFormComponent } from './components/recipe-form/recipe-form.component';
+import { SectionDialogComponent } from './components/section-dialog/section-dialog.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { RecipeFormComponent } from './components/recipe-form/recipe-form.compon
     IngredientFormComponent,
     BookFormComponent,
     FiltersComponent,
-    RecipeFormComponent
+    RecipeFormComponent,
+    SectionDialogComponent
   ],
   imports: [
     CommonModule,

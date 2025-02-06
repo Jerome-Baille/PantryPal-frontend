@@ -52,19 +52,16 @@
                 <mat-card>
                     <mat-card-title>Ingredients</mat-card-title>
                     <mat-card-content>
-                        <table mat-table [dataSource]="recipe?.Ingredients">
-                            <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef>Name</th>
-                                <td mat-cell *matCellDef="let ingredient">{{ ingredient.name }}</td>
+                        <div *ngFor="let group of groupedIngredients">
+                            <ng-container *ngIf="group.section">
+                                <h3>{{ group.section }}</h3>
                             </ng-container>
-                            <ng-container matColumnDef="quantity">
-                                <th mat-header-cell *matHeaderCellDef>Quantity</th>
-                                <td mat-cell *matCellDef="let ingredient">{{ ingredient.quantity | number:'1.0-2' }} {{
-                                    ingredient.unit }}</td>
-                            </ng-container>
-                            <tr mat-header-row *matHeaderRowDef="['name', 'quantity']"></tr>
-                            <tr mat-row *matRowDef="let row; columns: ['name', 'quantity']"></tr>
-                        </table>
+                            <ul>
+                                <li *ngFor="let ingredient of group.ingredients">
+                                    {{ ingredient?.Ingredient?.name }} - {{ ingredient.quantity | number:'1.0-2' }} {{ ingredient.unit }}
+                                </li>
+                            </ul>
+                        </div>
                     </mat-card-content>
                 </mat-card>
 

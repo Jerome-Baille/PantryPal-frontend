@@ -12,6 +12,7 @@
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
+  box-sizing: border-box;
 
   @media screen and (max-width: 768px) {
     width: auto;
@@ -140,7 +141,7 @@ button.mat-icon-button {
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  background-color: #f8f9fa;  // subtle contrasting background
+  background-color: #f8f9fa; // subtle contrasting background
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -165,4 +166,12 @@ button.mat-icon-button {
     display: flex;
     justify-content: space-between;
   }
+}
+
+.timers-section .divider {
+  margin: 10px 0;
+}
+
+.timer-container {
+  width: 100%;
 }

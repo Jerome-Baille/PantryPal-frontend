@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, merge, EMPTY } from 'rxjs';
 import { Book as BookModel } from 'src/app/models/book.model';
 import { BookService } from 'src/app/services/book.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { RecipeService } from 'src/app/services/recipe.service';
+import { ItemService } from 'src/app/services/item.service'; // new import
 
 @Component({
   selector: 'app-recipe-form',
@@ -23,8 +24,8 @@ export class RecipeFormComponent implements OnInit {
   recipe: any;
   error: boolean = false;
 
-  isIngredientListModified = false;
-  originalIngredients: any[] = [];
+  isTimerModified = false; // new flag
+  removedTimers: number[] = []; // new property to track timer IDs for deletion
 
   constructor(
     private route: ActivatedRoute,
@@ -35,12 +36,18 @@ export class RecipeFormComponent implements OnInit {
 
     private bookService: BookService,
     private ingredientService: IngredientService,
+    private itemService: ItemService // injected for timer updates
   ) {
     this.initializeForm();
+    // Initialize ingredients FormArray reference
+    this.ingredients = this.recipeForm.get('ingredients') as FormArray;
   }
 
   ngOnInit(): void {
-    this.ingredients = this.recipeForm.get('ingredients') as FormArray;
+    // New subscription to timer changes
+    this.recipeForm.get('timers')?.valueChanges.subscribe(() => {
+      this.isTimerModified = true;
+    });
 
     // Check the URL to determine if it's a create or update scenario
     this.route.url.subscribe(segments => {
@@ -115,6 +122,8 @@ export class RecipeFormComponent implements OnInit {
           notes: this.recipe.notes
         }
       }, { emitEvent: false });
+
+      // Update timers FormArray including timer id
       if (this.recipe.timers && Array.isArray(this.recipe.timers)) {
         const timersFormArray = this.recipeForm.get('timers') as FormArray;
         this.recipe.timers.forEach((timer: any) => {
@@ -123,6 +132,7 @@ export class RecipeFormComponent implements OnInit {
           const minutes = Math.floor((total % 3600) / 60);
           const seconds = total % 60;
           timersFormArray.push(this.fb.group({
+            id: [timer.id], // new field
             name: [timer.name],
             hours: [hours],
             minutes: [minutes],
@@ -130,29 +140,15 @@ export class RecipeFormComponent implements OnInit {
           }));
         });
       }
-      // Initialize the ingredients FormArray
-      if (Array.isArray(this.recipe.Ingredients)) {
-        this.recipe.Ingredients.forEach((ingredient: any) => {
-          const ingredientGroup = this.fb.group({
-            id: [ingredient.id],
-            name: [ingredient.name],
-            quantity: [ingredient.quantity],
-            unit: [ingredient.unit]
-          });
-          this.ingredients.push(ingredientGroup);
-        });
-      }
-
-      // Detect changes in the ingredients FormArray
-      this.recipeForm.get('ingredients')?.valueChanges.subscribe(() => {
-        this.isIngredientListModified = true;
-        this.isFormModified = true;
-      });
     }
   }
 
   private subscribeToFormChanges() {
-    this.recipeForm.valueChanges.subscribe(() => {
+    // Only track changes to Book and recipe groups
+    merge(
+      this.recipeForm.get('Book')!.valueChanges,
+      this.recipeForm.get('recipe')!.valueChanges
+    ).subscribe(() => {
       this.isFormModified = true;
     });
   }
@@ -210,85 +206,175 @@ export class RecipeFormComponent implements OnInit {
     } else {
       this.handleUpdateSubmit();
     }
+    // Removed duplicate timer processing loop from here.
   }
 
   handleCreateSubmit() {
     const recipe = this.recipeForm.get('recipe')!.value;
     const ingredients = (this.recipeForm.get('ingredients') as FormArray).value;
+    // Extract timers from form without mapping them here
     const timersRaw = (this.recipeForm.get('timers') as FormArray).value;
-    const timers = timersRaw.map((t: any) => ({
-      name: t.name,
-      timeInSeconds: (Number(t.hours) * 3600) + (Number(t.minutes) * 60) + Number(t.seconds)
-    }));
-
-    this.recipeService.createRecipe(this.book, recipe, ingredients, timers).subscribe({
-      next: () => {
-        this.resetForm();
+    
+    // Remove timers from initial recipe creation; they will be created separately.
+    this.recipeService.createRecipe(this.book, recipe, ingredients, []).subscribe({
+      next: (recipeResponse) => {
+        const recipeId = recipeResponse.id;
+        // Create timers separately for new ones (without an id)
+        const timerObservables = timersRaw
+          .filter((t: any) => !t.id)
+          .map((t: any) => {
+            const newTimer = {
+              name: t.name,
+              timeInSeconds: (Number(t.hours) * 3600) + (Number(t.minutes) * 60) + Number(t.seconds),
+              recipeId: recipeId // include recipeId if backend requires it
+            };
+            return this.itemService.createTimer(newTimer);
+          });
+        if (timerObservables.length > 0) {
+          forkJoin(timerObservables).subscribe({
+            next: () => {
+              this.resetForm();
+              this.handleSnackBar('Recipe and timers created successfully!', ['snackbar-success']);
+            },
+            error: (error) => this.handleSnackBar(error)
+          });
+        } else {
+          this.resetForm();
+          this.handleSnackBar('Recipe created successfully!', ['snackbar-success']);
+        }
       },
       error: (error) => {
-        // Handle error
         this.handleSnackBar(error.error.error.errors[0].message);
-        console.error('Error creating recipe:', error)
-      },
-      complete: () => {
-        this.handleSnackBar('Recipe created successfully!', ['snackbar-success']);
+        console.error('Error creating recipe:', error);
       }
     });
   }
 
   handleUpdateSubmit() {
-    if (!this.isFormModified && !this.isIngredientListModified) {
-      return;
-    }
     const recipeId = this.recipe.id;
-    // Convert timers before merging into update payload
-    const timersRaw = (this.recipeForm.get('timers') as FormArray).value;
-    const timers = timersRaw.map((t: any) => ({
-      name: t.name,
-      timeInSeconds: (Number(t.hours) * 3600) + (Number(t.minutes) * 60) + Number(t.seconds)
-    }));
-    const updatedRecipe = { ...this.recipe, ...this.recipeForm.value, timers };
-    const ingredients = updatedRecipe.Ingredients;
-    delete updatedRecipe.Ingredients;
-    
-    const updatePayload = { 
-      ...updatedRecipe.recipe, 
-      timers: updatedRecipe.timers // merge timers into the payload for backend processing
-    };
+    const updatedRecipe = { ...this.recipe, ...this.recipeForm.value };
+    delete updatedRecipe.timers;
+    const recipeUpdates: Observable<any>[] = [];
 
-    const observables: Observable<any>[] = [];
-
-    // Update book if changed
-    if (
-      updatedRecipe.Book.title !== this.recipe.Book.title ||
-      updatedRecipe.Book.author !== this.recipe.Book.author
-    ) {
-      updatedRecipe.bookId = updatedRecipe.Book.id;
+    if (this.isFormModified) {
+      const currentRecipe = this.recipeForm.get('recipe')?.value;
+      const originalRecipe = {
+        title: this.recipe.title,
+        typeOfMeal: this.recipe.typeOfMeal,
+        instructions: this.recipe.instructions,
+        notes: this.recipe.notes
+      };
+      
+      if (JSON.stringify(currentRecipe) !== JSON.stringify(originalRecipe)) {
+        recipeUpdates.push(this.recipeService.updateRecipe(recipeId, updatedRecipe.recipe));
+      }
     }
 
-    // Update recipe if any change (including timers)
-    if (JSON.stringify(updatePayload) !== JSON.stringify(this.recipe)) {
-      observables.push(this.recipeService.updateRecipe(recipeId, updatePayload));
-    }
-
-    // Update ingredients
-    if (this.isIngredientListModified) {
-      observables.push(...this.getIngredientObservables(ingredients, recipeId));
-    }
-
-    forkJoin(observables).subscribe({
-      next: () => {
-        this.recipe = updatedRecipe;
-        this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
-      },
-      error: (error) => {
-        this.handleSnackBar(error);
-        console.error('Error while updating recipe: ', error);
-      },
-      complete: () => {
-        this.router.navigate(['/recipe/detail', this.recipe.id]);
+    // Process timers: update only dirty timers or create new ones.
+    const timersFormArray = this.recipeForm.get('timers') as FormArray;
+    const timerObservables: Observable<any>[] = [];
+    timersFormArray.controls.forEach(timerCtrl => {
+      const timerValue = timerCtrl.value;
+      if (!timerValue.id) {
+        const newTimer = {
+          name: timerValue.name,
+          timeInSeconds: (Number(timerValue.hours) * 3600) + (Number(timerValue.minutes) * 60) + Number(timerValue.seconds),
+          recipeId
+        };
+        timerObservables.push(this.itemService.createTimer(newTimer));
+      } else if (timerCtrl.dirty) {
+        const updatedTimer = {
+          name: timerValue.name,
+          timeInSeconds: (Number(timerValue.hours) * 3600) + (Number(timerValue.minutes) * 60) + Number(timerValue.seconds)
+        };
+        timerObservables.push(this.itemService.updateRecipeTimer(timerValue.id, updatedTimer));
       }
     });
+
+    // Execute recipe updates and timer updates separately.
+    if (recipeUpdates.length > 0) {
+      forkJoin(recipeUpdates).subscribe({
+        next: () => {
+          this.recipe = { ...this.recipe, ...updatedRecipe };
+          forkJoin(timerObservables.length > 0 ? timerObservables : [new Observable(sub => { sub.next(); sub.complete(); })])
+          .subscribe({
+            next: () => {
+              // Now process deletions for removed timers.
+              if (this.removedTimers.length > 0) {
+                const deleteObservables = this.removedTimers.map(id => this.itemService.deleteTimer(id));
+                forkJoin(deleteObservables).subscribe({
+                  next: () => {
+                    this.removedTimers = [];
+                    this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
+                    this.router.navigate(['/recipe/detail', this.recipe.id]);
+                  },
+                  error: (error) => {
+                    console.error('Error deleting timers: ', error);
+                    this.removedTimers = [];
+                    this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
+                    this.router.navigate(['/recipe/detail', this.recipe.id]);
+                  }
+                });
+              } else {
+                this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
+                this.router.navigate(['/recipe/detail', this.recipe.id]);
+              }
+            },
+            error: (error) => {
+              this.handleSnackBar(error);
+              console.error('Error updating timers: ', error);
+            }
+          });
+        },
+        error: (error) => {
+          this.handleSnackBar(error);
+          console.error('Error while updating recipe: ', error);
+        }
+      });
+    } else if (timerObservables.length > 0) { // Only timer updates present.
+      forkJoin(timerObservables).subscribe({
+        next: () => {
+          if (this.removedTimers.length > 0) {
+            const deleteObservables = this.removedTimers.map(id => this.itemService.deleteTimer(id));
+            forkJoin(deleteObservables).subscribe({
+              next: () => {
+                this.removedTimers = [];
+                this.handleSnackBar('Timers updated successfully!', ['snackbar-success']);
+                this.router.navigate(['/recipe/detail', this.recipe.id]);
+              },
+              error: (error) => {
+                console.error('Error deleting timers: ', error);
+                this.removedTimers = [];
+                this.handleSnackBar('Timers updated successfully!', ['snackbar-success']);
+                this.router.navigate(['/recipe/detail', this.recipe.id]);
+              }
+            });
+          } else {
+            this.handleSnackBar('Timers updated successfully!', ['snackbar-success']);
+            this.router.navigate(['/recipe/detail', this.recipe.id]);
+          }
+        },
+        error: (error) => {
+          this.handleSnackBar(error);
+          console.error('Error updating timers: ', error);
+        }
+      });
+    } else if (this.removedTimers.length > 0) { // Add this new condition
+      // Handle case where only timer deletions exist
+      const deleteObservables = this.removedTimers.map(id => this.itemService.deleteTimer(id));
+      forkJoin(deleteObservables).subscribe({
+        next: () => {
+          this.removedTimers = [];
+          this.handleSnackBar('Timers deleted successfully!', ['snackbar-success']);
+          this.router.navigate(['/recipe/detail', this.recipe.id]);
+        },
+        error: (error) => {
+          console.error('Error deleting timers: ', error);
+          this.removedTimers = [];
+          this.handleSnackBar(error);
+        }
+      });
+    }
   }
 
   private handleSnackBar(message: string, panelClasses?: string[]) {
@@ -298,33 +384,6 @@ export class RecipeFormComponent implements OnInit {
       horizontalPosition: 'center',
       panelClass: panelClasses
     });
-  }
-
-  getIngredientObservables(ingredients: any[], recipeId: number): any[] {
-    const observables: any[] = [];
-
-    if (this.ingredients.length !== 0) {
-      this.ingredients.controls.forEach((control, index) => {
-        const ingredient = ingredients.find((i: any) => i.id === control.value.id);
-        if (ingredient) {
-          const updatedIngredient = control.value;
-
-          // Check if the ingredient details have been modified
-          if (!this.isIngredientListModified) {
-            return; // Skip the PUT API call if the ingredient details are unchanged
-          }
-
-          // Make a PUT API call to update the existing ingredient
-          observables.push(this.ingredientService.updateIngredient(ingredient.id, updatedIngredient));
-        } else {
-          const newIngredient = control.value;
-          // Make a POST API call to create the new ingredient
-          observables.push(this.ingredientService.createIngredient(recipeId, newIngredient));
-        }
-      });
-    }
-
-    return observables;
   }
 
   resetForm() {
@@ -341,6 +400,8 @@ export class RecipeFormComponent implements OnInit {
     Object.keys(recipeGroup.controls).forEach((key) => {
       recipeGroup.get(key)?.setErrors(null);
     });
+
+    this.isTimerModified = false; // reset timer flag
   }
 
   // Add a getter for timers FormArray for convenience
@@ -349,17 +410,30 @@ export class RecipeFormComponent implements OnInit {
   }
 
   addTimer() {
-    this.timers.push(this.fb.group({
-      name: [''],
-      hours: [0],
-      minutes: [0],
-      seconds: [0]
+    const timersArray = this.recipeForm.get('timers') as FormArray;
+    // Create a new timer without an "id" property
+    timersArray.push(new FormGroup({
+      name: new FormControl(''),
+      hours: new FormControl(0),
+      minutes: new FormControl(0),
+      seconds: new FormControl(0)
     }));
-    this.isFormModified = true;
   }
 
   removeTimer(index: number) {
-    this.timers.removeAt(index);
-    this.isFormModified = true;
+    const timersArray = this.timers;
+    const timerControl = timersArray.at(index);
+    const timerValue = timerControl.value;
+    if (timerValue.id) {
+      // Mark the timer for deletion rather than calling the backend immediately.
+      this.removedTimers.push(timerValue.id);
+    }
+    timersArray.removeAt(index);
+  }
+
+  // Add handler for ingredient saves
+  onIngredientsSaved() {
+    // Optionally handle ingredient save completion
+    this.handleSnackBar('Ingredients saved successfully!', ['snackbar-success']);
   }
 }
