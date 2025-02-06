@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "pantry-pal:build:production"
+              "buildTarget": "pantry-pal:build:production"
             },
             "development": {
-              "browserTarget": "pantry-pal:build:development"
+              "buildTarget": "pantry-pal:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pantry-pal:build"
+            "buildTarget": "pantry-pal:build"
           }
         },
         "test": {
