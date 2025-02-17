@@ -16,6 +16,11 @@ export class AuthInterceptor implements HttpInterceptor {
   ) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // Bypass interceptor logic for auth endpoints
+    if (req.url.includes('/auth/refresh') || req.url.includes('/auth/logout')) {
+      return next.handle(req);
+    }
+
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
