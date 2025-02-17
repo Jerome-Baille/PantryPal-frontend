@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../../services/snackbar.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -22,7 +22,7 @@ export class AddToShoppingListComponent implements OnInit {
   @Input() recipes: any[] = [];
 
   constructor(
-    private snackBar: MatSnackBar
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -35,10 +35,7 @@ export class AddToShoppingListComponent implements OnInit {
     localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
     const recipeTitle = this.recipes.length === 0 ? this.recipe.title : this.recipes.find(recipe => recipe.id === recipeId)?.title;
     const message = index === -1 ? `${recipeTitle} has been added to the grocery list.` : `${recipeTitle} has been removed from the grocery list.`;
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      verticalPosition: 'top'
-    });
+    this.snackbarService.showInfo(message);
   }
 
   isRecipeInShoppingList(recipeId: number): boolean {

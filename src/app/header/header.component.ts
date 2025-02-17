@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { SearchService } from 'src/app/services/search.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 import { MatInputModule } from '@angular/material/input';
+import { Subscription } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-header',
@@ -29,17 +32,19 @@ import { MatInputModule } from '@angular/material/input';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
     faMagnifyingGlass = faMagnifyingGlass;
     isDropdownMenuOpen = false;
     searchForm: FormGroup;
     isLogged: boolean = false;
+    private authSubscription?: Subscription;
 
     constructor(
         private formBuilder: FormBuilder,
         private searchService: SearchService,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private snackbarService: SnackbarService
     ) {
         this.searchForm = this.formBuilder.group({
             search: ['']
@@ -47,7 +52,15 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isLogged = this.authService.isLoggedIn();
+        this.authSubscription = this.authService.isLoggedIn().subscribe(
+            isLoggedIn => this.isLogged = isLoggedIn
+        );
+    }
+
+    ngOnDestroy() {
+        if (this.authSubscription) {
+            this.authSubscription.unsubscribe();
+        }
     }
 
     toggleDropdownMenu() {
@@ -73,10 +86,12 @@ export class HeaderComponent implements OnInit {
     onLogout() {
         this.authService.logout().subscribe({
             next: () => {
+                this.snackbarService.showInfo('You have been logged out.');
                 this.isLogged = false;
                 this.router.navigate(['/auth/login']);
             },
             error: (error) => {
+                this.snackbarService.showError('An error occurred while logging out.');
                 console.error('Logout failed:', error);
             }
         });

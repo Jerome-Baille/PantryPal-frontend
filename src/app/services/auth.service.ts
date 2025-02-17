@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 interface LoginResponse {
   accessToken: string;
@@ -15,31 +16,39 @@ interface LoginResponse {
 })
 export class AuthService {
   private authURL = environment.authURL;
-  private readonly LOGIN_STATUS_KEY = 'isLoggedIn';
+  private authStateSubject = new BehaviorSubject<boolean>(false);
+  authState$ = this.authStateSubject.asObservable();
 
   constructor(
     private http: HttpClient,
-  ) { }
+  ) {
+    this.verifyAuthState();
+  }
 
-  // Method to handle user logout
+  private verifyAuthState() {
+    this.http.get<{auth: boolean}>(`${this.authURL}/verify`, { withCredentials: true })
+      .subscribe({
+        next: (response) => this.authStateSubject.next(response.auth),
+        error: () => this.authStateSubject.next(false)
+      });
+  }
+
   logout() {
     return this.http.post(`${this.authURL}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
-        this.setLoginStatus(false);
+        this.authStateSubject.next(false);
       })
     );
   }
 
-  // Method to handle user login
   login(username: string, password: string) {
     return this.http.post<LoginResponse>(`${this.authURL}/login`, { username, password }, { withCredentials: true }).pipe(
       tap(() => {
-        this.setLoginStatus(true);
+        this.authStateSubject.next(true);
       })
     );
   }
 
-  // Method to handle user registration
   register(username: string, email: string, password: string) {
     return this.http.post(`${this.authURL}/register`, { username, email, password }, { withCredentials: true });
   }
@@ -48,13 +57,7 @@ export class AuthService {
     return this.http.post(`${this.authURL}/refresh`, {}, { withCredentials: true });
   }
 
-  // Set login status in local storage
-  private setLoginStatus(status: boolean) {
-    localStorage.setItem(this.LOGIN_STATUS_KEY, JSON.stringify(status));
-  }
-
-  // Get login status from local storage
-  isLoggedIn(): boolean {
-    return JSON.parse(localStorage.getItem(this.LOGIN_STATUS_KEY) || 'false');
+  isLoggedIn(): Observable<boolean> {
+    return this.authState$;
   }
 }

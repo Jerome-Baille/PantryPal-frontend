@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RecipeService } from '../../services/recipe.service';
 import { SearchService } from '../../services/search.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../../services/snackbar.service';
 import { Recipe } from '../../models/recipe.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -38,7 +38,7 @@ export class RecipeListComponent implements OnInit {
         private router: Router,
         private recipeService: RecipeService,
         private searchService: SearchService,
-        private snackBar: MatSnackBar
+        private snackbarService: SnackbarService
     ) { }
 
     ngOnInit() {
@@ -94,10 +94,7 @@ export class RecipeListComponent implements OnInit {
                 this.recipes = recipes;
             },
             error: (error) => {
-                this.snackBar.open(error.error.error, 'Close', {
-                    duration: 3000,
-                    verticalPosition: 'top'
-                });
+                this.snackbarService.showError(error.error.error);
                 this.loadRecipes();
             },
             complete: () => {

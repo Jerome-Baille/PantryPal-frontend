@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, merge } from 'rxjs';
 import { Book as BookModel } from 'src/app/models/book.model';
 import { BookService } from 'src/app/services/book.service';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { ItemService } from 'src/app/services/item.service';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
@@ -55,7 +55,7 @@ export class RecipeFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private recipeService: RecipeService,
-    private snackBar: MatSnackBar,
+    private snackbarService: SnackbarService,
     private fb: FormBuilder,
 
     private bookService: BookService,
@@ -255,17 +255,17 @@ export class RecipeFormComponent implements OnInit {
           forkJoin(timerObservables).subscribe({
             next: () => {
               this.resetForm();
-              this.handleSnackBar('Recipe and timers created successfully!', ['snackbar-success']);
+              this.snackbarService.showSuccess('Recipe and timers created successfully!');
             },
-            error: (error) => this.handleSnackBar(error)
+            error: (error) => this.snackbarService.showError(error)
           });
         } else {
           this.resetForm();
-          this.handleSnackBar('Recipe created successfully!', ['snackbar-success']);
+          this.snackbarService.showSuccess('Recipe created successfully!');
         }
       },
       error: (error) => {
-        this.handleSnackBar(error.error.error.errors[0].message);
+        this.snackbarService.showError(error.error.error.errors[0].message);
         console.error('Error creating recipe:', error);
       }
     });
@@ -326,29 +326,29 @@ export class RecipeFormComponent implements OnInit {
                   forkJoin(deleteObservables).subscribe({
                     next: () => {
                       this.removedTimers = [];
-                      this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
+                      this.snackbarService.showSuccess('Recipe updated successfully!');
                       this.router.navigate(['/recipe/detail', this.recipe.id]);
                     },
                     error: (error) => {
                       console.error('Error deleting timers: ', error);
                       this.removedTimers = [];
-                      this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
+                      this.snackbarService.showSuccess('Recipe updated successfully!');
                       this.router.navigate(['/recipe/detail', this.recipe.id]);
                     }
                   });
                 } else {
-                  this.handleSnackBar('Recipe updated successfully!', ['snackbar-success']);
+                  this.snackbarService.showSuccess('Recipe updated successfully!');
                   this.router.navigate(['/recipe/detail', this.recipe.id]);
                 }
               },
               error: (error) => {
-                this.handleSnackBar(error);
+                this.snackbarService.showError(error);
                 console.error('Error updating timers: ', error);
               }
             });
         },
         error: (error) => {
-          this.handleSnackBar(error);
+          this.snackbarService.showError(error);
           console.error('Error while updating recipe: ', error);
         }
       });
@@ -360,23 +360,23 @@ export class RecipeFormComponent implements OnInit {
             forkJoin(deleteObservables).subscribe({
               next: () => {
                 this.removedTimers = [];
-                this.handleSnackBar('Timers updated successfully!', ['snackbar-success']);
+                this.snackbarService.showSuccess('Timers updated successfully!');
                 this.router.navigate(['/recipe/detail', this.recipe.id]);
               },
               error: (error) => {
                 console.error('Error deleting timers: ', error);
                 this.removedTimers = [];
-                this.handleSnackBar('Timers updated successfully!', ['snackbar-success']);
+                this.snackbarService.showSuccess('Timers updated successfully!');
                 this.router.navigate(['/recipe/detail', this.recipe.id]);
               }
             });
           } else {
-            this.handleSnackBar('Timers updated successfully!', ['snackbar-success']);
+            this.snackbarService.showSuccess('Timers updated successfully!');
             this.router.navigate(['/recipe/detail', this.recipe.id]);
           }
         },
         error: (error) => {
-          this.handleSnackBar(error);
+          this.snackbarService.showError(error);
           console.error('Error updating timers: ', error);
         }
       });
@@ -386,25 +386,16 @@ export class RecipeFormComponent implements OnInit {
       forkJoin(deleteObservables).subscribe({
         next: () => {
           this.removedTimers = [];
-          this.handleSnackBar('Timers deleted successfully!', ['snackbar-success']);
+          this.snackbarService.showSuccess('Timers deleted successfully!');
           this.router.navigate(['/recipe/detail', this.recipe.id]);
         },
         error: (error) => {
           console.error('Error deleting timers: ', error);
           this.removedTimers = [];
-          this.handleSnackBar(error);
+          this.snackbarService.showError(error);
         }
       });
     }
-  }
-
-  private handleSnackBar(message: string, panelClasses?: string[]) {
-    this.snackBar.open(message, 'Done', {
-      duration: 3000,
-      verticalPosition: 'top',
-      horizontalPosition: 'center',
-      panelClass: panelClasses
-    });
   }
 
   resetForm() {
@@ -455,6 +446,6 @@ export class RecipeFormComponent implements OnInit {
   // Add handler for ingredient saves
   onIngredientsSaved() {
     // Optionally handle ingredient save completion
-    this.handleSnackBar('Ingredients saved successfully!', ['snackbar-success']);
+    this.snackbarService.showSuccess('Ingredients saved successfully!');
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RecipeService } from 'src/app/services/recipe.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 import { getLocalStorageData, setLocalStorageData } from 'src/app/helpers/local-storage.helper';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,7 +31,7 @@ export class ShoppingListComponent implements OnInit {
 
   constructor(
     private recipeService: RecipeService,
-    private snackBar: MatSnackBar
+    private snackbarService: SnackbarService
   ) { }
 
   ngOnInit(): void {
@@ -77,10 +77,7 @@ export class ShoppingListComponent implements OnInit {
           localStorage.removeItem('doneList');
         },
         error: (error) => {
-          this.snackBar.open('Error fetching ingredients', 'Close', {
-            duration: 3000,
-            verticalPosition: 'top'
-          });
+          this.snackbarService.showError('Error fetching ingredients');
         }
       });
     } else {

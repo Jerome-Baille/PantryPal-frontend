@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from 'src/app/services/snackbar.service';
 import { Subscription, takeWhile, timer } from 'rxjs';
 
 @Component({
@@ -28,7 +29,10 @@ export class TimerComponent implements OnInit, OnDestroy {
   private audio: HTMLAudioElement | null = null;
   private audioInterval: any = null;
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(
+    private snackbarService: SnackbarService,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.displayTime = this.formatTime(this.timerInfo.timeInSeconds);
@@ -106,11 +110,11 @@ export class TimerComponent implements OnInit, OnDestroy {
         if (!this.audio || this.audio.ended) {
           this.clearAudioInterval();
           if (!this.snackBar._openedSnackBarRef) {
-            this.stopAudioLoop(); // Pause audio loop when it ends
+            this.stopAudioLoop();
           }
           return;
         }
-  
+
         if (this.snackBar._openedSnackBarRef) {
           this.audio?.play();
         } else {
@@ -151,11 +155,7 @@ export class TimerComponent implements OnInit, OnDestroy {
           // Use timerInfo.recipe if available; otherwise, fallback to a default label.
           const recipeLabel = this.timerInfo.recipe ? this.timerInfo.recipe : 'Recipe Timer';
           const timerName = this.timerInfo.name;
-          this.snackBar.open(`${timerName} timer for "${recipeLabel}" has finished!`, 'Dismiss', {
-            duration: 60000, // 1 minute
-            verticalPosition: 'top',
-            horizontalPosition: 'center',
-          });
+          this.snackbarService.showInfo(`${timerName} timer for "${recipeLabel}" has finished!`);
 
         } else {
           this.displayTime = this.formatTime(remainingTime);

@@ -77,3 +77,34 @@ h1, h2, h3, h4, h5, h6, .mat-mdc-card-title, .card-title {
 .toolbar__title {
   font-family: 'Cookie', cursive !important;
 }
+
+// Snackbar styles
+.snackbar-success {
+  .mdc-snackbar__surface {
+    background-color: #4CAF50 !important;
+    color: white !important;
+  }
+  button {
+    color: white !important;
+  }
+}
+
+.snackbar-error {
+  .mdc-snackbar__surface {
+    background-color: #FE5050 !important;
+    color: white !important;
+  }
+  button {
+    color: white !important;
+  }
+}
+
+.snackbar-info {
+  .mdc-snackbar__surface {
+    background-color: #2196F3 !important;
+    color: white !important;
+  }
+  button {
+    color: white !important;
+  }
+}
