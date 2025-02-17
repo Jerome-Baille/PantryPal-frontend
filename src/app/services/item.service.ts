@@ -25,6 +25,10 @@ export class ItemService {
     return this.http.get(`${this.itemsURL}/recipeIngredients/recipe/${recipeId}`, { withCredentials: true });
   }
 
+  deleteRecipeIngredient(id: number) {
+    return this.http.delete(`${this.itemsURL}/recipeIngredients/${id}`, { withCredentials: true });
+  }
+
   updateRecipeSection(id: number, section: any) {
     return this.http.put(`${this.itemsURL}/recipeSections/${id}`, section, { withCredentials: true });
   }

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn } from '@angular/common/http';
 import { Observable, Subject, EMPTY, throwError } from 'rxjs';
 import { catchError, switchMap, finalize } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
@@ -54,3 +54,13 @@ export class AuthInterceptor implements HttpInterceptor {
     );
   }
 }
+
+export const tokenInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<any>,
+  next: HttpHandlerFn,
+) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const interceptor = new AuthInterceptor(authService, router);
+  return interceptor.intercept(req, { handle: next });
+};
