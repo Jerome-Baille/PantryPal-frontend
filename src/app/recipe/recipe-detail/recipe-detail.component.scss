@@ -73,6 +73,10 @@ li:before {
   .mat-mdc-card {
     position: relative;
     cursor: pointer;
+
+    mat-card-title {
+      text-transform: capitalize;
+    }
   }
 }
 
