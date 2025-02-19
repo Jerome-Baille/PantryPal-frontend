@@ -45,6 +45,8 @@ export class RecipeService {
       title: recipe.title,
       instructions: recipe.instructions,
       notes: recipe.notes,
+      typeOfMeal: recipe.typeOfMeal,
+      servings: recipe.servings,
       preparationTime: recipe.preparationTime,
       preparationUnit: recipe.preparationUnit,
       cookingTime: recipe.cookingTime,

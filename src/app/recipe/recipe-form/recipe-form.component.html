@@ -87,6 +87,13 @@
                 </mat-form-field>
 
                 <mat-form-field>
+                    <mat-label>
+                        {{ 'SERVINGS' | translate }}
+                    </mat-label>
+                    <input matInput type="number" min="1" placeholder="Number of servings" formControlName="servings">
+                </mat-form-field>
+
+                <mat-form-field>
                     <mat-label>Instructions</mat-label>
                     <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
                         required formControlName="instructions"></textarea>

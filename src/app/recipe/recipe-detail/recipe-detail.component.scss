@@ -107,13 +107,38 @@ li:before {
   top: 0;
 }
 
+.ingredients-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
 .servings-selector {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 16px 0;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
 
-  mat-form-field {
-    width: 80px;
+  .mat-mdc-select {
+    min-width: 60px;
+    width: auto;
+    margin-top: -8px;
+  }
+
+  ::ng-deep {
+    .mdc-text-field--no-label {
+      height: 35px;
+      align-items: center;
+    }
+
+    .mat-mdc-select-trigger {
+      height: 35px;
+    }
+
+    .mat-mdc-form-field-infix {
+      padding: 8px 0;
+      min-height: unset;
+    }
   }
 }

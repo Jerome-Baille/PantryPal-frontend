@@ -111,6 +111,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
       recipe: this.fb.group({
         title: ['', Validators.required],
         typeOfMeal: [''],
+        servings: [1, [Validators.required, Validators.min(1)]],
         instructions: ['', Validators.required],
         notes: ['']
       }),
@@ -155,6 +156,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         recipe: {
           title: this.recipe.title,
           typeOfMeal: this.recipe.typeOfMeal,
+          servings: this.recipe.servings || 1,
           instructions: this.recipe.instructions,
           notes: this.recipe.notes
         }
