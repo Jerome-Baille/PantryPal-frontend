@@ -30,10 +30,10 @@ export class IngredientService {
 
   createIngredient(recipeId: number, ingredient: RecipeIngredient): Observable<any> {
     return this.http.post(`${this.ingredientsURL}`, {
-      name: ingredient.Ingredient?.name || '',
+      name: ingredient.Ingredient?.name,
       recipeId: recipeId,
-      quantity: ingredient.quantity,
-      unit: ingredient.unit,
+      quantity: ingredient.quantity || 1,
+      unit: ingredient.unit || 'unit',
       recipeSectionId: ingredient.recipeSectionId || null
     }, { withCredentials: true });
   }

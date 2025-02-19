@@ -73,5 +73,8 @@
     "HAVE_ACCOUNT": "Already have an account?",
     "SIGN_UP": "Sign Up",
     "EMAIL": "Email",
-    "SERVINGS": "Servings"
+    "SERVINGS": "Servings",
+    "BOOK_SECTION": "Book",
+    "TIMERS_SECTION": "Timers",
+    "RECIPE_SECTION": "Recipe"
 }

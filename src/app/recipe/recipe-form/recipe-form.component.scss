@@ -5,14 +5,18 @@
   align-items: flex-start;
   gap: 20px;
   width: 100%;
-  max-width: 800px;
-  padding: 20px;
+  max-width: 900px;
+  padding: 24px;
   margin: auto;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
   box-sizing: border-box;
+
+  @media screen and (max-width: 960px) {
+    padding: 16px;
+  }
 
   @media screen and (max-width: 768px) {
     width: auto;
@@ -22,6 +26,7 @@
 /* Input styles */
 .mat-mdc-form-field {
   width: 100%;
+  margin-bottom: 8px;
 
   input.mat-input-element,
   textarea.mat-input-element {
@@ -102,6 +107,11 @@ button.mat-raised-button {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  box-sizing: border-box;
 
   &__create {
     justify-content: flex-end;
@@ -141,12 +151,10 @@ button.mat-icon-button {
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  background-color: #f8f9fa; // subtle contrasting background
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
 
   .timer-group {
     display: flex;
@@ -165,6 +173,11 @@ button.mat-icon-button {
   .timer-card {
     display: flex;
     justify-content: space-between;
+    background-color: #fff;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
   }
 }
 
@@ -174,4 +187,29 @@ button.mat-icon-button {
 
 .timer-container {
   width: 100%;
+}
+
+.section-card {
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .mat-mdc-card-header {
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0;
+
+    .mat-mdc-card-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #2c3e50;
+      margin: 0;
+    }
+  }
+
+  .mat-mdc-card-content {
+    padding: 20px;
+  }
 }

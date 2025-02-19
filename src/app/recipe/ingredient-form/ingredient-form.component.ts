@@ -117,14 +117,12 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
 
   addIngredient() {
     const ingredientForm = this.formBuilder.group({
-      Ingredient: this.formBuilder.group({
-        name: ['', Validators.required]
-      }),
+      Ingredient: this.formBuilder.group({ name: ['', Validators.required] }),
       quantity: [null, Validators.required],
-      unit: [''],
+      unit: ['Unit'],
       recipeSectionId: [null]
     });
-    ingredientForm.markAsDirty(); // mark new ingredient as dirty
+    ingredientForm.markAsDirty();
     this.ingredients.push(ingredientForm);
   }
 

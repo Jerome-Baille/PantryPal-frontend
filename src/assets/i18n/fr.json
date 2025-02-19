@@ -73,5 +73,8 @@
     "HAVE_ACCOUNT": "Déjà un compte ?",
     "SIGN_UP": "S'inscrire",
     "EMAIL": "Email",
-    "SERVINGS": "Portions"
+    "SERVINGS": "Portions",
+    "BOOK_SECTION": "Livre",
+    "TIMERS_SECTION": "Minuteurs",
+    "RECIPE_SECTION": "Recette"
 }
