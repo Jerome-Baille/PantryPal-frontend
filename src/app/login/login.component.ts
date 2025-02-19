@@ -5,11 +5,13 @@ import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { Subscription } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, MatCardModule, ReactiveFormsModule],
+    imports: [CommonModule, MatCardModule, ReactiveFormsModule, TranslateModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
@@ -19,11 +21,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     registerForm: FormGroup;
     isLogged: boolean = false;
     private authSubscription?: Subscription;
+    private languageSubscription?: Subscription;
+    currentLang: string;
 
     constructor(
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private languageService: LanguageService
     ) {
         this.loginForm = this.formBuilder.group({
             username: ['', [Validators.required]],
@@ -35,6 +40,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]]
         });
+
+        this.currentLang = languageService.getCurrentLanguage();
     }
 
     ngOnInit() {
@@ -46,11 +53,18 @@ export class LoginComponent implements OnInit, OnDestroy {
                 }
             }
         );
+
+        this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+            lang => this.currentLang = lang
+        );
     }
 
     ngOnDestroy() {
         if (this.authSubscription) {
             this.authSubscription.unsubscribe();
+        }
+        if (this.languageSubscription) {
+            this.languageSubscription.unsubscribe();
         }
     }
 

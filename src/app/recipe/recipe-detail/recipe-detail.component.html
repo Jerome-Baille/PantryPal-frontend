@@ -1,7 +1,9 @@
 <ng-container *ngIf="error; else recipeDetails">
     <mat-card>
         <mat-card-content>
-            <p class="instructions">You are not authorized to view the recipe data.</p>
+            <p class="instructions">
+                {{ 'UNAUTHORISED_ACCESS' | translate }}
+            </p>
             <div class="card-button">
                 <button mat-raised-button color="primary" routerLink="/auth/login">Login</button>
             </div>
@@ -30,7 +32,7 @@
                     <ng-container *ngFor="let element of recipeTime; let i = index">
                         <ng-container *ngIf="!element.showTimer">
                             <mat-card (click)="toggleTimer(element)">
-                                <mat-card-title>{{ element.name }}</mat-card-title>
+                                <mat-card-title>{{ getTranslatedTimerName(element.name) | translate }}</mat-card-title>
                                 <mat-card-content>
                                     {{ formatTime(element.time) }}
                                 </mat-card-content>
@@ -50,7 +52,9 @@
 
 
                 <mat-card>
-                    <mat-card-title>Ingredients</mat-card-title>
+                    <mat-card-title>
+                        {{ 'INGREDIENTS' | translate }}
+                    </mat-card-title>
                     <mat-card-content>
                         <div *ngFor="let group of groupedIngredients">
                             <ng-container *ngIf="group.section">
@@ -58,7 +62,7 @@
                             </ng-container>
                             <ul>
                                 <li *ngFor="let ingredient of group.ingredients">
-                                    {{ ingredient?.Ingredient?.name }} - {{ ingredient.quantity | number:'1.0-2' }} {{ ingredient.unit }}
+                                    {{ ingredient?.Ingredient?.name }} - {{ ingredient.quantity | number:'1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
                                 </li>
                             </ul>
                         </div>
@@ -86,7 +90,7 @@
 
                 <div class="card-button">
                     <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">
-                        Update
+                        {{ 'RECIPE_UPDATE' | translate }}
                     </button>
                     <button mat-stroked-button color="basic" routerLink="/recipe/list">
                         <fa-icon [icon]="faArrowLeft"></fa-icon>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +13,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -27,12 +30,13 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule, 
         MatDividerModule, 
         ShareOptionsComponent, 
-        TimerComponent
+        TimerComponent,
+        TranslateModule
     ],
     templateUrl: './recipe-detail.component.html',
     styleUrls: ['./recipe-detail.component.scss']
 })
-export class RecipeDetailComponent {
+export class RecipeDetailComponent implements OnInit, OnDestroy {
     recipe: any = {};
     id: number = 0;
     error: any = null;
@@ -48,12 +52,18 @@ export class RecipeDetailComponent {
     faTrash = faTrash;
     faArrowLeft = faArrowLeft;
 
+    private languageSubscription?: Subscription;
+    currentLang: string;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private recipeService: RecipeService,
-        private dialog: MatDialog
-    ) { }
+        private dialog: MatDialog,
+        private languageService: LanguageService
+    ) { 
+        this.currentLang = languageService.getCurrentLanguage();
+    }
 
     ngOnInit(): void {
         // Get the recipe ID from the route parameters
@@ -81,7 +91,17 @@ export class RecipeDetailComponent {
                 this.recipe = {};
                 this.error = error;
             }
-        })
+        });
+
+        this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+            lang => this.currentLang = lang
+        );
+    }
+
+    ngOnDestroy(): void {
+        if (this.languageSubscription) {
+            this.languageSubscription.unsubscribe();
+        }
     }
 
     // New method to format time
@@ -93,6 +113,20 @@ export class RecipeDetailComponent {
         } else {
             return `${Math.round(seconds / 60)} min`;
         }
+    }
+
+    translateUnit(unit: string): string {
+        const translations: { [key: string]: string } = {
+            'tablespoon': 'UNIT_TABLESPOON',
+            'teaspoon': 'UNIT_TEASPOON',
+            'leaves': 'UNIT_LEAVES',
+            'leaf': 'UNIT_LEAF',
+            'pinch': 'UNIT_PINCH',
+            'pinches': 'UNIT_PINCHES'
+        };
+        
+        const normalizedUnit = unit.toLowerCase();
+        return translations[normalizedUnit] ? translations[normalizedUnit] : unit;
     }
 
     deleteRecipe(): void {
@@ -152,6 +186,20 @@ export class RecipeDetailComponent {
 
     toggleTimer(element: any): void {
         element.showTimer = !element.showTimer;
+    }
+
+    getTranslatedTimerName(timerName: string): string {
+        const name = timerName.toLowerCase();
+        switch (name) {
+            case 'cooking':
+                return 'TIMER_COOKING';
+            case 'waiting':
+                return 'TIMER_WAITING';
+            case 'fridge':
+                return 'TIMER_FRIDGE';
+            default:
+                return timerName;
+        }
     }
 
     // Add a getter to group ingredients by section

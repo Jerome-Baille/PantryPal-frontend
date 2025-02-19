@@ -3,33 +3,49 @@
         <div *ngFor="let ingredientForm of ingredients.controls; let i = index" [formGroupName]="i" class="ingredient-container">
             <div formGroupName="Ingredient">
                 <mat-form-field>
-                    <mat-label>Name</mat-label>
+                    <mat-label>
+                        {{ 'NAME' | translate }}
+                    </mat-label>
                     <input matInput formControlName="name" placeholder="Enter ingredient name">
-                    <mat-error *ngIf="ingredientForm.get('Ingredient.name')?.invalid">Name is required.</mat-error>
+                    <mat-error *ngIf="ingredientForm.get('Ingredient.name')?.invalid">
+                        {{ 'NAME_REQUIRED' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
 
             <mat-form-field>
-                <mat-label>Quantity</mat-label>
+                <mat-label>
+                    {{ 'QUANTITY' | translate }}
+                </mat-label>
                 <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity">
-                <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">Quantity is required.</mat-error>
+                <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">
+                    {{ 'QUANTITY_REQUIRED' | translate }}
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field>
-                <mat-label>Unit</mat-label>
+                <mat-label>
+                    {{ 'UNIT' | translate }}
+                </mat-label>
                 <input matInput formControlName="unit" placeholder="Enter unit">
-                <mat-error *ngIf="ingredientForm.get('unit')?.invalid">Unit is required.</mat-error>
+                <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
+                    {{ 'UNIT_REQUIRED' | translate }}
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field>
                 <mat-label>Section</mat-label>
                 <mat-select formControlName="recipeSectionId"
                             (selectionChange)="onSectionChange(ingredientForm, $event)">
-                    <mat-option [value]="null">No Section</mat-option>
+                    <mat-option [value]="null">
+                        {{ 'NO_SECTION' | translate }}
+                    </mat-option>
                     <mat-option *ngFor="let section of recipeSections" [value]="section.id">
                         {{ section.name }}
                     </mat-option>
-                    <mat-option value="create">+ Create New Section</mat-option>
+                    <mat-option value="create">
+                        {{ 'CREATE_SECTION' | translate }}
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
 
@@ -40,12 +56,16 @@
     </div>
 
     <div class="button-container">
-        <button mat-raised-button color="accent" type="button" (click)="addIngredient()">Add Ingredient</button>
-        <button mat-raised-button color="basic" type="button" (click)="addSaltAndPepper()">Salt & Pepper</button>
+        <button mat-raised-button color="accent" type="button" (click)="addIngredient()">
+            {{ 'ADD_INGREDIENT' | translate }}
+        </button>
+        <button mat-raised-button color="basic" type="button" (click)="addSaltAndPepper()">
+            {{ 'ADD_SALT_PEPPER' | translate }}
+        </button>
         <button mat-raised-button color="primary" type="button" 
                 *ngIf="isDirty || ingredients.controls.length"
                 (click)="isEditingMode ? updateIngredients() : saveIngredients()">
-            {{ isEditingMode ? 'Edit Ingredients' : 'Save Ingredients' }}
+            {{ (isEditingMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
         </button>
     </div>
 </div>

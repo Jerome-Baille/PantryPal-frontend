@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { ItemService } from 'src/app/services/item.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { SectionDialogComponent } from '../section-dialog/section-dialog.component';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { switchMap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
     selector: 'app-ingredient-form',
@@ -27,12 +29,13 @@ import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/
       MatIconModule, 
       MatInputModule,
       MatSelectModule,
-      MatButtonModule
+      MatButtonModule,
+      TranslateModule
     ],
     templateUrl: './ingredient-form.component.html',
     styleUrls: ['./ingredient-form.component.scss'],
 })
-export class IngredientFormComponent implements OnInit {
+export class IngredientFormComponent implements OnInit, OnDestroy {
   @Input() recipeForm!: FormGroup;
   @Output() ingredientsSaved = new EventEmitter<void>();
 
@@ -40,6 +43,8 @@ export class IngredientFormComponent implements OnInit {
   recipeSections: any[] = [];
   private recipeId: number | null = null;
   isDirty = false;
+  private languageSubscription?: Subscription;
+  currentLang: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,7 +52,10 @@ export class IngredientFormComponent implements OnInit {
     private ingredientService: IngredientService, // <-- new injection
     private route: ActivatedRoute,
     private dialog: MatDialog,
-  ) { }
+    private languageService: LanguageService
+  ) {
+    this.currentLang = languageService.getCurrentLanguage();
+  }
 
   ngOnInit() {
     this.ingredients = this.recipeForm.get('ingredients') as FormArray;
@@ -58,6 +66,15 @@ export class IngredientFormComponent implements OnInit {
         this.loadIngredients();
       }
     });
+    this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+      lang => this.currentLang = lang
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
   }
 
   loadIngredients() {

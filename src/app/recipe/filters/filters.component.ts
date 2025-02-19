@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Output, Input, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -7,10 +7,12 @@ import { MatAccordion, MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule, MatSelectionList } from '@angular/material/list';
-import { Observable } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
+import { Observable, Subscription } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { BookService } from 'src/app/services/book.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
+import { LanguageService } from 'src/app/services/language.service';
 
 @Component({
     selector: 'app-filters',
@@ -24,12 +26,13 @@ import { IngredientService } from 'src/app/services/ingredient.service';
       MatListModule, 
       MatFormFieldModule, 
       MatExpansionModule, 
-      MatChipsModule
+      MatChipsModule,
+      TranslateModule
     ],
     templateUrl: './filters.component.html',
     styleUrls: ['./filters.component.scss'],
 })
-export class FiltersComponent implements OnInit {
+export class FiltersComponent implements OnInit, OnDestroy {
   @Output() filtersSelected = new EventEmitter<{ bookIds?: string, ingredientNames?: string, typeOfMeals?: string }>();
   @Input() visible: boolean = false;
   @Output() dismissFiltersEvent = new EventEmitter<boolean>();
@@ -61,12 +64,17 @@ export class FiltersComponent implements OnInit {
   selectedIngredients: Set<string> = new Set<string>();
   selectedTypeOfMeals: string[] = [];
 
+  private languageSubscription?: Subscription;
+  currentLang: string;
+
   constructor(
     private bookService: BookService,
-    private ingredientService: IngredientService
+    private ingredientService: IngredientService,
+    private languageService: LanguageService
   ) {
     this.getBooks();
     this.getIngredients();
+    this.currentLang = this.languageService.getCurrentLanguage();
   }
 
   ngOnInit(): void {
@@ -79,6 +87,16 @@ export class FiltersComponent implements OnInit {
       startWith(''),
       map(value => this._filterIngredients(value || ''))
     );
+
+    this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+      lang => this.currentLang = lang
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
   }
 
   private _filterBooks(value: string): any[] {

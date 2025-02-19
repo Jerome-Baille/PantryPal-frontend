@@ -13,21 +13,29 @@
                             class="timer-card">
                             <div class="timer-group">
                                 <mat-form-field>
-                                    <mat-label>Timer Name</mat-label>
+                                    <mat-label>
+                                        {{ 'TIMER_NAME' | translate }}
+                                    </mat-label>
                                     <input matInput placeholder="Timer Name" formControlName="name">
                                 </mat-form-field>
                                 <div class="time-input-group">
                                     <mat-form-field>
-                                        <mat-label>Hours</mat-label>
+                                        <mat-label>
+                                            {{ 'HOURS' | translate }}
+                                        </mat-label>
                                         <input matInput type="number" placeholder="Hours" formControlName="hours">
                                     </mat-form-field>
                                     <mat-form-field>
-                                        <mat-label>Minutes</mat-label>
+                                        <mat-label>
+                                            {{ 'MINUTES' | translate }}
+                                        </mat-label>
                                         <input matInput type="number" placeholder="Minutes"
                                             formControlName="minutes">
                                     </mat-form-field>
                                     <mat-form-field>
-                                        <mat-label>Seconds</mat-label>
+                                        <mat-label>
+                                            {{ 'SECONDS' | translate }}
+                                        </mat-label>
                                         <input matInput type="number" placeholder="Seconds"
                                             formControlName="seconds">
                                     </mat-form-field>
@@ -40,7 +48,9 @@
                                 </button>
                             </div>
                         </div>
-                        <button mat-raised-button type="button" (click)="addTimer()">Add Timer</button>
+                        <button mat-raised-button type="button" (click)="addTimer()">
+                            {{ 'ADD_TIMER' | translate }}
+                        </button>
                     </div>
                 </div>
             </ng-container>
@@ -48,21 +58,31 @@
             <!-- Recipe Form -->
             <div formGroupName="recipe" class="full-width">
                 <mat-form-field>
-                    <mat-label>Title of the recipe</mat-label>
+                    <mat-label>
+                        {{ 'RECIPE_TITLE' | translate }}
+                    </mat-label>
                     <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
                         formControlName="title" class="recipe-title">
                     <mat-error
-                        *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">Title
-                        is
-                        required.</mat-error>
+                        *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">
+                        {{ 'RECIPE_TITLE_REQUIRED' | translate }}
+                    </mat-error>
                 </mat-form-field>
 
                 <mat-form-field>
-                    <mat-label>Type of Meal</mat-label>
+                    <mat-label>
+                        {{ 'TYPE_OF_MEAL' | translate }}
+                    </mat-label>
                     <mat-select placeholder="Type of Meal" formControlName="typeOfMeal">
-                        <mat-option value="starter">Starter</mat-option>
-                        <mat-option value="main-course">Main course</mat-option>
-                        <mat-option value="dessert">Dessert</mat-option>
+                        <mat-option value="starter">
+                            {{ 'STARTER' | translate }}
+                        </mat-option>
+                        <mat-option value="main-course">
+                            {{ 'MAIN_COURSE' | translate }}
+                        </mat-option>
+                        <mat-option value="dessert">
+                            {{ 'DESSERT' | translate }}
+                        </mat-option>
                     </mat-select>
                 </mat-form-field>
 
@@ -71,8 +91,9 @@
                     <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
                         required formControlName="instructions"></textarea>
                     <mat-error
-                        *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">Instructions
-                        are required.</mat-error>
+                        *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">
+                        {{ 'INSTRUCTIONS_REQUIRED' | translate }}
+                    </mat-error>
                 </mat-form-field>
 
                 <mat-form-field>
@@ -80,8 +101,9 @@
                     <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
                         rows="5"></textarea>
                     <mat-error
-                        *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">Notes
-                        are required.</mat-error>
+                        *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">
+                        {{ 'NOTES_REQUIRED' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
 
@@ -95,11 +117,11 @@
             <div class="button-container" [ngClass]="isUpdateMode? '' : 'button-container__create'">
                 <button *ngIf="isUpdateMode" mat-stroked-button color="basic" type="button"
                     routerLink="/recipe/detail/{{ recipe?.id }}">
-                    Cancel
+                    {{ 'CANCEL' | translate }}
                 </button>
                 <button mat-raised-button color="primary" type="submit"
                     [disabled]="!(isFormModified || isTimerModified)">
-                    Submit
+                    {{ (isUpdateMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
                 </button>
             </div>
         </form>
@@ -110,9 +132,13 @@
     <!-- Not Authorized Card -->
     <mat-card>
         <mat-card-content>
-            <p class="instructions">You are not authorized to view the recipe data.</p>
+            <p class="instructions">
+                {{ 'UNAUTHORISED_ACCESS' | translate }}
+            </p>
             <div class="card-button">
-                <button mat-raised-button color="primary" routerLink="/auth/login">Login</button>
+                <button mat-raised-button color="primary" routerLink="/auth/login">
+                    {{ 'LOGIN' | translate }}
+                </button>
             </div>
         </mat-card-content>
     </mat-card>

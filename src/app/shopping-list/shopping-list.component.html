@@ -3,7 +3,7 @@
         <mat-card>
             <mat-card-content>
                 <p>
-                    Select recipes to generate your grocery list.
+                    {{ 'NO_ITEMS_IN_GROCERY_LIST' | translate }}
                 </p>
             </mat-card-content>
         </mat-card>
@@ -15,7 +15,7 @@
         <mat-card>
             <mat-card-title class="card-title">
                 <div class="title">
-                    Grocery List
+                    {{ 'GROCERY_LIST' | translate }}
                 </div>
                 <div class="action-buttons">
                     <button mat-icon-button (click)="refreshList()">
@@ -48,7 +48,7 @@
             <mat-card>
                 <mat-card-title class="card-title">
                     <div class="title">
-                        Done
+                        {{ 'DONE_LIST' | translate }}
                     </div>
                 </mat-card-title>
                 <mat-card-content>

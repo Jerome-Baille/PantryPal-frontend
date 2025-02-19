@@ -1,26 +1,26 @@
 <mat-toolbar class="toolbar">
     <span class="toolbar__title" routerLink="/">PantryPal</span>
     <form [formGroup]="searchForm" class="search-bar">
-        <input type="text" id="search-bar" placeholder="Search..." aria-label="Search a recipe."
-            formControlName="search">
+        <input type="text" id="search-bar" [placeholder]="'SEARCH_PLACEHOLDER' | translate" aria-label="Search a recipe." formControlName="search">
         <button (click)="submitSearch('desktop')">
             <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
         </button>
     </form>
     <div class="full-menu">
-        <button mat-button routerLink="/shopping/list">Grocery List</button>
+        <button mat-button routerLink="/shopping/list">{{ 'GROCERY_LIST' | translate }}</button>
 
         <button mat-button [matMenuTriggerFor]="recipesMenu">
-            Recipes
+            {{ 'RECIPES' | translate }}
             <mat-icon>keyboard_arrow_down</mat-icon>
         </button>
         <mat-menu #recipesMenu="matMenu">
-            <button mat-menu-item routerLink="/recipe/list">List</button>
-            <button mat-menu-item routerLink="/recipe/create">Create</button>
+            <button mat-menu-item routerLink="/recipe/list">{{ 'RECIPE_LIST' | translate }}</button>
+            <button mat-menu-item routerLink="/recipe/create">{{ 'CREATE_RECIPE' | translate }}</button>
         </mat-menu>
 
-        <button mat-button *ngIf="!isLogged" routerLink="/auth/login">Login</button>
-        <button mat-button *ngIf="isLogged" (click)="onLogout()">Logout</button>
+        <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'">
+            <fa-icon [icon]="faUser"></fa-icon>
+        </button>
     </div>
 
     <button mat-button class="hamburger-button" (click)="toggleDropdownMenu()">
@@ -31,17 +31,17 @@
 <div *ngIf="isDropdownMenuOpen" class="dropdown-menu">
     <div class="dropdown-content">
         <form [formGroup]="searchForm" class="search-bar">
-            <input type="text" placeholder="Search..." aria-label="Search a recipe." formControlName="search">
+            <input type="text" [placeholder]="'SEARCH_PLACEHOLDER' | translate" aria-label="Search a recipe." formControlName="search">
             <button (click)="submitSearch('mobile')">
                 <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
             </button>
         </form>
-        <button mat-button routerLink="/shopping/list" (click)="toggleDropdownMenu()">
-            Grocery List
+        <button mat-button routerLink="/shopping/list" (click)="toggleDropdownMenu()">{{ 'GROCERY_LIST' | translate }}</button>
+        <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">{{ 'RECIPE_LIST' | translate }}</button>
+        <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">{{ 'CREATE_RECIPE' | translate }}</button>
+        <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" (click)="toggleDropdownMenu()">
+            <fa-icon [icon]="faUser"></fa-icon>
+            {{ (isLogged ? 'PROFILE' : 'LOGIN') | translate }}
         </button>
-        <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">Recipe List</button>
-        <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">Create Recipe</button>
-        <button mat-button *ngIf="!isLogged" routerLink="/auth/login" (click)="toggleDropdownMenu()">Login</button>
-        <button mat-button *ngIf="isLogged" (click)="onLogout(); toggleDropdownMenu()">Logout</button>
     </div>
 </div>

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, forkJoin, merge } from 'rxjs';
+import { Observable, forkJoin, merge, Subscription } from 'rxjs';
 import { Book as BookModel } from 'src/app/models/book.model';
 import { BookService } from 'src/app/services/book.service';
 import { RecipeService } from 'src/app/services/recipe.service';
@@ -17,6 +17,8 @@ import { BookFormComponent } from '../book-form/book-form.component';
 import { IngredientFormComponent } from '../ingredient-form/ingredient-form.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-recipe-form',
@@ -33,12 +35,13 @@ import { MatButtonModule } from '@angular/material/button';
     MatSelectModule,
     MatCardModule,
     BookFormComponent,
-    IngredientFormComponent
+    IngredientFormComponent,
+    TranslateModule
   ],
   templateUrl: './recipe-form.component.html',
   styleUrls: ['./recipe-form.component.scss']
 })
-export class RecipeFormComponent implements OnInit {
+export class RecipeFormComponent implements OnInit, OnDestroy {
   isUpdateMode = false;
   recipeForm!: FormGroup;
   ingredients!: FormArray;
@@ -51,19 +54,22 @@ export class RecipeFormComponent implements OnInit {
   isTimerModified = false;
   removedTimers: number[] = [];
 
+  private languageSubscription?: Subscription;
+  currentLang: string;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private recipeService: RecipeService,
     private snackbarService: SnackbarService,
     private fb: FormBuilder,
-
     private bookService: BookService,
-    private itemService: ItemService
+    private itemService: ItemService,
+    private languageService: LanguageService
   ) {
     this.initializeForm();
-    // Initialize ingredients FormArray reference
     this.ingredients = this.recipeForm.get('ingredients') as FormArray;
+    this.currentLang = languageService.getCurrentLanguage();
   }
 
   ngOnInit(): void {
@@ -83,6 +89,16 @@ export class RecipeFormComponent implements OnInit {
         this.initializeUpdateForm();
       }
     });
+
+    this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+      (lang: string) => this.currentLang = lang
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.languageSubscription) {
+      this.languageSubscription.unsubscribe();
+    }
   }
 
   private initializeForm() {

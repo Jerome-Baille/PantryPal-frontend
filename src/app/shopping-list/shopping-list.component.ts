@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-shopping-list',
@@ -18,7 +19,8 @@ import { MatButtonModule } from '@angular/material/button';
       MatCardModule, 
       MatIconModule, 
       MatSelectModule, 
-      MatListModule
+      MatListModule,
+      TranslateModule
     ],
     templateUrl: './shopping-list.component.html',
     styleUrls: ['./shopping-list.component.scss'],

@@ -1,0 +1,19 @@
+<mat-card class="language-settings">
+    <mat-card-header>
+        <mat-card-title>
+            {{ 'LANGUAGE' | translate }}
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-button-toggle-group [value]="currentLang" (change)="switchLanguage($event.value)">
+            <mat-button-toggle value="en">English</mat-button-toggle>
+            <mat-button-toggle value="fr">Français</mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-card-content>
+</mat-card>
+
+<mat-card class="logout-section">
+    <mat-card-content>
+        <button mat-raised-button color="warn" (click)="onLogout()">{{ 'LOGOUT' | translate }}</button>
+    </mat-card-content>
+</mat-card>

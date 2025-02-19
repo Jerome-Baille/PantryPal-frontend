@@ -7,13 +7,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { SearchService } from 'src/app/services/search.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'app-header',
@@ -27,39 +28,52 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         MatIconModule,
         MatMenuModule,
         FontAwesomeModule,
-        MatInputModule
+        MatInputModule,
+        TranslateModule
     ],
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     faMagnifyingGlass = faMagnifyingGlass;
+    faUser = faUser;
     isDropdownMenuOpen = false;
     searchForm: FormGroup;
     isLogged: boolean = false;
     private authSubscription?: Subscription;
+    private languageSubscription?: Subscription;
+    currentLang: string;
 
     constructor(
         private formBuilder: FormBuilder,
         private searchService: SearchService,
         private authService: AuthService,
         private router: Router,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private languageService: LanguageService
     ) {
         this.searchForm = this.formBuilder.group({
             search: ['']
         });
+        this.currentLang = this.languageService.getCurrentLanguage();
     }
 
     ngOnInit() {
         this.authSubscription = this.authService.isLoggedIn().subscribe(
             isLoggedIn => this.isLogged = isLoggedIn
         );
+        
+        this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+            lang => this.currentLang = lang
+        );
     }
 
     ngOnDestroy() {
         if (this.authSubscription) {
             this.authSubscription.unsubscribe();
+        }
+        if (this.languageSubscription) {
+            this.languageSubscription.unsubscribe();
         }
     }
 
