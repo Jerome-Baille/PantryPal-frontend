@@ -15,4 +15,5 @@ export interface Recipe {
     Book?: Book;
     User?: User;
     timers?: Timer[];
+    servings?: number;
 }

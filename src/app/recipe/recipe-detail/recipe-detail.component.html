@@ -55,6 +55,18 @@
                     <mat-card-title>
                         {{ 'INGREDIENTS' | translate }}
                     </mat-card-title>
+                    <mat-card-subtitle *ngIf="recipe?.servings">
+                        <div class="servings-selector">
+                            <span>{{ 'SERVINGS' | translate }}: {{ recipe.servings * servingsMultiplier }}</span>
+                            <mat-form-field>
+                                <mat-select [value]="servingsMultiplier" (selectionChange)="onServingsChange($event.value)">
+                                    <mat-option *ngFor="let mult of availableServings" [value]="mult">
+                                        {{ recipe.servings * mult }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </mat-card-subtitle>
                     <mat-card-content>
                         <div *ngFor="let group of groupedIngredients">
                             <ng-container *ngIf="group.section">
@@ -62,7 +74,7 @@
                             </ng-container>
                             <ul>
                                 <li *ngFor="let ingredient of group.ingredients">
-                                    {{ ingredient?.Ingredient?.name }} - {{ ingredient.quantity | number:'1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
+                                    {{ ingredient?.Ingredient?.name }} - {{ ingredient.adjustedQuantity | number:'1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
                                 </li>
                             </ul>
                         </div>

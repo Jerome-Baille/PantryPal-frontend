@@ -106,3 +106,14 @@ li:before {
   right: 0;
   top: 0;
 }
+
+.servings-selector {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+
+  mat-form-field {
+    width: 80px;
+  }
+}

@@ -16,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -31,7 +32,8 @@ import { LanguageService } from '../../services/language.service';
         MatDividerModule, 
         ShareOptionsComponent, 
         TimerComponent,
-        TranslateModule
+        TranslateModule,
+        MatSelectModule,
     ],
     templateUrl: './recipe-detail.component.html',
     styleUrls: ['./recipe-detail.component.scss']
@@ -54,6 +56,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
     private languageSubscription?: Subscription;
     currentLang: string;
+
+    servingsMultiplier = 1;
+    availableServings = [0.5, 1, 2, 3, 4];
 
     constructor(
         private route: ActivatedRoute,
@@ -209,8 +214,20 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         this.recipe.RecipeIngredients.forEach((item: any) => {
             const key = item.section ? item.section.name : '';
             groups[key] = groups[key] || [];
-            groups[key].push(item);
+            // Create a new object to avoid modifying the original data
+            groups[key].push({
+                ...item,
+                adjustedQuantity: this.calculateAdjustedQuantity(item.quantity)
+            });
         });
         return Object.keys(groups).map(key => ({ section: key, ingredients: groups[key] }));
+    }
+
+    calculateAdjustedQuantity(quantity: number): number {
+        return (quantity * this.servingsMultiplier);
+    }
+
+    onServingsChange(multiplier: number): void {
+        this.servingsMultiplier = multiplier;
     }
 }
