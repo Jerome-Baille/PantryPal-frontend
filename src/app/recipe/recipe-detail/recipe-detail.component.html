@@ -24,7 +24,7 @@
                 [ {{ recipe?.typeOfMeal }} ]
             </mat-card-subtitle>
             <mat-card-subtitle class="card-subtitle">
-                <span class="book-title">{{ recipe?.Book?.title }} </span> by {{ recipe?.Book?.author }}
+                <span class="book-title">{{ recipe?.Book?.title }} </span> {{ 'BY' | translate }} {{ recipe?.Book?.author }}
             </mat-card-subtitle>
             <mat-card-content class="card-content">
 
@@ -72,7 +72,7 @@
                             </ng-container>
                             <ul>
                                 <li *ngFor="let ingredient of group.ingredients">
-                                    {{ ingredient?.Ingredient?.name }} - {{ ingredient.adjustedQuantity | number:'1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
+                                    {{ ingredient?.Ingredient?.name }}{{ ((ingredient?.Ingredient?.name?.toLowerCase() === 'sel' || ingredient?.Ingredient?.name?.toLowerCase() === 'poivre') && ingredient.unit?.toLowerCase() === 'unit') ? '' : ' - ' + (ingredient.adjustedQuantity | number:'1.0-2') + (ingredient.unit?.toLowerCase() !== 'unit' ? ' ' + (translateUnit(ingredient.unit) | translate) : '') }}
                                 </li>
                             </ul>
                         </div>

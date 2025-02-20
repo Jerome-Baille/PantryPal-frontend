@@ -220,7 +220,16 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                 adjustedQuantity: this.calculateAdjustedQuantity(item.quantity)
             });
         });
-        return Object.keys(groups).map(key => ({ section: key, ingredients: groups[key] }));
+
+        // Sort ingredients by displayOrder within each section
+        Object.keys(groups).forEach(key => {
+            groups[key].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+        });
+
+        return Object.keys(groups).map(key => ({ 
+            section: key, 
+            ingredients: groups[key]
+        }));
     }
 
     calculateAdjustedQuantity(quantity: number): number {

@@ -17,6 +17,7 @@ import { switchMap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
+import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-ingredient-form',
@@ -30,7 +31,8 @@ import { LanguageService } from '../../services/language.service';
       MatInputModule,
       MatSelectModule,
       MatButtonModule,
-      TranslateModule
+      TranslateModule,
+      DragDropModule
     ],
     templateUrl: './ingredient-form.component.html',
     styleUrls: ['./ingredient-form.component.scss'],
@@ -82,7 +84,15 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     this.itemService.getRecipeIngredientsByRecipeId(this.recipeId).subscribe({
       next: (ingredientsData: any[]) => {
         this.ingredients.clear();
-        ingredientsData.forEach(ing => {
+        // Sort ingredients by section and displayOrder
+        ingredientsData.sort((a, b) => {
+          if (a.recipeSectionId !== b.recipeSectionId) {
+            return (a.recipeSectionId || 0) - (b.recipeSectionId || 0);
+          }
+          return (a.displayOrder || 0) - (b.displayOrder || 0);
+        });
+        
+        ingredientsData.forEach((ing, index) => {
           const sectionId = ing.RecipeSection ? ing.RecipeSection.id : (ing.recipeSectionId || null);
           const control = this.formBuilder.group({
             id: [ing.id || null],
@@ -92,7 +102,8 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
             }),
             quantity: [ing.quantity, Validators.required],
             unit: [ing.unit],
-            recipeSectionId: [sectionId]
+            recipeSectionId: [sectionId],
+            displayOrder: [ing.displayOrder || index]
           });
           this.ingredients.push(control);
         });
@@ -103,14 +114,51 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  drop(event: CdkDragDrop<any>) {
+    moveItemInArray(this.ingredients.controls, event.previousIndex, event.currentIndex);
+    
+    // Update displayOrder for all ingredients in the same section
+    const targetSectionId = event.container.data;
+    const sectionIngredients = this.ingredients.controls
+      .filter(control => control.get('recipeSectionId')?.value === targetSectionId);
+
+    const observables: Observable<any>[] = [];
+    
+    sectionIngredients.forEach((control, index) => {
+      const id = control.get('id')?.value;
+      if (id) {
+        control.patchValue({ displayOrder: index });
+        observables.push(
+          this.itemService.updateRecipeIngredient(id, {
+            displayOrder: index,
+            quantity: control.get('quantity')?.value,
+            unit: control.get('unit')?.value,
+            recipeSectionId: control.get('recipeSectionId')?.value
+          })
+        );
+      }
+    });
+
+    if (observables.length > 0) {
+      forkJoin(observables).subscribe({
+        next: () => {
+          this.isDirty = false;
+          this.loadIngredients();
+        },
+        error: (error) => {
+          console.error('Error updating ingredient order:', error);
+        }
+      });
+    }
+  }
+
   loadRecipeSections(recipeId: number) {
     this.itemService.getRecipeSectionsByRecipeId(recipeId).subscribe({
-      next: (sections) => { this.recipeSections = sections; },
+      next: (sections) => { 
+        this.recipeSections = sections; 
+      },
       error: (error) => {
-        // Ignore 404 errors, log other errors
-        if (error.status !== 404) {
-          console.error('Error loading recipe sections:', error);
-        }
+        console.error('Error loading recipe sections:', error);
       }
     });
   }
@@ -314,5 +362,15 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     if (!sectionId) return 'No Section';
     const section = this.recipeSections.find(s => s.id === sectionId);
     return section ? section.name : 'No Section';
+  }
+
+  getIngredientsForSection(sectionId: number | null) {
+    return this.ingredients.controls.filter(control => 
+      control.get('recipeSectionId')?.value === sectionId
+    );
+  }
+
+  getFormGroupIndex(control: AbstractControl): number {
+    return this.ingredients.controls.indexOf(control);
   }
 }

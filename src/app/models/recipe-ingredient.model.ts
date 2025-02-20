@@ -10,4 +10,5 @@ export interface RecipeIngredient {
   // Nested objects for additional details
   Ingredient?: Ingredient;
   section?: RecipeSection;
+  displayOrder?: number;
 }
