@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { AddToShoppingListComponent } from 'src/app/shared/add-to-shopping-list/add-to-shopping-list.component';
@@ -17,6 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
 import { MatSelectModule } from '@angular/material/select';
+import { FavoriteService } from 'src/app/services/favorite.service';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -53,6 +55,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
     faTrash = faTrash;
     faArrowLeft = faArrowLeft;
+    faHeart = faHeart;
+    faHeartRegular = faHeartRegular;
+    isFavorite = false;
 
     private languageSubscription?: Subscription;
     currentLang: string;
@@ -64,6 +69,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private recipeService: RecipeService,
+        private favoriteService: FavoriteService,
         private dialog: MatDialog,
         private languageService: LanguageService
     ) { 
@@ -78,6 +84,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         this.recipeService.getRecipe(id).subscribe({
             next: (response) => {
                 this.recipe = response;
+                this.isFavorite = response.isFavorited;
                 this.error = null;
                 // Map timers without duplicating display logic
                 this.recipeTime = (this.recipe.timers || []).map((timer: any) => {
@@ -238,5 +245,23 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
     onServingsChange(multiplier: number): void {
         this.servingsMultiplier = multiplier;
+    }
+
+    toggleFavorite(): void {
+        if (this.isFavorite) {
+            this.favoriteService.deleteFavorite(this.recipe.id).subscribe({
+                next: () => {
+                    this.isFavorite = false;
+                },
+                error: (error) => console.error('Error removing favorite:', error)
+            });
+        } else {
+            this.favoriteService.createFavorite({ recipeId: this.recipe.id }).subscribe({
+                next: () => {
+                    this.isFavorite = true;
+                },
+                error: (error) => console.error('Error adding favorite:', error)
+            });
+        }
     }
 }

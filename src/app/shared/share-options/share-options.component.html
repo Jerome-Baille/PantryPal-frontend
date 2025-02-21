@@ -1,11 +1,19 @@
 <div class="sharing-buttons">
-    <button mat-button class="whatsapp-button" (click)="shareOnWhatsApp()">
-        <fa-icon [icon]="faWhatsapp" size="2x"></fa-icon>
+    <button mat-icon-button [matMenuTriggerFor]="shareMenu">
+        <fa-icon [icon]="faShare" size="2x"></fa-icon>
     </button>
-    <button mat-button (click)="downloadPDF()">
-        <fa-icon [icon]="faFilePdf" size="2x" style="color:#FE5050"></fa-icon>
-    </button>
-    <button mat-button *ngIf="isWebShareSupported" (click)="shareContent()">
-        <fa-icon [icon]="faShareNodes" size="2x"></fa-icon>
-    </button>
+    <mat-menu #shareMenu="matMenu">
+        <button mat-menu-item (click)="shareOnWhatsApp()">
+            <fa-icon [icon]="faWhatsapp"></fa-icon>
+            <span>Share on WhatsApp</span>
+        </button>
+        <button mat-menu-item (click)="downloadPDF()">
+            <fa-icon [icon]="faFilePdf"></fa-icon>
+            <span>Download PDF</span>
+        </button>
+        <button mat-menu-item *ngIf="isWebShareSupported" (click)="shareContent()">
+            <fa-icon [icon]="faShareNodes"></fa-icon>
+            <span>Share</span>
+        </button>
+    </mat-menu>
 </div>

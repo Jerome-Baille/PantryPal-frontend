@@ -1,7 +1,6 @@
 .sharing-buttons {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 20px;
 
     button {
         background-color: transparent;
@@ -12,12 +11,8 @@
     }
 }
 
-.whatsapp-button fa-icon {
-    color: #25D366;
-}
-
-@media screen and (max-width: 768px) {
-    .whatsapp-button {
-        display: none;
-    }
+::ng-deep .mat-mdc-menu-item-text {
+    display: flex;
+    column-gap: 10px;
+    align-items: center;
 }

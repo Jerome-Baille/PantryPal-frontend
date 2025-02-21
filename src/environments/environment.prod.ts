@@ -11,4 +11,5 @@ export const environment = {
   booksURL: `${pantryPalBaseURL}/books`,
   ingredientsURL: `${pantryPalBaseURL}/ingredients`,
   itemsURL: `${pantryPalBaseURL}/items`,
+  favoriteURL: `${pantryPalBaseURL}/favorites`
 };

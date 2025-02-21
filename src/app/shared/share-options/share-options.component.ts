@@ -1,20 +1,22 @@
 import { Component, Input } from '@angular/core';
 import { RecipeService } from 'src/app/services/recipe.service';
-import { faShareNodes, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faShare, faShareNodes, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-share-options',
     standalone: true,
-    imports: [CommonModule, FontAwesomeModule],
+    imports: [CommonModule, FontAwesomeModule, MatMenuModule, MatButtonModule],
     templateUrl: './share-options.component.html',
     styleUrls: ['./share-options.component.scss']
 })
 export class ShareOptionsComponent {
   @Input() recipe: any;
+  faShare = faShare;
   faShareNodes = faShareNodes;
   faWhatsapp = faWhatsapp;
   faFilePdf = faFilePdf;

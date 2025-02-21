@@ -1,7 +1,14 @@
-<button class="add-button" (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()">
+<button class="add-button" 
+        (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()"
+        [@buttonClick]="buttonState"
+        (@buttonClick.done)="onAnimationDone()">
     <div class="icon-container">
-        <mat-icon [@fade]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
-            class="checkmark-icon">check_circle</mat-icon>
-        <mat-icon [@fade]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">add</mat-icon>
+        <fa-icon [icon]="faCartShopping" 
+                [@iconAnimation]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
+                class="cart-icon">
+        </fa-icon>
+        <fa-icon [icon]="faCartPlus" 
+                [@iconAnimation]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">
+        </fa-icon>
     </div>
 </button>

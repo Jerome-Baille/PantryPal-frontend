@@ -15,6 +15,17 @@
     <div class="main-container">
         <mat-card>
             <div class="option-buttons">
+                <button 
+                    class="favorite-button"
+                    [class.favorite]="isFavorite"
+                    [class.favorite-animation]="isFavorite"
+                    (click)="toggleFavorite()"
+                    mat-icon-button>
+                    <fa-icon 
+                        [icon]="isFavorite ? faHeart : faHeartRegular"
+                        class="heart-icon">
+                    </fa-icon>
+                </button>
                 <app-add-to-shopping-list [recipe]="recipe"></app-add-to-shopping-list>
                 <app-share-options [recipe]="recipe"></app-share-options>
             </div>
