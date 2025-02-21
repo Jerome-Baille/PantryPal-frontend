@@ -1,14 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn } from '@angular/common/http';
-import { Observable, Subject, EMPTY, throwError } from 'rxjs';
-import { catchError, switchMap, finalize } from 'rxjs/operators';
+import { Observable, Subject, EMPTY, throwError, BehaviorSubject } from 'rxjs';
+import { catchError, switchMap, finalize, filter, take } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
-  private refreshTokenSubject: Subject<void> = new Subject<void>();
+  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
   constructor(
     private authService: AuthService,
@@ -31,31 +31,42 @@ export class AuthInterceptor implements HttpInterceptor {
           });
           return EMPTY;
         } else if (error.status === 403) {
-          if (!this.isRefreshing) {
-            this.isRefreshing = true;
-            return this.authService.refreshToken().pipe(
-              switchMap(() => {
-                this.isRefreshing = false;
-                this.refreshTokenSubject.next();
-                return next.handle(req);
-              }),
-              catchError(refreshError => {
-                this.isRefreshing = false;
-                return throwError(() => refreshError);
-              }),
-              finalize(() => {
-                this.isRefreshing = false;
-              })
-            );
-          } else {
-            return this.refreshTokenSubject.pipe(
-              switchMap(() => next.handle(req))
-            );
-          }
+          return this.handle403Error(req, next);
         } else {
           return throwError(() => error);
         }
       })
+    );
+  }
+
+  private handle403Error(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
+
+      return this.authService.refreshToken().pipe(
+        switchMap((token: any) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(token);
+          return next.handle(request);
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(null);
+          if (err.status === 401) {
+            this.authService.logout().subscribe(() => {
+              this.router.navigate(['/auth/login']);
+            });
+          }
+          return throwError(() => err);
+        })
+      );
+    }
+
+    return this.refreshTokenSubject.pipe(
+      filter(token => token !== null),
+      take(1),
+      switchMap(() => next.handle(request))
     );
   }
 }
