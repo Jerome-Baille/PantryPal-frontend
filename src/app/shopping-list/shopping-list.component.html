@@ -34,7 +34,7 @@
                         <strong>{{ item.key }}:</strong>
                         <ng-container *ngFor="let ingredient of item.value; let last = last">
                             <span>
-                                {{ ingredient.quantity | number: '1.0-2' }} {{ ingredient.unit }}
+                                {{ ingredient.quantity | number: '1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
                             </span>
                             <span *ngIf="!last"> + </span>
                         </ng-container>
@@ -57,7 +57,7 @@
                             <strong>{{ item.key }}:</strong>
                             <ng-container *ngFor="let ingredient of item.value; let last = last">
                                 <span>
-                                    {{ ingredient.quantity | number: '1.0-2' }} {{ ingredient.unit }}
+                                    {{ ingredient.quantity | number: '1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
                                 </span>
                                 <span *ngIf="!last"> + </span>
                             </ng-container>

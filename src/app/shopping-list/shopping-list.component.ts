@@ -216,4 +216,18 @@ export class ShoppingListComponent implements OnInit {
   isAnyItemSelected(): boolean {
     return Object.values(this.selectedItems).some((isSelected) => isSelected);
   }
+
+  translateUnit(unit: string): string {
+    const translations: { [key: string]: string } = {
+      'tablespoon': 'UNIT_TABLESPOON',
+      'teaspoon': 'UNIT_TEASPOON',
+      'leaves': 'UNIT_LEAVES',
+      'leaf': 'UNIT_LEAF',
+      'pinch': 'UNIT_PINCH',
+      'pinches': 'UNIT_PINCHES'
+    };
+    
+    const normalizedUnit = unit.toLowerCase();
+    return translations[normalizedUnit] ? translations[normalizedUnit] : unit;
+  }
 }
