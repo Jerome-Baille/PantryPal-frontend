@@ -1,7 +1,7 @@
 /* CSS to create off-canvas behavior */
 .off-canvas {
     display: grid;
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 450px) minmax(0, 1fr);
     left: -100%;
     /* Start off-canvas hidden */
     width: 100vw;
@@ -20,7 +20,7 @@
 
     .filters {
         width: 100%;
-        max-width: 300px;
+        max-width: 450px;
         background-color: #fff;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
@@ -69,6 +69,7 @@
     /* Slide in the off-canvas from the left */
     opacity: 1;
     /* Fade in the off-canvas */
+    z-index: 10;
 }
 
 @media screen and (max-width: 768px) {
@@ -117,7 +118,8 @@
 }
 
 .mat-accordion {
-    max-width: 300px;
+    max-width: 400px;
+    margin: auto;
 
     @media screen and (max-width: 768px) {
         max-width: 100%;
