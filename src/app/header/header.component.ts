@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../services/language.service';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
     selector: 'app-header',
@@ -23,13 +23,13 @@ import { LanguageService } from '../services/language.service';
         CommonModule,
         RouterLink,
         MatToolbarModule,
-        ReactiveFormsModule,
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
         FontAwesomeModule,
         MatInputModule,
-        TranslateModule
+        TranslateModule,
+        SearchComponent
     ],
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
@@ -38,23 +38,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     faMagnifyingGlass = faMagnifyingGlass;
     faUser = faUser;
     isDropdownMenuOpen = false;
-    searchForm: FormGroup;
     isLogged: boolean = false;
     private authSubscription?: Subscription;
     private languageSubscription?: Subscription;
     currentLang: string;
 
     constructor(
-        private formBuilder: FormBuilder,
         private searchService: SearchService,
         private authService: AuthService,
         private router: Router,
         private snackbarService: SnackbarService,
         private languageService: LanguageService
     ) {
-        this.searchForm = this.formBuilder.group({
-            search: ['']
-        });
         this.currentLang = this.languageService.getCurrentLanguage();
     }
 
@@ -81,16 +76,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.isDropdownMenuOpen = !this.isDropdownMenuOpen;
     }
 
-    submitSearch(deviceSize: string) {
-        const searchValue = this.searchForm.get('search')?.value;
+    handleSearch(searchValue: string, deviceSize: string) {
         const targetUrl = '/recipe/list';
 
         if (!this.router.url.includes(targetUrl)) {
             this.router.navigate([targetUrl]);
         }
-
-        this.searchService.setSearchValue(searchValue);
-        this.searchForm.reset();
 
         if (deviceSize === 'mobile') {
             this.toggleDropdownMenu();
