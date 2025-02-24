@@ -1,7 +1,7 @@
 {
     "GROCERY_LIST": "Grocery List",
     "RECIPES": "Recipes",
-    "RECIPE_LIST": "List",
+    "RECIPE_LIST": "Recipes List",
     "CREATE_RECIPE": "Create",
     "LOGIN": "Login",
     "LOGOUT": "Logout",
@@ -76,5 +76,7 @@
     "SERVINGS": "Servings",
     "BOOK_SECTION": "Book",
     "TIMERS_SECTION": "Timers",
-    "RECIPE_SECTION": "Recipe"
+    "RECIPE_SECTION": "Recipe",
+    "INSTRUCTIONS_SECTION": "Instructions",
+    "NOTES_SECTION": "Notes"
 }

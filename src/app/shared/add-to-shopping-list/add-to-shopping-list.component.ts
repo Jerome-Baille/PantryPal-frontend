@@ -38,6 +38,7 @@ import { faCartPlus, faCartShopping } from '@fortawesome/free-solid-svg-icons';
 export class AddToShoppingListComponent implements OnInit {
   @Input() recipe: any;
   @Input() recipes: any[] = [];
+  @Input() multiplier: number = 1;
 
   faCartPlus = faCartPlus;
   faCartShopping = faCartShopping;
@@ -53,8 +54,14 @@ export class AddToShoppingListComponent implements OnInit {
   addRecipeToShoppingList(recipeId: number): void {
     this.buttonState = 'clicked';
     const shoppingList = JSON.parse(localStorage.getItem('shoppingList') || '[]');
-    const index = shoppingList.indexOf(recipeId);
-    index === -1 ? shoppingList.push(recipeId) : shoppingList.splice(index, 1);
+    const index = shoppingList.findIndex((item: any) => item.id === recipeId);
+    
+    if (index === -1) {
+      shoppingList.push({ id: recipeId, multiplier: this.multiplier || 1 });
+    } else {
+      shoppingList.splice(index, 1);
+    }
+    
     localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
     const recipeTitle = this.recipes.length === 0 ? this.recipe.title : this.recipes.find(recipe => recipe.id === recipeId)?.title;
     const message = index === -1 ? `${recipeTitle} has been added to the grocery list.` : `${recipeTitle} has been removed from the grocery list.`;
@@ -63,7 +70,7 @@ export class AddToShoppingListComponent implements OnInit {
 
   isRecipeInShoppingList(recipeId: number): boolean {
     const shoppingList = JSON.parse(localStorage.getItem('shoppingList') || '[]');
-    return shoppingList.includes(recipeId);
+    return shoppingList.some((item: any) => item.id === recipeId);
   }
 
   onAnimationDone() {

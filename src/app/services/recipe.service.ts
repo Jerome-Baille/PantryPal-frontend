@@ -63,14 +63,15 @@ export class RecipeService {
     );
   }
 
-  getRecipes(selectedQueryParams?: string[]): Observable<any> {
-    let endpoint = this.recipesURL;
-
+  getRecipes(page: number = 1, limit: number = 10, selectedQueryParams?: string[]): Observable<any> {
+    let queryParams = [`page=${page}`, `limit=${limit}`];
+    
     if (selectedQueryParams && selectedQueryParams.length > 0) {
-      endpoint += '?' + selectedQueryParams.join('&');
+      queryParams = queryParams.concat(selectedQueryParams);
     }
 
-    return this.http.get<any[]>(endpoint, { withCredentials: true });
+    const endpoint = `${this.recipesURL}?${queryParams.join('&')}`;
+    return this.http.get<any>(endpoint, { withCredentials: true });
   }
 
   getRecipe(id: number): Observable<any> {
@@ -106,12 +107,12 @@ export class RecipeService {
     return this.http.get(`${this.recipesURL}/${recipe.id}/pdf`, { withCredentials: true });
   }
 
-  getRecipeIdsFromLocalStorage(): number[] {
+  getRecipeIdsFromLocalStorage(): any[] {
     const shoppingList = JSON.parse(localStorage.getItem('shoppingList') || '[]');
-    return shoppingList;
+    return shoppingList; // Now returns array of {id, multiplier} objects
   }
 
-  getIngredientsForRecipes(recipeIds: any): Observable<any> {
-    return this.http.post<any>(`${this.recipesURL}/shopping-list`, { recipeIds }, { withCredentials: true });
+  generateShoppingList(recipes: {id: number, multiplier: number}[]): Observable<any> {
+    return this.http.post<any>(`${this.recipesURL}/shopping-list`, { recipes }, { withCredentials: true });
   }
 }

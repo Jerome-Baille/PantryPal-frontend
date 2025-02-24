@@ -1,7 +1,7 @@
 {
     "GROCERY_LIST": "Liste de courses",
     "RECIPES": "Recettes",
-    "RECIPE_LIST": "Liste",
+    "RECIPE_LIST": "Liste de recettes",
     "CREATE_RECIPE": "Créer",
     "LOGIN": "Se connecter",
     "LOGOUT": "Se déconnecter",
@@ -76,5 +76,7 @@
     "SERVINGS": "Portions",
     "BOOK_SECTION": "Livre",
     "TIMERS_SECTION": "Minuteurs",
-    "RECIPE_SECTION": "Recette"
+    "RECIPE_SECTION": "Recette",
+    "INSTRUCTIONS_SECTION": "Instructions",
+    "NOTES_SECTION": "Notes"
 }

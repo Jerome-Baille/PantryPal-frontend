@@ -112,31 +112,41 @@
   background-color: white;
   padding: 10px 0;
   width: 100%;
-}
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  mat-paginator {
+    width: 100%;
+    max-width: 500px;
 
-  button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    font-size: 1.2em;
-    color: #333;
+    // Force items to stay in a single row
+    ::ng-deep .mat-mdc-paginator-container {
+      justify-content: center;
+      flex-wrap: nowrap;
+      
+      // Add some spacing between elements
+      gap: 10px;
 
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+      // Prevent range label from wrapping
+      .mat-mdc-paginator-range-label {
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      // Prevent items per page selector from wrapping
+      .mat-mdc-paginator-page-size {
+        margin: 0;
+        align-items: center;
+        white-space: nowrap;
+      }
+
+      @media screen and (min-width: 768px) {
+        .mat-mdc-paginator-page-size {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 4px;
+        }
+      }
     }
-  }
-
-  .current-page {
-    margin: 0 10px;
-    font-size: 1.2em;
-    color: #333;
   }
 }
 

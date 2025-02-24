@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { RecipeService } from '../../services/recipe.service';
 import { SearchService } from '../../services/search.service';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -20,15 +21,20 @@ import { MatButtonModule } from '@angular/material/button';
         MatIconModule,
         MatCardModule,
         AddToShoppingListComponent,
-        FiltersComponent
+        FiltersComponent,
+        MatPaginator
     ],
     templateUrl: './recipe-list.component.html',
     styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent implements OnInit {
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    
     recipes: Recipe[] = [];
-    currentPage: number = 1;
-    itemsPerPage: number = 12;
+    totalRecipes: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 0;
+    pageSizeOptions: number[] = [5, 10, 25, 50];
     isSearchActive: boolean = false;
     books: any[] = [];
     selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string } = {};
@@ -36,12 +42,19 @@ export class RecipeListComponent implements OnInit {
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private recipeService: RecipeService,
         private searchService: SearchService,
         private snackbarService: SnackbarService
     ) { }
 
     ngOnInit() {
+        this.route.queryParams.subscribe(params => {
+            this.currentPage = parseInt(params['page'] || '1') - 1;
+            this.pageSize = parseInt(params['limit'] || '10');
+            this.loadRecipes();
+        });
+
         this.searchService.searchValue$.subscribe(searchValue => {
             if (searchValue) {
                 this.searchRecipes(searchValue);
@@ -60,9 +73,14 @@ export class RecipeListComponent implements OnInit {
             .filter(([key, value]) => value)
             .map(([key, value]) => `${key}=${value}`);
 
-        this.recipeService.getRecipes(selectedQueryParams).subscribe({
+        this.recipeService.getRecipes(this.currentPage + 1, this.pageSize, selectedQueryParams).subscribe({
             next: (response) => {
-                this.recipes = this.applyPagination(response);
+                this.recipes = response.recipes;
+                this.totalRecipes = response.totalRecipes;
+                if (this.paginator) {
+                    this.paginator.pageIndex = response.currentPage - 1;
+                    this.paginator.length = response.totalRecipes;
+                }
             },
             error: (error) => {
                 console.error(error);
@@ -71,19 +89,21 @@ export class RecipeListComponent implements OnInit {
         });
     }
 
-    applyPagination(recipes: Recipe[]): Recipe[] {
-        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-        const endIndex = startIndex + this.itemsPerPage;
-        return recipes.slice(startIndex, endIndex);
+    handlePageEvent(event: PageEvent) {
+        this.currentPage = event.pageIndex;
+        this.pageSize = event.pageSize;
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { 
+                page: this.currentPage + 1,
+                limit: this.pageSize 
+            },
+            queryParamsHandling: 'merge'
+        });
     }
 
     goToRecipeDetails(id: number): void {
         this.router.navigate(['/recipe/detail', id]);
-    }
-
-    onPageChange(page: number): void {
-        this.currentPage = page;
-        this.loadRecipes();
     }
 
     searchRecipes(searchValue: string): void {

@@ -23,18 +23,15 @@
                 </mat-card>
             </div>
             <div class="pagination-container">
-                <div class="pagination">
-                    <button mat-icon-button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
-                        <mat-icon>chevron_left</mat-icon>
-                    </button>
-
-                    <span class="current-page">{{ currentPage }}</span>
-
-                    <button mat-icon-button (click)="onPageChange(currentPage + 1)"
-                        [disabled]="recipes.length < itemsPerPage">
-                        <mat-icon>chevron_right</mat-icon>
-                    </button>
-                </div>
+                <mat-paginator
+                    [length]="totalRecipes"
+                    [pageSize]="pageSize"
+                    [pageIndex]="currentPage"
+                    [pageSizeOptions]="pageSizeOptions"
+                    [showFirstLastButtons]="true"
+                    (page)="handlePageEvent($event)"
+                    aria-label="Select page">
+                </mat-paginator>
             </div>
         </div>
     </ng-container>

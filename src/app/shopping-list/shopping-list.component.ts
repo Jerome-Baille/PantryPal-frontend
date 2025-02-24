@@ -29,7 +29,7 @@ export class ShoppingListComponent implements OnInit {
   shoppingList: { key: string, value: any }[] = [];
   doneList: { key: string, value: any }[] = [];
   selectedItems: { [key: string]: boolean } = {};
-  recipeIds: number[] = [];
+  recipeIds: {id: number, multiplier: number}[] = [];
 
   constructor(
     private recipeService: RecipeService,
@@ -63,14 +63,14 @@ export class ShoppingListComponent implements OnInit {
     this.recipeIds = this.recipeService.getRecipeIdsFromLocalStorage();
 
     if (this.recipeIds.length > 0) {
-      this.recipeService.getIngredientsForRecipes(this.recipeIds).subscribe({
+      this.recipeService.generateShoppingList(this.recipeIds).subscribe({
         next: (ingredients) => {
           this.shoppingList = this.transformIngredients(ingredients);
 
           // Store the shopping list in local storage
           setLocalStorageData('requiredIngredients', this.shoppingList);
 
-          // Store the recipe IDs in local storage
+          // Store the recipe data in local storage
           setLocalStorageData('savedRecipeIds', this.recipeIds);
 
           // Reset the selected items and done list
@@ -196,6 +196,7 @@ export class ShoppingListComponent implements OnInit {
     const savedRecipeIds = getLocalStorageData('savedRecipeIds');
 
     if (savedRecipeIds) {
+      // Compare arrays by stringifying them to check if the recipes or their multipliers have changed
       if (JSON.stringify(this.recipeIds) !== JSON.stringify(savedRecipeIds)) {
         this.shoppingList = [];
         this.doneList = [];
