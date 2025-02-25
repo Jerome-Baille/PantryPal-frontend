@@ -1,37 +1,31 @@
-<mat-toolbar class="toolbar">
+<mat-toolbar class="toolbar" *ngIf="!isMobile">
     <span class="toolbar__title" routerLink="/">PantryPal</span>
     <app-search class="search-bar" (onSearch)="handleSearch($event, 'desktop')"></app-search>
-    <div class="full-menu">
+    
+    <div class="desktop-menu">
         <button mat-button routerLink="/shopping/list">{{ 'GROCERY_LIST' | translate }}</button>
-
-        <button mat-button [matMenuTriggerFor]="recipesMenu">
-            {{ 'RECIPES' | translate }}
-            <mat-icon>keyboard_arrow_down</mat-icon>
-        </button>
-        <mat-menu #recipesMenu="matMenu">
-            <button mat-menu-item routerLink="/recipe/list">{{ 'RECIPE_LIST' | translate }}</button>
-            <button mat-menu-item routerLink="/recipe/create">{{ 'CREATE_RECIPE' | translate }}</button>
-        </mat-menu>
-
+        <button mat-button routerLink="/favorites">{{ 'FAVORITES' | translate }}</button>
         <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'">
             <fa-icon [icon]="faUser"></fa-icon>
         </button>
     </div>
-
-    <button mat-button class="hamburger-button" (click)="toggleDropdownMenu()">
-        <mat-icon>menu</mat-icon>
-    </button>
 </mat-toolbar>
 
-<div *ngIf="isDropdownMenuOpen" class="dropdown-menu">
-    <div class="dropdown-content">
-        <app-search class="search-bar" (onSearch)="handleSearch($event, 'mobile')"></app-search>
-        <button mat-button routerLink="/shopping/list" (click)="toggleDropdownMenu()">{{ 'GROCERY_LIST' | translate }}</button>
-        <button mat-button routerLink="/recipe/list" (click)="toggleDropdownMenu()">{{ 'RECIPE_LIST' | translate }}</button>
-        <button mat-button routerLink="/recipe/create" (click)="toggleDropdownMenu()">{{ 'CREATE_RECIPE' | translate }}</button>
-        <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" (click)="toggleDropdownMenu()">
-            <fa-icon [icon]="faUser"></fa-icon>
-            {{ (isLogged ? 'PROFILE' : 'LOGIN') | translate }}
-        </button>
-    </div>
+<div *ngIf="isMobile && isRecipeListRoute" class="mobile-search-container">
+    <app-search class="search-bar" (onSearch)="handleSearch($event, 'mobile')"></app-search>
 </div>
+
+<nav *ngIf="isMobile" class="mobile-menu">
+    <button mat-button routerLink="/recipe/list" routerLinkActive="active">
+        <fa-icon [icon]="faUtensils"></fa-icon>
+    </button>
+    <button mat-button routerLink="/shopping/list" routerLinkActive="active">
+        <fa-icon [icon]="faCartShopping"></fa-icon>
+    </button>
+    <button mat-button routerLink="/favorites" routerLinkActive="active">
+        <fa-icon [icon]="faHeart"></fa-icon>
+    </button>
+    <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" routerLinkActive="active">
+        <fa-icon [icon]="faUser"></fa-icon>
+    </button>
+</nav>

@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .recipe-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -85,7 +87,7 @@
     font-size: 14px;
   }
 
-  mat-card-actions{
+  mat-card-actions {
     height: 100%;
   }
 
@@ -112,6 +114,11 @@
   background-color: white;
   padding: 10px 0;
   width: 100%;
+  margin-top: 20px;
+
+  @media screen and (max-width: 768px) {
+    z-index: 2000;
+  }
 
   mat-paginator {
     width: 100%;
@@ -120,10 +127,12 @@
     // Force items to stay in a single row
     ::ng-deep .mat-mdc-paginator-container {
       justify-content: center;
-      flex-wrap: nowrap;
-      
-      // Add some spacing between elements
+      flex-wrap: wrap;
       gap: 10px;
+
+      @media screen and (min-width: 768px) {
+        flex-wrap: nowrap;
+      }
 
       // Prevent range label from wrapping
       .mat-mdc-paginator-range-label {
@@ -146,6 +155,24 @@
           gap: 4px;
         }
       }
+
+      @media screen and (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+
+        .mat-mdc-paginator-page-size {
+          margin: 0;
+          order: 1;
+          width: 100%;
+          justify-content: center;
+        }
+
+        .mat-mdc-paginator-range-actions {
+          order: 2;
+          width: 100%;
+          justify-content: center;
+        }
+      }
     }
   }
 }
@@ -157,6 +184,7 @@
   box-sizing: border-box;
 
   @media screen and (max-width: 600px) {
+    padding-top: 50px;
     min-height: calc(100% - 56px);
     min-height: calc(100dvh - 56px);
   }
@@ -195,4 +223,21 @@
 
 .drawer-sidenav {
   padding: 20px;
+}
+
+.fab-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #a8c4a2;
+  color: white;
+
+  &:hover {
+    background-color: color.adjust(#a8c4a2, $lightness: -10%);
+  }
+
+  @media screen and (max-width: 768px) {
+    bottom: 120px;
+  }
 }

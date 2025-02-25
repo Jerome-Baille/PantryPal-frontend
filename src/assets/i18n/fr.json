@@ -1,6 +1,7 @@
 {
     "GROCERY_LIST": "Liste de courses",
     "RECIPES": "Recettes",
+    "FAVORITES": "Favoris",
     "RECIPE_LIST": "Liste de recettes",
     "CREATE_RECIPE": "Créer",
     "LOGIN": "Se connecter",

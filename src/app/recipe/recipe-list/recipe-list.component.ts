@@ -136,4 +136,8 @@ export class RecipeListComponent implements OnInit {
     toggleOffCanvas(): void {
         this.showOffCanvas = !this.showOffCanvas;
     }
+
+    createRecipe(): void {
+        this.router.navigate(['/recipe/create']);
+    }
 }

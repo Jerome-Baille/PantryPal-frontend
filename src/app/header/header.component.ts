@@ -4,9 +4,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faUser, faUtensils, faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { SearchService } from 'src/app/services/search.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../services/language.service';
 import { SearchComponent } from '../search/search.component';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
     selector: 'app-header',
@@ -22,6 +23,7 @@ import { SearchComponent } from '../search/search.component';
     imports: [
         CommonModule,
         RouterLink,
+        RouterLinkActive,
         MatToolbarModule,
         MatButtonModule,
         MatIconModule,
@@ -37,10 +39,16 @@ import { SearchComponent } from '../search/search.component';
 export class HeaderComponent implements OnInit, OnDestroy {
     faMagnifyingGlass = faMagnifyingGlass;
     faUser = faUser;
+    faUtensils = faUtensils;
+    faCartShopping = faCartShopping;
+    faHeart = faHeart;
     isDropdownMenuOpen = false;
     isLogged: boolean = false;
+    isMobile: boolean = false;
+    isRecipeListRoute: boolean = false;
     private authSubscription?: Subscription;
     private languageSubscription?: Subscription;
+    private breakpointSubscription?: Subscription;
     currentLang: string;
 
     constructor(
@@ -48,7 +56,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private authService: AuthService,
         private router: Router,
         private snackbarService: SnackbarService,
-        private languageService: LanguageService
+        private languageService: LanguageService,
+        private breakpointObserver: BreakpointObserver
     ) {
         this.currentLang = this.languageService.getCurrentLanguage();
     }
@@ -61,6 +70,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.languageSubscription = this.languageService.currentLanguage$.subscribe(
             lang => this.currentLang = lang
         );
+
+        this.breakpointSubscription = this.breakpointObserver
+            .observe([Breakpoints.HandsetPortrait])
+            .subscribe(result => {
+                this.isMobile = result.matches;
+            });
+
+        // Subscribe to router events to check current route
+        this.router.events.subscribe(() => {
+            this.isRecipeListRoute = this.router.url === '/recipe/list';
+        });
     }
 
     ngOnDestroy() {
@@ -69,6 +89,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         }
         if (this.languageSubscription) {
             this.languageSubscription.unsubscribe();
+        }
+        if (this.breakpointSubscription) {
+            this.breakpointSubscription.unsubscribe();
         }
     }
 

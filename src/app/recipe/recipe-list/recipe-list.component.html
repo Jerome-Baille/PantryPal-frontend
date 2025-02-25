@@ -52,5 +52,9 @@
     </ng-template>
 </div>
 
+<button mat-fab class="fab-button" (click)="createRecipe()">
+    <mat-icon>add</mat-icon>
+</button>
+
 <app-filters [visible]="showOffCanvas" (filtersSelected)="onFiltersSelect($event)"
     (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>

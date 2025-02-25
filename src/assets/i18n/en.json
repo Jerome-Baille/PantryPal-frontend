@@ -1,6 +1,7 @@
 {
     "GROCERY_LIST": "Grocery List",
     "RECIPES": "Recipes",
+    "FAVORITES": "Favorites",
     "RECIPE_LIST": "Recipes List",
     "CREATE_RECIPE": "Create",
     "LOGIN": "Login",

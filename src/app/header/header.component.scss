@@ -3,6 +3,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 3000;
 
   .toolbar__title {
     font-size: 36px;
@@ -56,82 +60,64 @@
     display: none;
   }
 
-  @media (max-width: 767px) {
-    .search-bar {
-      display: none;
-    }
-
-    .dropdown-menu {
-      display: flex;
-    }
-
-    .hamburger-button {
-      display: block;
-    }
+  .mobile-menu {
+    display: none; // Hidden by default
   }
 }
 
-@media screen and (max-width: 767px) {
-  .full-menu {
-    display: none;
-  }
-
-  .search-bar {
-    display: flex;
-    align-items: center;
-    background-color: transparent;
-    width:fit-content;
-    margin: auto;
-    border: none;
-    border-radius: 20px;
-    padding: 5px 10px;
-    transition: background-color 0.3s ease-in-out;
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-
-    input {
-      border: none;
-      background-color: transparent;
-      flex: 1;
-      margin-right: 10px;
-      font-size: 16px;
-      color: #333;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    button {
-      border: none;
-      background-color: transparent;
-      cursor: pointer;
-      font-size: 16px;
-      color: #333;
-    }
-  }
-
-
-  .dropdown-menu {
-    top: 100%;
+// Mobile styles
+@media (max-width: 767px) {
+  .mobile-search-container {
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
     background-color: white;
-    flex-direction: column;
-    padding: 10px 0;
+    padding: 8px 16px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1;
+    z-index: 5000;
 
-    .dropdown-content {
-      display: flex;
-      flex-direction: column;
-      row-gap: 10px;
+    .search-bar {
+      width: 100%;
+      display: block;
+    }
+  }
 
-      button {
-        display: block;
+  // Adjust main content padding when search bar is shown
+  :host ::ng-deep app-recipe-list {
+    padding-top: 56px;
+  }
+
+  .mobile-menu {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 5000;
+    height: 56px;
+
+    button {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      padding: 8px;
+
+      fa-icon {
         font-size: 1.25rem;
+      }
+
+      &.active {
+        color: #a8c4a2;
+        
+        fa-icon {
+          color: #a8c4a2;
+        }
       }
     }
   }

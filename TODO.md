@@ -1,5 +1,2 @@
-- Apply display fixed to the navbar on desktop
-- Create a tab bar for the mobile version
 - Change the way filters are displayed
-- Add a search bar fixed on the top of the page on mobile
 - Update the pdf template in the backend
