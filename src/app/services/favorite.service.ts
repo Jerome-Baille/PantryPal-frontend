@@ -22,7 +22,7 @@ export class FavoriteService {
     return this.http.delete(`${this.favoriteURL}/remove/${recipeId}`, { withCredentials: true });
   }
 
-  getUsersFavorites(): Observable<Recipe[]> {
-    return this.http.get<Recipe[]>(`${this.favoriteURL}/user`, { withCredentials: true });
+  getUsersFavorites(): Observable<any> {
+    return this.http.get<any>(`${this.favoriteURL}/user`, { withCredentials: true });
   }
 }

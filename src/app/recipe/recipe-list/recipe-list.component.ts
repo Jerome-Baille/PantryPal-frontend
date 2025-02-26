@@ -101,9 +101,14 @@ export class RecipeListComponent implements OnInit {
 
     loadFavorites() {
         this.favoriteService.getUsersFavorites().subscribe({
-            next: (favorites) => {
-                this.recipes = favorites;
-                this.totalRecipes = favorites.length;
+            next: (response) => {
+                // Updated to extract data from response object
+                this.recipes = response.recipes;
+                this.totalRecipes = response.totalRecipes;
+                if (this.paginator) {
+                    this.paginator.pageIndex = response.currentPage - 1;
+                    this.paginator.length = response.totalRecipes;
+                }
             },
             error: (error) => {
                 console.error(error);
