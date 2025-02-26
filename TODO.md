@@ -1,3 +1,2 @@
 - Change the way filters are displayed
-- Update the pdf template in the backend
 - Replace icons by SVGs ?

@@ -5,15 +5,15 @@
     <mat-menu #shareMenu="matMenu">
         <button mat-menu-item (click)="shareOnWhatsApp()">
             <fa-icon [icon]="faWhatsapp"></fa-icon>
-            <span>Share on WhatsApp</span>
+            <span>{{ 'SHARE_ON_WHATSAPP' | translate }}</span>
         </button>
         <button mat-menu-item (click)="downloadPDF()">
             <fa-icon [icon]="faFilePdf"></fa-icon>
-            <span>Download PDF</span>
+            <span>{{ 'DOWNLOAD_PDF' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="isWebShareSupported" (click)="shareContent()">
             <fa-icon [icon]="faShareNodes"></fa-icon>
-            <span>Share</span>
+            <span>{{ 'SHARE' | translate }}</span>
         </button>
     </mat-menu>
 </div>

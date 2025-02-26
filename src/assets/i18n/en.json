@@ -81,5 +81,8 @@
     "INSTRUCTIONS_SECTION": "Instructions",
     "NOTES_SECTION": "Notes",
     "REMOVE": "Remove",
-    "DELETE": "Delete"
+    "DELETE": "Delete",
+    "SHARE_ON_WHATSAPP": "Share on WhatsApp",
+    "DOWNLOAD_PDF": "Download PDF",
+    "SHARE": "Share"
 }

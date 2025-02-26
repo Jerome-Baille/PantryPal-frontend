@@ -103,8 +103,8 @@ export class RecipeService {
     return this.searchResults;
   }
 
-  downloadRecipeAsPDF(recipe: any): Observable<any> {
-    return this.http.get(`${this.recipesURL}/${recipe.id}/pdf`, { withCredentials: true });
+  downloadRecipeAsPDF(recipe: any, lang: string): Observable<any> {
+    return this.http.get(`${this.recipesURL}/${recipe.id}/pdf?language=${lang}`, { withCredentials: true });
   }
 
   getRecipeIdsFromLocalStorage(): any[] {
