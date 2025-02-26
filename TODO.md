@@ -1,4 +1,4 @@
 - Change the way filters are displayed
 - Update the pdf template in the backend
-- Work on the responsiveness of the update/create form
+- Make the full ingredient draggable on mobile ?
 - Replace icons by SVGs ?
