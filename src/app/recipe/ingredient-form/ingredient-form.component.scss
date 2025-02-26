@@ -146,14 +146,60 @@ button.mat-icon-button {
 .ingredient-container {
   display: flex;
   width: 100%;
-  gap: 20px;
   gap: 8px;
   align-items: center;
   margin-bottom: 8px;
-}
+  flex-wrap: nowrap; // Prevent wrapping on desktop
 
-.ingredient-container mat-form-field {
-  flex: 1;
+  .drag-handle {
+    flex: 0 0 auto; // Don't grow or shrink, use auto basis
+    cursor: move;
+    color: #757575;
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex: 1;
+    gap: 8px;
+    align-items: center;
+    min-width: 0; // Allow content to shrink below flex basis
+
+    div[formGroupName="Ingredient"] {
+      flex: 2;
+      min-width: 0;
+      
+      mat-form-field {
+        width: 100%;
+      }
+    }
+
+    .quantity-unit-row {
+      display: flex;
+      gap: 8px;
+      flex: 2;
+      min-width: 0;
+
+      mat-form-field {
+        &:first-child { // Quantity field
+          flex: 1;
+        }
+        &:last-child { // Unit field
+          flex: 1;
+        }
+      }
+    }
+
+    mat-form-field {
+      width: 100%;
+      &:last-child { // Section field
+        flex: 1;
+      }
+    }
+  }
+
+  .remove-button-container {
+    flex: 0 0 auto; // Don't grow or shrink, use auto basis
+  }
 }
 
 .new-section-form {
@@ -199,7 +245,6 @@ button.mat-icon-button {
 }
 
 .section-group {
-  margin: 24px 0;
   padding: 16px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -211,7 +256,6 @@ button.mat-icon-button {
 }
 
 .no-section-group {
-  margin: 24px 0;
   padding: 16px;
   border: 1px dashed #e0e0e0;
   border-radius: 8px;
@@ -326,7 +370,6 @@ button.mat-icon-button {
   .section-group, 
   .no-section-group {
     padding: 0;
-    margin: 16px 0;
 
     .ingredient-container:last-child {
       border-bottom: none;
