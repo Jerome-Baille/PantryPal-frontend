@@ -79,5 +79,7 @@
     "TIMERS_SECTION": "Timers",
     "RECIPE_SECTION": "Recipe",
     "INSTRUCTIONS_SECTION": "Instructions",
-    "NOTES_SECTION": "Notes"
+    "NOTES_SECTION": "Notes",
+    "REMOVE": "Remove",
+    "DELETE": "Delete"
 }

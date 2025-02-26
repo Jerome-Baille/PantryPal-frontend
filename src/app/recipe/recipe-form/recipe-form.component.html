@@ -53,8 +53,11 @@
                             </div>
                             <mat-divider class="divider"></mat-divider>
                             <div class="timer-group">
-                                <button mat-icon-button color="warn" (click)="removeTimer(i)">
+                                <button mat-icon-button color="warn" (click)="removeTimer(i)" class="icon-delete">
                                     <mat-icon>delete</mat-icon>
+                                </button>
+                                <button mat-raised-button color="warn" (click)="removeTimer(i)" class="text-delete">
+                                    {{ 'DELETE' | translate }}
                                 </button>
                             </div>
                         </div>

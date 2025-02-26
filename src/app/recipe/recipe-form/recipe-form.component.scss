@@ -178,6 +178,10 @@ button.mat-icon-button {
     margin-bottom: 16px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+    }
   }
 }
 
@@ -211,5 +215,19 @@ button.mat-icon-button {
 
   .mat-mdc-card-content {
     padding: 20px;
+  }
+}
+
+.icon-delete {
+  display: none;
+  @media screen and (min-width: 769px) {
+    display: block;
+  }
+}
+
+.text-delete {
+  display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
   }
 }

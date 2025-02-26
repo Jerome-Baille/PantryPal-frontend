@@ -1,2 +1,4 @@
 - Change the way filters are displayed
 - Update the pdf template in the backend
+- Work on the responsiveness of the update/create form
+- Replace icons by SVGs ?

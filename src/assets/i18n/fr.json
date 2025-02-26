@@ -79,5 +79,7 @@
     "TIMERS_SECTION": "Minuteurs",
     "RECIPE_SECTION": "Recette",
     "INSTRUCTIONS_SECTION": "Instructions",
-    "NOTES_SECTION": "Notes"
+    "NOTES_SECTION": "Notes",
+    "REMOVE": "Supprimer",
+    "DELETE": "Supprimer"
 }
