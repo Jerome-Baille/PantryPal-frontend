@@ -11,6 +11,7 @@ import { AddToShoppingListComponent } from 'src/app/shared/add-to-shopping-list/
 import { FiltersComponent } from '../filters/filters.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { FavoriteService } from '../../services/favorite.service';
 
 @Component({
     selector: 'app-recipe-list',
@@ -39,33 +40,42 @@ export class RecipeListComponent implements OnInit {
     books: any[] = [];
     selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string } = {};
     showOffCanvas: boolean = false;
+    isFavoritesView: boolean = false;
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private recipeService: RecipeService,
         private searchService: SearchService,
-        private snackbarService: SnackbarService
+        private snackbarService: SnackbarService,
+        private favoriteService: FavoriteService
     ) { }
 
     ngOnInit() {
-        this.route.queryParams.subscribe(params => {
-            this.currentPage = parseInt(params['page'] || '1') - 1;
-            this.pageSize = parseInt(params['limit'] || '10');
-            this.loadRecipes();
-        });
-
-        this.searchService.searchValue$.subscribe(searchValue => {
-            if (searchValue) {
-                this.searchRecipes(searchValue);
+        this.route.url.subscribe(url => {
+            this.isFavoritesView = url[0]?.path === 'favorites';
+            if (this.isFavoritesView) {
+                this.loadFavorites();
             } else {
-                this.isSearchActive = false;
-                this.loadRecipes();
+                this.route.queryParams.subscribe(params => {
+                    this.currentPage = parseInt(params['page'] || '1') - 1;
+                    this.pageSize = parseInt(params['limit'] || '10');
+                    this.loadRecipes();
+                });
             }
         });
 
-        // Load recipes initially
-        this.loadRecipes();
+        // Only subscribe to search if not in favorites view
+        if (!this.isFavoritesView) {
+            this.searchService.searchValue$.subscribe(searchValue => {
+                if (searchValue) {
+                    this.searchRecipes(searchValue);
+                } else {
+                    this.isSearchActive = false;
+                    this.loadRecipes();
+                }
+            });
+        }
     }
 
     loadRecipes() {
@@ -84,6 +94,20 @@ export class RecipeListComponent implements OnInit {
             },
             error: (error) => {
                 console.error(error);
+                this.recipes = [];
+            }
+        });
+    }
+
+    loadFavorites() {
+        this.favoriteService.getUsersFavorites().subscribe({
+            next: (favorites) => {
+                this.recipes = favorites;
+                this.totalRecipes = favorites.length;
+            },
+            error: (error) => {
+                console.error(error);
+                this.snackbarService.showError('Failed to load favorites');
                 this.recipes = [];
             }
         });

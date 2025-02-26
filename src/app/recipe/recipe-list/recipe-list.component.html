@@ -1,5 +1,5 @@
 <div class="list-container">
-    <div class="filter-container">
+    <div class="filter-container" *ngIf="!isFavoritesView">
         <button mat-mini-fab class="btn-color-accent" (click)="toggleOffCanvas()">
             <mat-icon>filter_list</mat-icon>
         </button>
@@ -22,7 +22,7 @@
                     </mat-card-actions>
                 </mat-card>
             </div>
-            <div class="pagination-container">
+            <div class="pagination-container" *ngIf="!isFavoritesView">
                 <mat-paginator
                     [length]="totalRecipes"
                     [pageSize]="pageSize"
@@ -52,9 +52,9 @@
     </ng-template>
 </div>
 
-<button mat-fab class="fab-button" (click)="createRecipe()">
+<button mat-fab class="fab-button" (click)="createRecipe()" *ngIf="!isFavoritesView">
     <mat-icon>add</mat-icon>
 </button>
 
 <app-filters [visible]="showOffCanvas" (filtersSelected)="onFiltersSelect($event)"
-    (dismissFiltersEvent)="toggleOffCanvas()"></app-filters>
+    (dismissFiltersEvent)="toggleOffCanvas()" *ngIf="!isFavoritesView"></app-filters>
