@@ -227,3 +227,114 @@ button.mat-icon-button {
   padding-bottom: 8px;
   border-bottom: 2px solid #e0e0e0;
 }
+
+/* Mobile/Desktop button visibility */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Media query for mobile devices */
+@media screen and (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
+
+  .ingredient-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    align-items: flex-start;
+    box-sizing: border-box;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .drag-handle {
+      margin: 24px 0 0 0;
+      padding: 0;
+      color: rgba(0, 0, 0, 0.54);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      margin-right: 0;
+      width: 100%;
+
+      div[formGroupName="Ingredient"] {
+        width: 100%;
+        mat-form-field {
+          width: 100%;
+          margin-bottom: -8px;
+        }
+      }
+
+      .quantity-unit-row {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+        margin-bottom: -8px;
+
+        mat-form-field {
+          margin: 0;
+          &:first-child { // Quantity field
+            flex: 1;
+          }
+          &:last-child { // Unit field
+            flex: 2;
+          }
+        }
+      }
+
+      mat-form-field {
+        width: 100%;
+        margin: 0;
+        margin-bottom: -8px;
+      }
+    }
+
+    .remove-button-container {
+      margin-top: 8px;
+      width: 100%;
+      grid-column: 1 / -1;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .section-group, 
+  .no-section-group {
+    padding: 0;
+    margin: 16px 0;
+
+    .ingredient-container:last-child {
+      border-bottom: none;
+    }
+
+    .section-header {
+      padding: 16px 16px 8px;
+      margin: 0;
+    }
+  }
+}

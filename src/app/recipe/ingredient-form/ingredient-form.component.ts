@@ -13,7 +13,6 @@ import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { IngredientService } from 'src/app/services/ingredient.service';
-import { switchMap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
