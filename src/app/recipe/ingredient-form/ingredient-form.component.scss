@@ -1,155 +1,160 @@
 /* Form container styles */
 .form-container {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    height: 100vh;
-    margin-top: 20px;
-  
-    /* Add padding to the top and bottom */
-    padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  margin-top: 20px;
+
+  /* Add padding to the top and bottom */
+  padding: 20px 0;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+
+  /* Add a border to the form */
+  border: 1px solid #ccc;
+}
+
+/* Input styles */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+input.mat-input-element,
+textarea.mat-input-element {
+  background-color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+
+  /* Add a box-shadow on focus */
+  &:focus {
+    box-shadow: 0 0 0 2px #007bff;
   }
-  
-  /* Form styles */
-  form {
-    display: flex;
+}
+
+/* Button styles */
+.button-container {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  gap: 10px;
+  margin-top: 20px;
+
+  @media screen and (max-width: 768px) {
     flex-direction: column;
-    align-items: flex-start;
     gap: 20px;
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 4px;
+  }
+}
+
+button.mat-raised-button {
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  /* Add a box-shadow on hover */
+  &:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-  
-    /* Add a border to the form */
-    border: 1px solid #ccc;
   }
-  
-  /* Input styles */
-  .mat-mdc-form-field {
-    width: 100%;
+}
+
+button.mat-raised-button.color-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+button.mat-raised-button.color-warn {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Updated styles for "Add Ingredient" button */
+button.mat-raised-button.color-accent {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+/* Remove button styles */
+button.mat-icon-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Error message styles */
+.mat-form-field.mat-form-field-invalid {
+  .mat-input-container {
+    color: #dc3545;
   }
-  
-  input.mat-input-element,
-  textarea.mat-input-element {
-    background-color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-  
-    /* Add a box-shadow on focus */
-    &:focus {
-      box-shadow: 0 0 0 2px #007bff;
-    }
-  }
-  
-  /* Button styles */
-  .button-container {
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  button.mat-raised-button {
-    font-size: 14px;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  
-    /* Add a box-shadow on hover */
-    &:hover {
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  button.mat-raised-button.color-primary {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  button.mat-raised-button.color-warn {
+
+  .mat-form-field-underline {
     background-color: #dc3545;
-    color: #fff;
   }
-  
-  /* Updated styles for "Add Ingredient" button */
-  button.mat-raised-button.color-accent {
-    background-color: #17a2b8;
-    color: #fff;
+
+  .mat-form-field-ripple {
+    background-color: #dc3545;
   }
-  
-  /* Remove button styles */
-  button.mat-icon-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  /* Error message styles */
-  .mat-form-field.mat-form-field-invalid {
-    .mat-input-container {
-      color: #dc3545;
-    }
-  
-    .mat-form-field-underline {
-      background-color: #dc3545;
-    }
-  
-    .mat-form-field-ripple {
-      background-color: #dc3545;
-    }
-  }
-  
-  /* Additional styles for time-unit-container */
-  .time-unit-container {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-  }
-  
-  /* Additional styles for mat-form-field inside time-unit-container */
-  .time-unit-container mat-form-field {
-    flex: 1;
-  }
-  
-  /* Additional styles for mat-select inside time-unit-container */
-  .time-unit-container mat-select {
-    width: 100px;
-    /* Adjust the width as needed */
-  }
-  
-  .ingredient-row {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .snackbar-success {
-    background-color: #28a745;
-    color: #fff;
-  }
+}
+
+/* Additional styles for time-unit-container */
+.time-unit-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Additional styles for mat-form-field inside time-unit-container */
+.time-unit-container mat-form-field {
+  flex: 1;
+}
+
+/* Additional styles for mat-select inside time-unit-container */
+.time-unit-container mat-select {
+  width: 100px;
+  /* Adjust the width as needed */
+}
+
+.ingredient-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 20px;
+}
+
+.snackbar-success {
+  background-color: #28a745;
+  color: #fff;
+}
 
 .ingredient-container {
-    display: flex;
-    width: 100%;
-    gap: 20px;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 8px;
-  }
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
 
-  .ingredient-container mat-form-field {
-    flex: 1;
-  }
+.ingredient-container mat-form-field {
+  flex: 1;
+}
 
 .new-section-form {
   margin: 16px 0;
@@ -167,30 +172,30 @@
 }
 
 .drag-handle {
-    cursor: move;
-    color: #757575;
-    margin-right: 8px;
+  cursor: move;
+  color: #757575;
+  margin-right: 8px;
 }
 
 .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    background-color: white;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  background-color: white;
 }
 
 .cdk-drag-placeholder {
-    opacity: 0;
+  opacity: 0;
 }
 
 .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .ingredient-container.cdk-drop-list-dragging .ingredient-container:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .section-group {
@@ -201,7 +206,7 @@
   background-color: white;
 
   &:not(:first-child) {
-    margin-top: 16px;  // Reduced margin since we're only showing non-empty sections
+    margin-top: 16px; // Reduced margin since we're only showing non-empty sections
   }
 }
 
