@@ -1,13 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SnackbarService } from '../../services/snackbar.service';
 import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCartPlus, faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-add-to-shopping-list',
     standalone: true,
-    imports: [FontAwesomeModule],
+    imports: [MatIconModule],
     templateUrl: './add-to-shopping-list.component.html',
     styleUrls: ['./add-to-shopping-list.component.scss'],
     animations: [
@@ -40,8 +39,6 @@ export class AddToShoppingListComponent implements OnInit {
   @Input() recipes: any[] = [];
   @Input() multiplier: number = 1;
 
-  faCartPlus = faCartPlus;
-  faCartShopping = faCartShopping;
   buttonState = '';
 
   constructor(

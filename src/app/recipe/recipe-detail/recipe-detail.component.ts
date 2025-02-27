@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { faTrash, faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
-import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { AddToShoppingListComponent } from 'src/app/shared/add-to-shopping-list/add-to-shopping-list.component';
@@ -10,7 +8,6 @@ import { ShareOptionsComponent } from 'src/app/shared/share-options/share-option
 import { TimerComponent } from 'src/app/shared/timer/timer.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +23,6 @@ import { FavoriteService } from 'src/app/services/favorite.service';
     imports: [
         CommonModule, 
         RouterLink, 
-        FontAwesomeModule, 
         MatCardModule, 
         AddToShoppingListComponent, 
         MatButtonModule,
@@ -53,10 +49,6 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     activeTimerId: string | null = null;
     timerStates: { [key: string]: { running: boolean; timeInSeconds: number } } = {};
 
-    faTrash = faTrash;
-    faArrowLeft = faArrowLeft;
-    faHeart = faHeart;
-    faHeartRegular = faHeartRegular;
     isFavorite = false;
 
     private languageSubscription?: Subscription;

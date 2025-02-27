@@ -3,8 +3,7 @@
         <div class="option-buttons">
             <button class="favorite-button" [class.favorite]="isFavorite" [class.favorite-animation]="isFavorite"
                 (click)="toggleFavorite()" mat-icon-button>
-                <fa-icon [icon]="isFavorite ? faHeart : faHeartRegular" class="heart-icon">
-                </fa-icon>
+                <mat-icon class="heart-icon">favorite</mat-icon>
             </button>
 
             <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
@@ -117,7 +116,7 @@
                     {{ 'RECIPE_UPDATE' | translate }}
                 </button>
                 <button mat-raised-button class="btn-color-accent" (click)="deleteRecipe()">
-                    <fa-icon [icon]="faTrash"></fa-icon>
+                    {{ 'DELETE' | translate }}
                 </button>
             </div>
         </mat-card-content>

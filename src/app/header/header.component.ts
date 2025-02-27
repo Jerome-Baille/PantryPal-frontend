@@ -5,8 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass, faUser, faUtensils, faCartShopping, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { SearchService } from 'src/app/services/search.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
@@ -28,7 +26,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
         MatButtonModule,
         MatIconModule,
         MatMenuModule,
-        FontAwesomeModule,
         MatInputModule,
         TranslateModule,
         SearchComponent
@@ -37,11 +34,6 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-    faMagnifyingGlass = faMagnifyingGlass;
-    faUser = faUser;
-    faUtensils = faUtensils;
-    faCartShopping = faCartShopping;
-    faHeart = faHeart;
     isDropdownMenuOpen = false;
     isLogged: boolean = false;
     isMobile: boolean = false;

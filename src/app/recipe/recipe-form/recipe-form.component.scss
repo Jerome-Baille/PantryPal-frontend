@@ -220,6 +220,7 @@ button.mat-icon-button {
 
 .icon-delete {
   display: none;
+
   @media screen and (min-width: 769px) {
     display: block;
   }
@@ -227,7 +228,14 @@ button.mat-icon-button {
 
 .text-delete {
   display: none;
+
   @media screen and (max-width: 768px) {
     display: block;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  ::ng-deep .icon-delete svg {
+    fill: #c56c5c;
   }
 }

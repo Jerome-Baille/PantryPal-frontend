@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { RouterOutlet } from '@angular/router';
 import { LoaderComponent } from './shared/loader/loader.component';
+import { IconService } from './services/icon.service';
 
 @Component({
     selector: 'app-root',
@@ -13,10 +14,9 @@ import { LoaderComponent } from './shared/loader/loader.component';
 export class AppComponent {
   title = 'pantry-pal';
 
-  constructor() {
+  constructor(private iconService: IconService) {
     this.generateCat();
   }
-
 
   private generateCat() {
     const cat = [

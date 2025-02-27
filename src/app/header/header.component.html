@@ -3,10 +3,10 @@
     <app-search class="search-bar" (onSearch)="handleSearch($event, 'desktop')"></app-search>
     
     <div class="desktop-menu">
-        <button mat-button routerLink="/shopping/list">{{ 'GROCERY_LIST' | translate }}</button>
-        <button mat-button routerLink="/favorites">{{ 'FAVORITES' | translate }}</button>
-        <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'">
-            <fa-icon [icon]="faUser"></fa-icon>
+        <button mat-button routerLink="/shopping/list" routerLinkActive="active">{{ 'GROCERY_LIST' | translate }}</button>
+        <button mat-button routerLink="/favorites" routerLinkActive="active">{{ 'FAVORITES' | translate }}</button>
+        <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" routerLinkActive="active">
+            <mat-icon svgIcon="account_circle"></mat-icon>
         </button>
     </div>
 </mat-toolbar>
@@ -17,15 +17,15 @@
 
 <nav *ngIf="isMobile" class="mobile-menu">
     <button mat-button routerLink="/recipe/list" routerLinkActive="active">
-        <fa-icon [icon]="faUtensils"></fa-icon>
+        <mat-icon svgIcon="skillet"></mat-icon>
     </button>
     <button mat-button routerLink="/shopping/list" routerLinkActive="active">
-        <fa-icon [icon]="faCartShopping"></fa-icon>
+        <mat-icon svgIcon="shopping_cart"></mat-icon>
     </button>
     <button mat-button routerLink="/favorites" routerLinkActive="active">
-        <fa-icon [icon]="faHeart"></fa-icon>
+        <mat-icon svgIcon="favorite"></mat-icon>
     </button>
     <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" routerLinkActive="active">
-        <fa-icon [icon]="faUser"></fa-icon>
+        <mat-icon svgIcon="account_circle"></mat-icon>
     </button>
 </nav>

@@ -167,7 +167,7 @@ button.mat-icon-button {
     div[formGroupName="Ingredient"] {
       flex: 2;
       min-width: 0;
-      
+
       mat-form-field {
         width: 100%;
       }
@@ -180,10 +180,13 @@ button.mat-icon-button {
       min-width: 0;
 
       mat-form-field {
-        &:first-child { // Quantity field
+        &:first-child {
+          // Quantity field
           flex: 1;
         }
-        &:last-child { // Unit field
+
+        &:last-child {
+          // Unit field
           flex: 1;
         }
       }
@@ -191,7 +194,9 @@ button.mat-icon-button {
 
     mat-form-field {
       width: 100%;
-      &:last-child { // Section field
+
+      &:last-child {
+        // Section field
         flex: 1;
       }
     }
@@ -326,6 +331,7 @@ button.mat-icon-button {
 
       div[formGroupName="Ingredient"] {
         width: 100%;
+
         mat-form-field {
           width: 100%;
           margin-bottom: -8px;
@@ -340,10 +346,14 @@ button.mat-icon-button {
 
         mat-form-field {
           margin: 0;
-          &:first-child { // Quantity field
+
+          &:first-child {
+            // Quantity field
             flex: 1;
           }
-          &:last-child { // Unit field
+
+          &:last-child {
+            // Unit field
             flex: 2;
           }
         }
@@ -360,14 +370,14 @@ button.mat-icon-button {
       margin-top: 8px;
       width: 100%;
       grid-column: 1 / -1;
-      
+
       button {
         width: 100%;
       }
     }
   }
 
-  .section-group, 
+  .section-group,
   .no-section-group {
     padding: 0;
 
@@ -379,5 +389,11 @@ button.mat-icon-button {
       padding: 16px 16px 8px;
       margin: 0;
     }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  ::ng-deep .desktop-only svg {
+    fill: #c56c5c;
   }
 }

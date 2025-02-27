@@ -11,8 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { Recipe } from '../models/favorite.interface';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-profile',
@@ -23,7 +21,6 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    FontAwesomeModule,
     TranslateModule
   ],
   templateUrl: './profile.component.html',
@@ -33,7 +30,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   currentLang: string;
   private languageSubscription?: Subscription;
   favorites: Recipe[] = [];
-  faHeart = faHeart;
 
   constructor(
     private languageService: LanguageService,

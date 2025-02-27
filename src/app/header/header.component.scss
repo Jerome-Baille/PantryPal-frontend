@@ -19,6 +19,10 @@
     color: #333;
     margin-left: 10px;
     margin-right: 10px;
+
+    mat-icon {
+      vertical-align: middle;
+    }
   }
 
   .search-bar {
@@ -62,6 +66,37 @@
 
   .mobile-menu {
     display: none; // Hidden by default
+  }
+
+  .desktop-menu {
+    button {
+      mat-icon {
+        height: 32px;
+        width: 32px;
+        font-size: 32px;
+      }
+
+      &.active {
+        color: #a8c4a2 !important;
+        
+        svg {
+          fill: #a8c4a2;
+        }
+        mat-icon,
+        mat-icon svg {
+          color: #a8c4a2;
+          fill: #a8c4a2;
+        }
+        mat-icon svg {
+          fill: #a8c4a2 !important;
+          color: #a8c4a2 !important;
+        }
+        ::ng-deep mat-icon svg {
+          fill: #a8c4a2 !important;
+          color: #a8c4a2 !important;
+        }
+      }
+    }
   }
 }
 
@@ -109,15 +144,27 @@
       margin: 0;
       padding: 8px;
 
-      fa-icon {
-        font-size: 1.25rem;
+      mat-icon {
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
       }
 
-      &.active {
+      &.active {       
+        svg {
+          fill: #a8c4a2;
+        }
         color: #a8c4a2;
-        
-        fa-icon {
+        mat-icon {
           color: #a8c4a2;
+        }
+        mat-icon svg {
+          fill: #a8c4a2 !important;
+          color: #a8c4a2 !important;
+        }
+        ::ng-deep mat-icon svg {
+          fill: #a8c4a2 !important;
+          color: #a8c4a2 !important;
         }
       }
     }

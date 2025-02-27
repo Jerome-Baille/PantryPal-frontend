@@ -3,12 +3,12 @@
         [@buttonClick]="buttonState"
         (@buttonClick.done)="onAnimationDone()">
     <div class="icon-container">
-        <fa-icon [icon]="faCartShopping" 
+        <mat-icon svgIcon="shopping_cart" 
                 [@iconAnimation]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
                 class="cart-icon">
-        </fa-icon>
-        <fa-icon [icon]="faCartPlus" 
+        </mat-icon>
+        <mat-icon svgIcon="add_shopping_cart" 
                 [@iconAnimation]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">
-        </fa-icon>
+        </mat-icon>
     </div>
 </button>

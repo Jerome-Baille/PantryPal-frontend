@@ -1,18 +1,14 @@
 <div class="sharing-buttons">
     <button mat-icon-button [matMenuTriggerFor]="shareMenu">
-        <fa-icon [icon]="faShare"></fa-icon>
+        <mat-icon svgIcon="share"></mat-icon>
     </button>
     <mat-menu #shareMenu="matMenu">
-        <button mat-menu-item (click)="shareOnWhatsApp()">
-            <fa-icon [icon]="faWhatsapp"></fa-icon>
-            <span>{{ 'SHARE_ON_WHATSAPP' | translate }}</span>
-        </button>
         <button mat-menu-item (click)="downloadPDF()">
-            <fa-icon [icon]="faFilePdf"></fa-icon>
+            <mat-icon svgIcon="picture_as_pdf"></mat-icon>
             <span>{{ 'DOWNLOAD_PDF' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="isWebShareSupported" (click)="shareContent()">
-            <fa-icon [icon]="faShareNodes"></fa-icon>
+            <mat-icon svgIcon="share"></mat-icon>
             <span>{{ 'SHARE' | translate }}</span>
         </button>
     </mat-menu>

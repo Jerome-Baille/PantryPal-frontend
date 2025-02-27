@@ -242,3 +242,7 @@
     bottom: 120px;
   }
 }
+
+::ng-deep .add-icon svg {
+  fill: #fff;
+}

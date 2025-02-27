@@ -6,6 +6,8 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
+import { IconService } from './services/icon.service';
 
 import { routes } from './app.routes';
 import { loaderInterceptor } from './interceptors/loader.interceptor';
@@ -26,8 +28,18 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([loaderInterceptor, tokenInterceptor])
     ),
+    // Configure material options
+    {
+      provide: MATERIAL_SANITY_CHECKS,
+      useValue: {
+        doctype: true,
+        theme: true,
+        version: true
+      }
+    },
     AuthService,
     LoaderService,
+    IconService,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {

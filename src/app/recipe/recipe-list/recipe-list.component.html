@@ -53,7 +53,7 @@
 </div>
 
 <button mat-fab class="fab-button" (click)="createRecipe()" *ngIf="!isFavoritesView">
-    <mat-icon>add</mat-icon>
+    <mat-icon svgIcon="add" class="add-icon"></mat-icon>
 </button>
 
 <app-filters [visible]="showOffCanvas" (filtersSelected)="onFiltersSelect($event)"

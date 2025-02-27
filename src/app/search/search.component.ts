@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { SearchService } from '../services/search.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-search',
@@ -12,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    FontAwesomeModule,
+    MatIconModule,
     TranslateModule
   ],
   templateUrl: './search.component.html',
@@ -23,7 +22,6 @@ export class SearchComponent {
   @Output() afterSearch = new EventEmitter<void>();
   
   searchForm: FormGroup;
-  faMagnifyingGlass = faMagnifyingGlass;
 
   constructor(
     private formBuilder: FormBuilder,
