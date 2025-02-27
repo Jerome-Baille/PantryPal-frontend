@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, OnDestroy, Output, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, signal, effect, inject, computed } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -13,6 +13,7 @@ import { startWith, map } from 'rxjs/operators';
 import { BookService } from 'src/app/services/book.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { LanguageService } from 'src/app/services/language.service';
+import { FilterService } from 'src/app/services/filter.service';
 
 @Component({
     selector: 'app-filters',
@@ -33,15 +34,23 @@ import { LanguageService } from 'src/app/services/language.service';
     styleUrls: ['./filters.component.scss'],
 })
 export class FiltersComponent implements OnInit, OnDestroy {
-  @Output() filtersSelected = new EventEmitter<{ bookIds?: string, ingredientNames?: string, typeOfMeals?: string }>();
-  @Input() visible: boolean = false;
-  @Output() dismissFiltersEvent = new EventEmitter<boolean>();
-
   @ViewChild('bookList') bookList: any;
   @ViewChild('ingredientList') ingredientList: any;
   @ViewChild('typeOfMealList') typeOfMealList!: MatSelectionList;
 
   @ViewChild(MatAccordion) accordion!: MatAccordion;
+
+  // Services
+  private filterService = inject(FilterService);
+  private bookService = inject(BookService);
+  private ingredientService = inject(IngredientService);
+  private languageService = inject(LanguageService);
+
+  // Signals
+  visible = this.filterService.filtersVisible;
+  books = signal<any[]>([]);
+  ingredients = signal<any[]>([]);
+  dataLoaded = signal(false);
 
   bookControl = new FormControl();
   ingredientControl = new FormControl();
@@ -49,10 +58,6 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   filteredBooks!: Observable<any[]>;
   filteredIngredients!: Observable<any[]>;
-  filteredTypeOfMeals!: Observable<any[]>;
-
-  books: any[] = [];
-  ingredients: any[] = [];
 
   typeOfMeals: any = [
     { name: 'Starter', value: 'starter' },
@@ -67,14 +72,15 @@ export class FiltersComponent implements OnInit, OnDestroy {
   private languageSubscription?: Subscription;
   currentLang: string;
 
-  constructor(
-    private bookService: BookService,
-    private ingredientService: IngredientService,
-    private languageService: LanguageService
-  ) {
-    this.getBooks();
-    this.getIngredients();
+  constructor() {
     this.currentLang = this.languageService.getCurrentLanguage();
+    
+    // Effect to load data when filter becomes visible
+    effect(() => {
+      if (this.visible()) {
+        this.loadDataIfNeeded();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -99,20 +105,27 @@ export class FiltersComponent implements OnInit, OnDestroy {
     }
   }
 
+  loadDataIfNeeded(): void {
+    if (!this.dataLoaded()) {
+      this.getBooks();
+      this.getIngredients();
+      this.dataLoaded.set(true);
+    }
+  }
+
   private _filterBooks(value: string): any[] {
     const filterValue = value.toLowerCase();
-    return this.books.filter(
+    return this.books().filter(
       book =>
         book.title.toLowerCase().includes(filterValue) ||
         book.author.toLowerCase().includes(filterValue)
     ).map(book => ({ id: book.id, title: book.title }));
   }
 
-
   private _filterIngredients(value: string): any {
     const filterIngredientValue = value.toLowerCase();
 
-    return this.ingredients.filter(
+    return this.ingredients().filter(
       ingredient =>
         ingredient.toLowerCase().includes(filterIngredientValue)
     );
@@ -146,10 +159,9 @@ export class FiltersComponent implements OnInit, OnDestroy {
   applyFilters() {
     const selectedBookIds = Array.from(this.selectedBooks).join(',');
     const selectedIngredientIds = Array.from(this.selectedIngredients).join(',');
-
     const selectedTypeOfMeals = this.selectedTypeOfMeals.join(',');
 
-    this.filtersSelected.emit({
+    this.filterService.applyFilters({
       bookIds: selectedBookIds || undefined,
       ingredientNames: selectedIngredientIds || undefined,
       typeOfMeals: selectedTypeOfMeals || undefined
@@ -185,11 +197,11 @@ export class FiltersComponent implements OnInit, OnDestroy {
   getBooks(): void {
     this.bookService.getBooks().subscribe({
       next: (books) => {
-        this.books = books;
+        this.books.set(books);
       },
       error: (error) => {
         console.error(error);
-        this.books = [];
+        this.books.set([]);
       }
     });
   }
@@ -197,11 +209,11 @@ export class FiltersComponent implements OnInit, OnDestroy {
   getIngredients(): void {
     this.ingredientService.getSetOfIngredients().subscribe({
       next: (ingredients) => {
-        this.ingredients = ingredients;
+        this.ingredients.set(ingredients);
       },
       error: (error) => {
         console.error(error);
-        this.ingredients = [];
+        this.ingredients.set([]);
       }
     })
   }
@@ -209,7 +221,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
   getSelectedBooks(): any[] {
     // Map the selected book ids to their corresponding titles
     return Array.from(this.selectedBooks).map(id => {
-      const book = this.books.find(book => book.id === id);
+      const book = this.books().find(book => book.id === id);
       return book ? book.title : '';
     });
   }
@@ -225,8 +237,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
   }
 
   dismissFilters() {
-    this.visible = !this.visible;
-    this.dismissFiltersEvent.emit(this.visible);
+    this.filterService.toggleFiltersVisibility();
   }
 
   clearFilters() {

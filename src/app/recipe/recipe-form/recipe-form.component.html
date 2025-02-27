@@ -1,180 +1,158 @@
-<ng-container *ngIf="!error; else notAuthorizedCard">
-    <div class="main-container">
-        <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="form">
-            <!-- Book Section Card -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'BOOK_SECTION' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
-                        class="full-width"></app-book-form>
-                </mat-card-content>
-            </mat-card>
+<div class="main-container">
+    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="form">
+        <!-- Book Section Card -->
+        <mat-card class="section-card">
+            <mat-card-header>
+                <mat-card-title>{{ 'BOOK_SECTION' | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
+                    class="full-width"></app-book-form>
+            </mat-card-content>
+        </mat-card>
 
-            <!-- Timer Section Card -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'TIMERS_SECTION' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div formArrayName="timers" class="timers-section">
-                        <div *ngFor="let timerCtrl of timers.controls; let i = index" [formGroupName]="i"
-                            class="timer-card">
-                            <div class="timer-group">
+        <!-- Timer Section Card -->
+        <mat-card class="section-card">
+            <mat-card-header>
+                <mat-card-title>{{ 'TIMERS_SECTION' | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div formArrayName="timers" class="timers-section">
+                    <div *ngFor="let timerCtrl of timers.controls; let i = index" [formGroupName]="i"
+                        class="timer-card">
+                        <div class="timer-group">
+                            <mat-form-field>
+                                <mat-label>
+                                    {{ 'TIMER_NAME' | translate }}
+                                </mat-label>
+                                <input matInput placeholder="Timer Name" formControlName="name">
+                            </mat-form-field>
+                            <div class="time-input-group">
                                 <mat-form-field>
                                     <mat-label>
-                                        {{ 'TIMER_NAME' | translate }}
+                                        {{ 'HOURS' | translate }}
                                     </mat-label>
-                                    <input matInput placeholder="Timer Name" formControlName="name">
+                                    <input matInput type="number" placeholder="Hours" formControlName="hours">
                                 </mat-form-field>
-                                <div class="time-input-group">
-                                    <mat-form-field>
-                                        <mat-label>
-                                            {{ 'HOURS' | translate }}
-                                        </mat-label>
-                                        <input matInput type="number" placeholder="Hours" formControlName="hours">
-                                    </mat-form-field>
-                                    <mat-form-field>
-                                        <mat-label>
-                                            {{ 'MINUTES' | translate }}
-                                        </mat-label>
-                                        <input matInput type="number" placeholder="Minutes"
-                                            formControlName="minutes">
-                                    </mat-form-field>
-                                    <mat-form-field>
-                                        <mat-label>
-                                            {{ 'SECONDS' | translate }}
-                                        </mat-label>
-                                        <input matInput type="number" placeholder="Seconds"
-                                            formControlName="seconds">
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                            <mat-divider class="divider"></mat-divider>
-                            <div class="timer-group">
-                                <button mat-icon-button (click)="removeTimer(i)" class="icon-delete">
-                                    <mat-icon svgIcon="delete"></mat-icon>
-                                </button>
-                                <button mat-raised-button color="warn" (click)="removeTimer(i)" class="text-delete">
-                                    {{ 'DELETE' | translate }}
-                                </button>
+                                <mat-form-field>
+                                    <mat-label>
+                                        {{ 'MINUTES' | translate }}
+                                    </mat-label>
+                                    <input matInput type="number" placeholder="Minutes" formControlName="minutes">
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>
+                                        {{ 'SECONDS' | translate }}
+                                    </mat-label>
+                                    <input matInput type="number" placeholder="Seconds" formControlName="seconds">
+                                </mat-form-field>
                             </div>
                         </div>
-                        <button mat-raised-button type="button" (click)="addTimer()">
-                            {{ 'ADD_TIMER' | translate }}
-                        </button>
+                        <mat-divider class="divider"></mat-divider>
+                        <div class="timer-group">
+                            <button mat-icon-button (click)="removeTimer(i)" class="icon-delete">
+                                <mat-icon svgIcon="delete"></mat-icon>
+                            </button>
+                            <button mat-raised-button color="warn" (click)="removeTimer(i)" class="text-delete">
+                                {{ 'DELETE' | translate }}
+                            </button>
+                        </div>
                     </div>
-                </mat-card-content>
-            </mat-card>
+                    <button mat-raised-button type="button" (click)="addTimer()">
+                        {{ 'ADD_TIMER' | translate }}
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
 
-            <!-- Recipe Details Card -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'RECIPE_SECTION' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div formGroupName="recipe" class="full-width">
-                        <mat-form-field>
-                            <mat-label>
-                                {{ 'RECIPE_TITLE' | translate }}
-                            </mat-label>
-                            <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
-                                formControlName="title" class="recipe-title">
-                            <mat-error
-                                *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">
-                                {{ 'RECIPE_TITLE_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
+        <!-- Recipe Details Card -->
+        <mat-card class="section-card">
+            <mat-card-header>
+                <mat-card-title>{{ 'RECIPE_SECTION' | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div formGroupName="recipe" class="full-width">
+                    <mat-form-field>
+                        <mat-label>
+                            {{ 'RECIPE_TITLE' | translate }}
+                        </mat-label>
+                        <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
+                            formControlName="title" class="recipe-title">
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">
+                            {{ 'RECIPE_TITLE_REQUIRED' | translate }}
+                        </mat-error>
+                    </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>
-                                {{ 'TYPE_OF_MEAL' | translate }}
-                            </mat-label>
-                            <mat-select placeholder="Type of Meal" formControlName="typeOfMeal">
-                                <mat-option value="starter">
-                                    {{ 'STARTER' | translate }}
-                                </mat-option>
-                                <mat-option value="main-course">
-                                    {{ 'MAIN_COURSE' | translate }}
-                                </mat-option>
-                                <mat-option value="dessert">
-                                    {{ 'DESSERT' | translate }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>
+                            {{ 'TYPE_OF_MEAL' | translate }}
+                        </mat-label>
+                        <mat-select placeholder="Type of Meal" formControlName="typeOfMeal">
+                            <mat-option value="starter">
+                                {{ 'STARTER' | translate }}
+                            </mat-option>
+                            <mat-option value="main-course">
+                                {{ 'MAIN_COURSE' | translate }}
+                            </mat-option>
+                            <mat-option value="dessert">
+                                {{ 'DESSERT' | translate }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>
-                                {{ 'SERVINGS' | translate }}
-                            </mat-label>
-                            <input matInput type="number" min="1" placeholder="Number of servings" formControlName="servings">
-                        </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>
+                            {{ 'SERVINGS' | translate }}
+                        </mat-label>
+                        <input matInput type="number" min="1" placeholder="Number of servings"
+                            formControlName="servings">
+                    </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>Instructions</mat-label>
-                            <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
-                                required formControlName="instructions"></textarea>
-                            <mat-error
-                                *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">
-                                {{ 'INSTRUCTIONS_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Instructions</mat-label>
+                        <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
+                            required formControlName="instructions"></textarea>
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">
+                            {{ 'INSTRUCTIONS_REQUIRED' | translate }}
+                        </mat-error>
+                    </mat-form-field>
 
-                        <mat-form-field>
-                            <mat-label>Notes</mat-label>
-                            <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
-                                rows="5"></textarea>
-                            <mat-error
-                                *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">
-                                {{ 'NOTES_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                </mat-card-content>
-            </mat-card>
+                    <mat-form-field>
+                        <mat-label>Notes</mat-label>
+                        <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
+                            rows="5"></textarea>
+                        <mat-error
+                            *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">
+                            {{ 'NOTES_REQUIRED' | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+        </mat-card>
 
-            <!-- Ingredients Card -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'INGREDIENTS' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <app-ingredient-form 
-                        class="full-width" 
-                        [recipeForm]="recipeForm"
-                        (ingredientsSaved)="onIngredientsSaved()">
-                    </app-ingredient-form>
-                </mat-card-content>
-            </mat-card>
+        <!-- Ingredients Card -->
+        <mat-card class="section-card">
+            <mat-card-header>
+                <mat-card-title>{{ 'INGREDIENTS' | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <app-ingredient-form class="full-width" [recipeForm]="recipeForm"
+                    (ingredientsSaved)="onIngredientsSaved()">
+                </app-ingredient-form>
+            </mat-card-content>
+        </mat-card>
 
-            <!-- Action Buttons -->
-            <div class="button-container" [ngClass]="isUpdateMode? '' : 'button-container__create'">
-                <button *ngIf="isUpdateMode" mat-stroked-button color="basic" type="button"
-                    routerLink="/recipe/detail/{{ recipe?.id }}">
-                    {{ 'CANCEL' | translate }}
-                </button>
-                <button mat-raised-button color="primary" type="submit"
-                    [disabled]="!(isFormModified || isTimerModified)">
-                    {{ (isUpdateMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
-                </button>
-            </div>
-        </form>
-    </div>
-</ng-container>
-
-<ng-template #notAuthorizedCard>
-    <!-- Not Authorized Card -->
-    <mat-card>
-        <mat-card-content>
-            <p class="instructions">
-                {{ 'UNAUTHORISED_ACCESS' | translate }}
-            </p>
-            <div class="card-button">
-                <button mat-raised-button color="primary" routerLink="/auth/login">
-                    {{ 'LOGIN' | translate }}
-                </button>
-            </div>
-        </mat-card-content>
-    </mat-card>
-</ng-template>
+        <!-- Action Buttons -->
+        <div class="button-container" [ngClass]="isUpdateMode? '' : 'button-container__create'">
+            <button *ngIf="isUpdateMode" mat-stroked-button color="basic" type="button"
+                routerLink="/recipe/detail/{{ recipe?.id }}">
+                {{ 'CANCEL' | translate }}
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!(isFormModified || isTimerModified)">
+                {{ (isUpdateMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
+            </button>
+        </div>
+    </form>
+</div>

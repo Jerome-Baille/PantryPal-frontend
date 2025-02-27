@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { RecipeService } from '../../services/recipe.service';
@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FavoriteService } from '../../services/favorite.service';
 import { getLocalStorageData, setLocalStorageData } from '../../helpers/local-storage.helper';
+import { FilterService } from 'src/app/services/filter.service';
 
 // Local storage key for page size
 const PAGE_SIZE_KEY = 'recipesPageSize';
@@ -35,6 +36,9 @@ const PAGE_SIZE_KEY = 'recipesPageSize';
 export class RecipeListComponent implements OnInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     
+    // Services
+    private filterService = inject(FilterService);
+    
     recipes: Recipe[] = [];
     totalRecipes: number = 0;
     pageSize: number = 10;
@@ -42,9 +46,10 @@ export class RecipeListComponent implements OnInit {
     pageSizeOptions: number[] = [5, 10, 25, 50];
     isSearchActive: boolean = false;
     books: any[] = [];
-    selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string } = {};
-    showOffCanvas: boolean = false;
     isFavoritesView: boolean = false;
+    
+    // Use the signal from FilterService
+    showOffCanvas = this.filterService.filtersVisible;
 
     constructor(
         private router: Router,
@@ -53,7 +58,14 @@ export class RecipeListComponent implements OnInit {
         private searchService: SearchService,
         private snackbarService: SnackbarService,
         private favoriteService: FavoriteService
-    ) { }
+    ) {
+        // Subscribe to filter changes
+        this.filterService.activeFilters.subscribe(filters => {
+            if (filters) {
+                this.onFiltersSelect(filters);
+            }
+        });
+    }
 
     ngOnInit() {
         // Get page size from local storage or use default
@@ -92,7 +104,8 @@ export class RecipeListComponent implements OnInit {
     }
 
     loadRecipes() {
-        const selectedQueryParams = Object.entries(this.selectedFilters)
+        const filters = this.filterService.getFilters();
+        const selectedQueryParams = Object.entries(filters)
             .filter(([key, value]) => value)
             .map(([key, value]) => `${key}=${value}`);
 
@@ -170,17 +183,16 @@ export class RecipeListComponent implements OnInit {
     }
 
     onFiltersSelect(selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string }): void {
-        this.selectedFilters = selectedFilters;
         this.loadRecipes();
     }
 
     onReset(): void {
-        this.selectedFilters = {};
+        this.filterService.resetFilters();
         this.loadRecipes();
     }
 
     toggleOffCanvas(): void {
-        this.showOffCanvas = !this.showOffCanvas;
+        this.filterService.toggleFiltersVisibility();
     }
 
     createRecipe(): void {

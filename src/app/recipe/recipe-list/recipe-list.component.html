@@ -56,5 +56,4 @@
     <mat-icon svgIcon="add" class="add-icon"></mat-icon>
 </button>
 
-<app-filters [visible]="showOffCanvas" (filtersSelected)="onFiltersSelect($event)"
-    (dismissFiltersEvent)="toggleOffCanvas()" *ngIf="!isFavoritesView"></app-filters>
+<app-filters *ngIf="!isFavoritesView"></app-filters>

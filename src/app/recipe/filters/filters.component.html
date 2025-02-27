@@ -1,4 +1,4 @@
-<div class="off-canvas" [class.visible]="visible">
+<div class="off-canvas" [class.visible]="visible()">
     <div class="filters">
         <mat-accordion class="mat-accordion" multi>
 
@@ -11,7 +11,7 @@
                 </mat-expansion-panel-header>
                 <div class="filter-group">
                     <div class="filters-form">
-                        <form *ngIf="books.length > 0">
+                        <form *ngIf="books().length > 0">
                             <mat-form-field>
                                 <mat-label>
                                     {{ 'SELECT_BOOK' | translate }}
@@ -22,7 +22,7 @@
 
                         <!-- Wrap the mat-selection-list in a container -->
                         <div class="selection-list-container">
-                            <form *ngIf="books.length > 0">
+                            <form *ngIf="books().length > 0">
                                 <mat-selection-list #bookList>
                                     <mat-list-option *ngFor="let book of filteredBooks | async" [value]="book.id"
                                         (click)="toggleSelection(book.id)">
@@ -53,7 +53,7 @@
                 </mat-expansion-panel-header>
                 <div class="filter-group">
                     <div class="filters-form">
-                        <form *ngIf="ingredients.length > 0">
+                        <form *ngIf="ingredients().length > 0">
                             <mat-form-field>
                                 <mat-label>
                                     {{ 'SELECT_INGREDIENT' | translate }}
@@ -65,7 +65,7 @@
 
                         <!-- Wrap the mat-selection-list in a container -->
                         <div class="selection-list-container">
-                            <form *ngIf="ingredients.length > 0">
+                            <form *ngIf="ingredients().length > 0">
                                 <mat-selection-list #ingredientList>
                                     <mat-list-option *ngFor="let ingredient of filteredIngredients | async"
                                         [value]="ingredient" (click)="toggleIngredientSelection(ingredient)">
