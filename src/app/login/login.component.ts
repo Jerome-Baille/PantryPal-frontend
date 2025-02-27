@@ -19,14 +19,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     activeForm: 'login' | 'register' = 'login';
     loginForm: FormGroup;
     registerForm: FormGroup;
-    isLogged: boolean = false;
-    private authSubscription?: Subscription;
     private languageSubscription?: Subscription;
     currentLang: string;
 
     constructor(
         private formBuilder: FormBuilder,
-        private authService: AuthService,
+        public authService: AuthService, // Changed to public to use in template
         private router: Router,
         private languageService: LanguageService
     ) {
@@ -45,14 +43,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.authSubscription = this.authService.isLoggedIn().subscribe(
-            isLoggedIn => {
-                this.isLogged = isLoggedIn;
-                if (isLoggedIn) {
-                    this.router.navigate(['/recipe/list']);
-                }
-            }
-        );
+        // Using signal directly through the authService
+        if (this.authService.isAuthenticated()) {
+            this.router.navigate(['/recipe/list']);
+        }
 
         this.languageSubscription = this.languageService.currentLanguage$.subscribe(
             lang => this.currentLang = lang
@@ -60,9 +54,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.authSubscription) {
-            this.authSubscription.unsubscribe();
-        }
         if (this.languageSubscription) {
             this.languageSubscription.unsubscribe();
         }

@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
 import { tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 interface LoginResponse {
   accessToken: string;
@@ -16,8 +17,15 @@ interface LoginResponse {
 })
 export class AuthService {
   private authURL = environment.authURL;
-  private authStateSubject = new BehaviorSubject<boolean>(false);
-  authState$ = this.authStateSubject.asObservable();
+  
+  // Using signal instead of BehaviorSubject
+  private authState = signal<boolean>(false);
+  
+  // Expose the signal as a readonly signal
+  readonly isAuthenticated = this.authState.asReadonly();
+  
+  // Create an observable from the signal for backward compatibility
+  readonly authState$ = toObservable(this.isAuthenticated);
 
   constructor(
     private http: HttpClient,
@@ -28,15 +36,15 @@ export class AuthService {
   private verifyAuthState() {
     this.http.get<{auth: boolean}>(`${this.authURL}/verify`, { withCredentials: true })
       .subscribe({
-        next: (response) => this.authStateSubject.next(response.auth),
-        error: () => this.authStateSubject.next(false)
+        next: (response) => this.authState.set(response.auth),
+        error: () => this.authState.set(false)
       });
   }
 
   logout() {
     return this.http.post(`${this.authURL}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
-        this.authStateSubject.next(false);
+        this.authState.set(false);
       })
     );
   }
@@ -44,7 +52,7 @@ export class AuthService {
   login(username: string, password: string) {
     return this.http.post<LoginResponse>(`${this.authURL}/login`, { username, password }, { withCredentials: true }).pipe(
       tap(() => {
-        this.authStateSubject.next(true);
+        this.authState.set(true);
       })
     );
   }
@@ -57,6 +65,7 @@ export class AuthService {
     return this.http.post(`${this.authURL}/refresh`, {}, { withCredentials: true });
   }
 
+  // For backward compatibility with existing components
   isLoggedIn(): Observable<boolean> {
     return this.authState$;
   }

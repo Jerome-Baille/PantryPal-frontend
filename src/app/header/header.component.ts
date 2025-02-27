@@ -35,17 +35,15 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
     isDropdownMenuOpen = false;
-    isLogged: boolean = false;
     isMobile: boolean = false;
     isRecipeListRoute: boolean = false;
-    private authSubscription?: Subscription;
     private languageSubscription?: Subscription;
     private breakpointSubscription?: Subscription;
     currentLang: string;
 
     constructor(
         private searchService: SearchService,
-        private authService: AuthService,
+        public authService: AuthService,
         private router: Router,
         private snackbarService: SnackbarService,
         private languageService: LanguageService,
@@ -55,10 +53,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.authSubscription = this.authService.isLoggedIn().subscribe(
-            isLoggedIn => this.isLogged = isLoggedIn
-        );
-        
         this.languageSubscription = this.languageService.currentLanguage$.subscribe(
             lang => this.currentLang = lang
         );
@@ -76,9 +70,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.authSubscription) {
-            this.authSubscription.unsubscribe();
-        }
         if (this.languageSubscription) {
             this.languageSubscription.unsubscribe();
         }
@@ -107,7 +98,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.authService.logout().subscribe({
             next: () => {
                 this.snackbarService.showInfo('You have been logged out.');
-                this.isLogged = false;
                 this.router.navigate(['/auth/login']);
             },
             error: (error) => {

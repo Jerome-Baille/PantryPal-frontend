@@ -1,5 +1,5 @@
 <div class="login-container">
-  <div *ngIf="isLogged">
+  <div *ngIf="authService.isAuthenticated()">
     <mat-card>
       <mat-card-title>
         {{ 'WELCOME' | translate }}
@@ -19,7 +19,7 @@
     </mat-card>
   </div>
 
-  <div *ngIf="!isLogged">
+  <div *ngIf="!authService.isAuthenticated()">
     <div class="form-container" *ngIf="activeForm === 'login'">
       <h1>
         {{ 'LOGIN' | translate }}

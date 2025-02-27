@@ -5,7 +5,7 @@
     <div class="desktop-menu">
         <button mat-button routerLink="/shopping/list" routerLinkActive="active">{{ 'GROCERY_LIST' | translate }}</button>
         <button mat-button routerLink="/favorites" routerLinkActive="active">{{ 'FAVORITES' | translate }}</button>
-        <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" routerLinkActive="active">
+        <button mat-button [routerLink]="authService.isAuthenticated() ? '/profile' : '/auth/login'" routerLinkActive="active">
             <mat-icon svgIcon="account_circle"></mat-icon>
         </button>
     </div>
@@ -25,7 +25,7 @@
     <button mat-button routerLink="/favorites" routerLinkActive="active">
         <mat-icon svgIcon="favorite"></mat-icon>
     </button>
-    <button mat-button [routerLink]="isLogged ? '/profile' : '/auth/login'" routerLinkActive="active">
+    <button mat-button [routerLink]="authService.isAuthenticated() ? '/profile' : '/auth/login'" routerLinkActive="active">
         <mat-icon svgIcon="account_circle"></mat-icon>
     </button>
 </nav>
