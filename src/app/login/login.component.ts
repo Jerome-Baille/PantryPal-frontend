@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../services/language.service';
+import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
     selector: 'app-login',
@@ -24,8 +25,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     constructor(
         private formBuilder: FormBuilder,
-        public authService: AuthService, // Changed to public to use in template
+        public authService: AuthService,
         private router: Router,
+        private snackbarService: SnackbarService,
         private languageService: LanguageService
     ) {
         this.loginForm = this.formBuilder.group({
@@ -64,7 +66,8 @@ export class LoginComponent implements OnInit, OnDestroy {
             const { username, password } = this.loginForm.value;
             this.authService.login(username, password).subscribe({
                 next: () => {
-                    this.router.navigate(['/recipe/list']);
+                    this.snackbarService.showInfo('You have been logged in.');
+                    setTimeout(() => this.router.navigate(['/recipe/list']), 100);
                 },
                 error: (error) => {
                     console.error('Login failed:', error);

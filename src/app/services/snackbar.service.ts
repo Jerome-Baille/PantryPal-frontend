@@ -24,7 +24,7 @@ export class SnackbarService {
       duration: 3000,
       verticalPosition: 'top',
       horizontalPosition: 'center',
-      panelClass: panelClass
+      panelClass: [...panelClass, 'snackbar-global'],
     });
   }
 }
