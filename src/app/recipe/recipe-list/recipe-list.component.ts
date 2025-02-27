@@ -12,6 +12,10 @@ import { FiltersComponent } from '../filters/filters.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FavoriteService } from '../../services/favorite.service';
+import { getLocalStorageData, setLocalStorageData } from '../../helpers/local-storage.helper';
+
+// Local storage key for page size
+const PAGE_SIZE_KEY = 'recipesPageSize';
 
 @Component({
     selector: 'app-recipe-list',
@@ -52,6 +56,12 @@ export class RecipeListComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        // Get page size from local storage or use default
+        const savedPageSize = getLocalStorageData(PAGE_SIZE_KEY);
+        if (savedPageSize) {
+            this.pageSize = savedPageSize;
+        }
+
         this.route.url.subscribe(url => {
             this.isFavoritesView = url[0]?.path === 'favorites';
             if (this.isFavoritesView) {
@@ -59,7 +69,10 @@ export class RecipeListComponent implements OnInit {
             } else {
                 this.route.queryParams.subscribe(params => {
                     this.currentPage = parseInt(params['page'] || '1') - 1;
-                    this.pageSize = parseInt(params['limit'] || '10');
+                    // Only override pageSize from URL if there's no saved preference
+                    if (!savedPageSize && params['limit']) {
+                        this.pageSize = parseInt(params['limit']);
+                    }
                     this.loadRecipes();
                 });
             }
@@ -121,6 +134,10 @@ export class RecipeListComponent implements OnInit {
     handlePageEvent(event: PageEvent) {
         this.currentPage = event.pageIndex;
         this.pageSize = event.pageSize;
+        
+        // Save page size to local storage
+        setLocalStorageData(PAGE_SIZE_KEY, this.pageSize);
+        
         this.router.navigate([], {
             relativeTo: this.route,
             queryParams: { 
