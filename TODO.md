@@ -1,2 +1,1 @@
 - Change the way filters are displayed
-- Replace icons by SVGs ?
