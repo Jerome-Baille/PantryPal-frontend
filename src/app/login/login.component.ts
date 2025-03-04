@@ -17,9 +17,6 @@ import { SnackbarService } from '../services/snackbar.service';
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-    activeForm: 'login' | 'register' = 'login';
-    loginForm: FormGroup;
-    registerForm: FormGroup;
     private languageSubscription?: Subscription;
     currentLang: string;
 
@@ -30,17 +27,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         private snackbarService: SnackbarService,
         private languageService: LanguageService
     ) {
-        this.loginForm = this.formBuilder.group({
-            username: ['', [Validators.required]],
-            password: ['', Validators.required]
-        });
-
-        this.registerForm = this.formBuilder.group({
-            username: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(100)]]
-        });
-
         this.currentLang = languageService.getCurrentLanguage();
     }
 
@@ -61,33 +47,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    onLoginSubmit() {
-        if (this.loginForm.valid) {
-            const { username, password } = this.loginForm.value;
-            this.authService.login(username, password).subscribe({
-                next: () => {
-                    this.snackbarService.showInfo('You have been logged in.');
-                    setTimeout(() => this.router.navigate(['/recipe/list']), 100);
-                },
-                error: (error) => {
-                    console.error('Login failed:', error);
-                }
-            });
-        }
+    onLoginClick() {
+        this.authService.login();
     }
 
-    onRegisterSubmit() {
-        if (this.registerForm.valid) {
-            const { username, email, password } = this.registerForm.value;
-            this.authService.register(username, email, password).subscribe({
-                next: () => {
-                    this.switchToLoginForm();
-                },
-                error: (error) => {
-                    console.error('Registration failed:', error);
-                }
-            });
-        }
+    onRegisterClick() {
+        this.authService.register();
     }
 
     onLogout() {
@@ -99,13 +64,5 @@ export class LoginComponent implements OnInit, OnDestroy {
                 console.error('Logout failed:', error);
             }
         });
-    }
-
-    switchToLoginForm() {
-        this.activeForm = 'login';
-    }
-
-    switchToRegisterForm() {
-        this.activeForm = 'register';
     }
 }

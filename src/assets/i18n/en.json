@@ -84,5 +84,11 @@
     "DELETE": "Delete",
     "SHARE_ON_WHATSAPP": "Share on WhatsApp",
     "DOWNLOAD_PDF": "Download PDF",
-    "SHARE": "Share"
+    "SHARE": "Share",
+    "LOGIN_SUCCESS": "Login successful!",
+    "LOGIN_FAILED": "Login failed. Please try again.",
+    "LOGIN_ERROR": "An error occurred during login. Please try again.",
+    "REGISTRATION_SUCCESS": "Sign up successful!",
+    "REGISTRATION_FAILED": "Sign up failed. Please try again.",
+    "REGISTRATION_ERROR": "An error occurred during registration. Please try again."
 }

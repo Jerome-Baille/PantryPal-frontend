@@ -1,10 +1,10 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment.prod';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, map, take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 
 interface LoginResponse {
   accessToken: string;
@@ -13,11 +13,18 @@ interface LoginResponse {
   refreshTokenExpireDate: Date;
 }
 
+interface VerifyResponse {
+  message: string;
+  status: string;
+  userId?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private authURL = environment.authURL;
+  private authFrontURL = environment.authFrontURL;
   
   // Using signal instead of BehaviorSubject
   private authState = signal<boolean>(false);
@@ -38,10 +45,10 @@ export class AuthService {
   }
 
   private verifyAuthState() {
-    this.http.get<{auth: boolean}>(`${this.authURL}/verify`, { withCredentials: true })
+    this.http.get<VerifyResponse>(`${this.authURL}/verify`, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          this.authState.set(response.auth);
+          this.authState.set(response.status === 'success');
           this.verificationCompleted.set(true);
         },
         error: () => {
@@ -65,6 +72,30 @@ export class AuthService {
     return this.waitForAuthState();
   }
 
+  login() {
+    // Get current origin for the return URL
+    const currentOrigin = window.location.origin;
+    const returnPath = '/auth/after-login'; // Where to go after auth
+    const returnUrl = `${currentOrigin}${returnPath}`;
+    
+    // Redirect to auth app
+    window.location.href = `${this.authFrontURL}/external-login?returnUrl=${encodeURIComponent(returnUrl)}`;
+  }
+
+  // Method to handle post-login verification
+  handlePostLogin() {
+    return this.http.get<VerifyResponse>(`${this.authURL}/verify`, { withCredentials: true }).pipe(
+      tap((response) => {
+        this.authState.set(response.status === 'success');
+      }),
+      map(response => ({
+        auth: response.status === 'success',
+        message: response.message,
+        userId: response.userId
+      }))
+    );
+  }
+
   logout() {
     return this.http.post(`${this.authURL}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => {
@@ -73,16 +104,14 @@ export class AuthService {
     );
   }
 
-  login(username: string, password: string) {
-    return this.http.post<LoginResponse>(`${this.authURL}/login`, { username, password }, { withCredentials: true }).pipe(
-      tap(() => {
-        this.authState.set(true);
-      })
-    );
-  }
-
-  register(username: string, email: string, password: string) {
-    return this.http.post(`${this.authURL}/register`, { username, email, password }, { withCredentials: true });
+  register() {
+    // Get current origin for the return URL
+    const currentOrigin = window.location.origin;
+    const returnPath = '/auth/after-register'; // Where to go after registration
+    const returnUrl = `${currentOrigin}${returnPath}`;
+    
+    // Redirect to auth app registration page
+    window.location.href = `${this.authFrontURL}/external-register?returnUrl=${encodeURIComponent(returnUrl)}`;
   }
 
   refreshToken() {

@@ -84,5 +84,11 @@
     "DELETE": "Supprimer",
     "SHARE_ON_WHATSAPP": "Partager sur WhatsApp",
     "DOWNLOAD_PDF": "Télécharger le PDF",
-    "SHARE": "Partager"
+    "SHARE": "Partager",
+    "LOGIN_SUCCESS": "Connexion réussie !",
+    "LOGIN_FAILED": "Échec de la connexion. Veuillez réessayer.",
+    "LOGIN_ERROR": "Une erreur s'est produite lors de la connexion. Veuillez réessayer.",
+    "REGISTRATION_SUCCESS": "Inscription réussie !",
+    "REGISTRATION_FAILED": "Échec de l'inscription. Veuillez réessayer.",
+    "REGISTRATION_ERROR": "Une erreur s'est produite lors de l'inscription. Veuillez réessayer."
 }

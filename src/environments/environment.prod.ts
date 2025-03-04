@@ -4,6 +4,7 @@ const pantryPalBaseURL = 'https://pantry-pal.jerome-baille.fr/api';
 export const environment = {
   production: true,
   authBaseURL,
+  authFrontURL: 'https://auth.jerome-baille.fr',
   authURL: `${authBaseURL}/auth`,
   userURL: `${authBaseURL}/user`,
   pantryPalBaseURL,
