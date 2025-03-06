@@ -1,139 +1,105 @@
-import { inject, signal, effect } from '@angular/core';
-import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, from, Subscription } from 'rxjs';
-import { catchError, switchMap, finalize } from 'rxjs/operators';
+import { inject, runInInjectionContext, EnvironmentInjector, signal, effect } from '@angular/core';
+import { catchError, switchMap, finalize, tap } from 'rxjs/operators';
+import { throwError, Observable, from } from 'rxjs';
+import { HttpRequest, HttpHandlerFn, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
-// Using signals for refresh state management
-const isRefreshing = signal<boolean>(false);
-const refreshSuccess = signal<boolean>(false);
+// Using signals instead of Subject for token refresh state
+let isRefreshing = false;
+const refreshTokenSignal = signal<boolean>(false);
 
-// Define a better structure for pending requests
-interface PendingRequest {
-  request: HttpRequest<unknown>;
-  observer: {
-    next: (value: HttpEvent<unknown>) => void;
-    error: (error: any) => void;
-    complete: () => void;
-  };
+// A queue to store pending requests during refresh
+const pendingRequests: Array<{
+  resolve: (value: boolean) => void;
+}> = [];
+
+// Function to notify waiting requests
+function notifyRefreshComplete() {
+  // Update signal to notify components
+  refreshTokenSignal.set(true);
+  
+  // Process any pending requests
+  pendingRequests.forEach(request => {
+    request.resolve(true);
+  });
+  
+  // Clear the queue
+  pendingRequests.length = 0;
+  
+  // Reset signal state after a short delay
+  setTimeout(() => {
+    refreshTokenSignal.set(false);
+  }, 100);
 }
 
-// Create a pending requests queue with observers
-const pendingRequests: PendingRequest[] = [];
-
-export const tokenInterceptor: HttpInterceptorFn = (
-  req: HttpRequest<unknown>,
-  next: HttpHandlerFn
-): Observable<HttpEvent<unknown>> => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  // Skip interception for specific auth endpoints
-  if (req.url.includes('/auth/refresh') || req.url.includes('/auth/logout')) {
+export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
+  // Bypass refresh token endpoints
+  if (req.url.includes('/refresh')) {
     return next(req);
   }
+
+  const injector = inject(EnvironmentInjector);
   
-  // Ensure all requests use withCredentials
-  const requestWithCreds = req.clone({
+  // We'll use the injector inside the pipes where we need the services
+  const modifiedRequest = req.clone({
     withCredentials: true
   });
 
-  return next(requestWithCreds).pipe(
+  return next(modifiedRequest).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        // Unauthorized - logout and redirect to login
-        console.log('Session expired. Redirecting to login.');
-        return authService.logout().pipe(
-          switchMap(() => {
-            if (router.url !== '/auth/login') {
-              router.navigate(['/auth/login']);
-            }
-            return throwError(() => new Error('Session expired'));
-          })
-        );
-      } else if (error.status === 403) {
-        // Forbidden - try to refresh token
-        return handleTokenRefresh(requestWithCreds, next, authService, router);
+      if (error.error.shouldRefresh) {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          
+          return runInInjectionContext(injector, () => {
+            const authService = inject(AuthService);
+            const router = inject(Router);
+            
+            return authService.refreshToken().pipe(
+              switchMap(() => {
+                isRefreshing = false;
+                notifyRefreshComplete();
+                const retryRequest = req.clone({
+                  withCredentials: true
+                });
+                return next(retryRequest);
+              }),
+              catchError(refreshError => {
+                isRefreshing = false;
+                authService.logout(); // Log out the user
+                router.navigate(['/login']); // Redirect to login page
+                return throwError(() => refreshError);
+              }),
+              finalize(() => {
+                isRefreshing = false;
+              })
+            );
+          });
+        } else {
+          // Wait for the refresh to complete using a promise
+          return from(
+            new Promise<boolean>((resolve) => {
+              // Add this request to the pending queue
+              pendingRequests.push({ resolve });
+              
+              // Set up a timeout to avoid hanging forever
+              setTimeout(() => {
+                resolve(false);
+              }, 10000); // 10 second timeout
+            })
+          ).pipe(
+            switchMap(() => {
+              const retryRequest = req.clone({
+                withCredentials: true
+              });
+              return next(retryRequest);
+            })
+          );
+        }
+      } else {
+        return throwError(() => error);
       }
-      // Any other error passes through
-      return throwError(() => error);
     })
   );
-};
-
-/**
- * Handle token refresh when receiving 403 errors
- */
-function handleTokenRefresh(
-  request: HttpRequest<unknown>,
-  next: HttpHandlerFn,
-  authService: AuthService,
-  router: Router
-): Observable<HttpEvent<unknown>> {
-  if (!isRefreshing()) {
-    // Start refresh process
-    isRefreshing.set(true);
-    refreshSuccess.set(false);
-    pendingRequests.length = 0; // Clear pending requests
-
-    // Set up effect to process pending requests when refresh succeeds
-    const refreshEffect = effect(() => {
-      if (refreshSuccess()) {
-        // Process all pending requests when token is refreshed successfully
-        console.log(`Processing ${pendingRequests.length} pending requests after token refresh`);
-        
-        // Handle all pending requests
-        pendingRequests.forEach(({ request, observer }) => {
-          next(request).subscribe({
-            next: (event) => observer.next(event),
-            error: (err) => observer.error(err),
-            complete: () => observer.complete()
-          });
-        });
-        
-        pendingRequests.length = 0; // Clear after processing
-        refreshEffect.destroy(); // Clean up the effect
-      }
-    });
-
-    return authService.refreshToken().pipe(
-      switchMap(() => {
-        // Token refresh successful
-        isRefreshing.set(false);
-        refreshSuccess.set(true);
-        // Retry the original request
-        return next(request);
-      }),
-      catchError((error) => {
-        // Token refresh failed
-        isRefreshing.set(false);
-        refreshEffect.destroy(); // Clean up the effect
-
-        // Logout and redirect on authentication failure
-        return authService.logout().pipe(
-          switchMap(() => {
-            router.navigate(['/auth/login']);
-            return throwError(() => new Error('Token refresh failed'));
-          })
-        );
-      }),
-      finalize(() => {
-        isRefreshing.set(false);
-      })
-    );
-  } else {
-    // Queue this request until token refresh completes
-    return new Observable<HttpEvent<unknown>>(observer => {
-      // Add this request to the pending queue with its observer
-      pendingRequests.push({
-        request,
-        observer: {
-          next: (value) => observer.next(value),
-          error: (error) => observer.error(error),
-          complete: () => observer.complete()
-        }
-      });
-    });
-  }
 }

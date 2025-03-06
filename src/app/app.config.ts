@@ -11,7 +11,7 @@ import { IconService } from './services/icon.service';
 
 import { routes } from './app.routes';
 import { loaderInterceptor } from './interceptors/loader.interceptor';
-import { tokenInterceptor } from './interceptors/token-interceptor.interceptor';
+import { authInterceptor } from './interceptors/token-interceptor.interceptor';
 import { AuthService } from './services/auth.service';
 import { LoaderService } from './services/loader.service';
 
@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([loaderInterceptor, tokenInterceptor])
+      withInterceptors([loaderInterceptor, authInterceptor])
     ),
     // Configure material options
     {
