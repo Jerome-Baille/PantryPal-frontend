@@ -90,5 +90,11 @@
     "LOGIN_ERROR": "An error occurred during login. Please try again.",
     "REGISTRATION_SUCCESS": "Sign up successful!",
     "REGISTRATION_FAILED": "Sign up failed. Please try again.",
-    "REGISTRATION_ERROR": "An error occurred during registration. Please try again."
+    "REGISTRATION_ERROR": "An error occurred during registration. Please try again.",
+    "SHARE_SETTINGS": "Share Settings",
+    "PERMISSION_LEVEL": "Permission Level",
+    "READ_ONLY": "Read Only",
+    "READ_WRITE": "Read and Write",
+    "EXPIRES_IN_DAYS": "Expires in (days)",
+    "CREATE_SHARE_LINK": "Create Share Link"
 }

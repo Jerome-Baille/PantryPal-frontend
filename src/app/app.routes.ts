@@ -7,6 +7,7 @@ import { AfterLoginComponent } from './login/after-login.component';
 import { AfterRegisterComponent } from './login/after-register.component';
 import { RecipeDetailComponent } from './recipe/recipe-detail/recipe-detail.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ShareAcceptComponent } from './share/share-accept/share-accept.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -20,5 +21,6 @@ export const routes: Routes = [
     { path: 'auth/after-register', component: AfterRegisterComponent },
     { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
     { path: "favorites", component: RecipeListComponent, canActivate: [authGuard] },
+    { path: 'share/accept/:token', component: ShareAcceptComponent },
     { path: '', pathMatch: 'full', redirectTo: 'recipe/list' }
 ];

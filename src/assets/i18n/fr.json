@@ -90,5 +90,11 @@
     "LOGIN_ERROR": "Une erreur s'est produite lors de la connexion. Veuillez réessayer.",
     "REGISTRATION_SUCCESS": "Inscription réussie !",
     "REGISTRATION_FAILED": "Échec de l'inscription. Veuillez réessayer.",
-    "REGISTRATION_ERROR": "Une erreur s'est produite lors de l'inscription. Veuillez réessayer."
+    "REGISTRATION_ERROR": "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
+    "SHARE_SETTINGS": "Paramètres de partage",
+    "PERMISSION_LEVEL": "Niveau de permission",
+    "READ_ONLY": "Lecture seule",
+    "READ_WRITE": "Lecture et écriture",
+    "EXPIRES_IN_DAYS": "Expire dans (jours)",
+    "CREATE_SHARE_LINK": "Créer un lien de partage"
 }

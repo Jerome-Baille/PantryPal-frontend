@@ -12,6 +12,41 @@
     </mat-card-content>
 </mat-card>
 
+<mat-card class="share-settings">
+    <mat-card-header>
+        <mat-card-title>{{ 'SHARE_SETTINGS' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <form [formGroup]="shareForm" (ngSubmit)="createShareLink()">
+            <mat-form-field class="full-width">
+                <mat-label>{{ 'PERMISSION_LEVEL' | translate }}</mat-label>
+                <mat-select formControlName="permissionLevel">
+                    <mat-option value="read">{{ 'READ_ONLY' | translate }}</mat-option>
+                    <mat-option value="edit">{{ 'READ_WRITE' | translate }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="full-width">
+                <mat-label>{{ 'EXPIRES_IN_DAYS' | translate }}</mat-label>
+                <input matInput type="number" formControlName="expiresInDays" min="1" max="30">
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit">
+                {{ 'CREATE_SHARE_LINK' | translate }}
+            </button>
+        </form>
+
+        <div *ngIf="shareUrl" class="share-url-container">
+            <mat-form-field class="full-width">
+                <input matInput [value]="shareUrl" readonly>
+                <button matSuffix mat-icon-button (click)="copyShareUrl()">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+</mat-card>
+
 <mat-card class="logout-section">
     <mat-card-content>
         <button mat-raised-button color="warn" (click)="onLogout()">{{ 'LOGOUT' | translate }}</button>

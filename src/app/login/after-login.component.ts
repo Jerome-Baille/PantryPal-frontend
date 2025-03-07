@@ -36,11 +36,10 @@ export class AfterLoginComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        // Verify auth state after redirection from auth service
+        // Wait a bit for auth state to stabilize
         setTimeout(() => {
             this.authService.handlePostLogin().subscribe({
                 next: (response) => {
-                    console.log('Response:', response);
                     if (response.auth) {
                         // Use the message from the backend if available
                         if (response.message) {
@@ -50,7 +49,14 @@ export class AfterLoginComponent implements OnInit {
                                 this.snackbarService.showSuccess(message);
                             });
                         }
-                        this.router.navigate(['/recipe/list']);
+
+                        // Check for pending share token
+                        const pendingShareToken = sessionStorage.getItem('pendingShareToken');
+                        if (pendingShareToken) {
+                            this.router.navigate(['/share/accept', pendingShareToken]);
+                        } else {
+                            this.router.navigate(['/recipe/list']);
+                        }
                     } else {
                         this.translate.get('LOGIN_FAILED').subscribe(message => {
                             this.snackbarService.showError(message);
