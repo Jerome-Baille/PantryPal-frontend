@@ -96,5 +96,18 @@
     "READ_ONLY": "Read Only",
     "READ_WRITE": "Read and Write",
     "EXPIRES_IN_DAYS": "Expires in (days)",
-    "CREATE_SHARE_LINK": "Create Share Link"
+    "CREATE_SHARE_LINK": "Create Share Link",
+    "SHARE_LINKS": "Share Links",
+    "SHOW_ALL_LINKS": "Show activated, expired and used Links",
+    "NO_SHARE_LINKS": "No share links to activate.",
+    "ALL_RECIPES": "All Recipes",
+    "EXPIRES_AT": "Expires",
+    "COPY_LINK": "Copy Link",
+    "SHARING_USERS": "Sharing Users",
+    "SHARING_WITH_USERS": "People I Share With",
+    "SHARING_WITH_ME_USERS": "People Sharing With Me",
+    "NO_SHARING_WITH_USERS": "You are not sharing with anyone yet.",
+    "NO_SHARING_WITH_ME_USERS": "No one is sharing with you yet.",
+    "LOADING_SHARING_USERS": "Loading sharing information...",
+    "ACCOUNT": "Account"
 }

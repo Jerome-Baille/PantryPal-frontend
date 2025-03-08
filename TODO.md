@@ -1,1 +1,3 @@
-- Change the way filters are displayed
+- Feature: Add a way to revoke permissions from a user
+- Feature: Add a way to delete a shared link
+- Check translation for shared links content

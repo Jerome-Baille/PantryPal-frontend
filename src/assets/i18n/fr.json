@@ -96,5 +96,18 @@
     "READ_ONLY": "Lecture seule",
     "READ_WRITE": "Lecture et écriture",
     "EXPIRES_IN_DAYS": "Expire dans (jours)",
-    "CREATE_SHARE_LINK": "Créer un lien de partage"
+    "CREATE_SHARE_LINK": "Créer un lien de partage",
+    "SHARE_LINKS": "Liens de partage",
+    "SHOW_ALL_LINKS": "Afficher les liens activés, désactivés et expirés",
+    "NO_SHARE_LINKS": "Aucun lien de partage à activer.",
+    "ALL_RECIPES": "Toutes les recettes",
+    "EXPIRES_AT": "Expiration",
+    "COPY_LINK": "Copier le lien",
+    "SHARING_USERS": "Liste des partages",
+    "SHARING_WITH_USERS": "Personnes avec qui je partage",
+    "SHARING_WITH_ME_USERS": "Personnes qui partagent avec moi",
+    "NO_SHARING_WITH_USERS": "Vous ne partagez avec personne pour le moment.",
+    "NO_SHARING_WITH_ME_USERS": "Personne ne partage avec vous pour le moment.",
+    "LOADING_SHARING_USERS": "Chargement des informations de partage...",
+    "ACCOUNT": "Compte"
 }
