@@ -1,3 +1,1 @@
-- Feature: Add a way to revoke permissions from a user
-- Feature: Add a way to delete a shared link
-- Check translation for shared links content
+- Feature: add or revoke permission on a specific recipe

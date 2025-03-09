@@ -23,6 +23,8 @@ import { Subscription } from 'rxjs';
 import { Recipe } from '../models/favorite.interface';
 import { ShareLink, ShareLinkStats, SharingUser } from '../services/share.service';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-profile',
@@ -42,6 +44,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSlideToggleModule,
     MatTooltipModule,
     MatDividerModule,
+    MatDialogModule,
+    MatMenuModule,
     TranslateModule
   ],
   templateUrl: './profile.component.html',
@@ -61,6 +65,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   sharingWithUsers: SharingUser[] = [];
   sharingWithMeUsers: SharingUser[] = [];
   isLoadingSharingUsers = false;
+  isDeletingLink = false;
+  isDeletingAllLinks = false;
+  isRevokingAccess = false;
 
   constructor(
     private languageService: LanguageService,
@@ -68,7 +75,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private shareService: ShareService,
     private router: Router,
     private snackbarService: SnackbarService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.currentLang = languageService.getCurrentLanguage();
     this.shareForm = this.fb.group({
@@ -178,5 +186,110 @@ export class ProfileComponent implements OnInit, OnDestroy {
    */
   hasGlobalAccess(user: SharingUser): boolean {
     return user.shares ? user.shares.some(share => share.isGlobal) : false;
+  }
+
+  /**
+   * Delete a specific share link
+   * @param link The share link to delete
+   */
+  deleteShareLink(link: ShareLink) {
+    if (!link.token || this.isDeletingLink) return;
+
+    this.isDeletingLink = true;
+    this.shareService.deleteShareLink(link.token).subscribe({
+      next: () => {
+        this.snackbarService.showSuccess('Share link deleted successfully');
+        this.loadShareLinks();
+        this.isDeletingLink = false;
+      },
+      error: (error) => {
+        this.snackbarService.showError('Failed to delete share link');
+        console.error('Error deleting share link:', error);
+        this.isDeletingLink = false;
+      }
+    });
+  }
+
+  /**
+   * Delete all share links with the specified status
+   * @param status The status of links to delete (expired/used/accepted)
+   */
+  bulkDeleteShareLinks(status: 'expired' | 'used' | 'accepted') {
+    if (this.isDeletingAllLinks) return;
+    
+    // Confirm with the user before proceeding
+    const confirmMessage = `Are you sure you want to delete all ${status} share links?`;
+    if (!confirm(confirmMessage)) return;
+
+    this.isDeletingAllLinks = true;
+    this.shareService.bulkDeleteShareLinks(status).subscribe({
+      next: (response) => {
+        this.snackbarService.showSuccess(`${response.count || 'All'} ${status} share links deleted successfully`);
+        this.loadShareLinks();
+        this.isDeletingAllLinks = false;
+      },
+      error: (error) => {
+        this.snackbarService.showError(`Failed to delete ${status} share links`);
+        console.error('Error deleting share links:', error);
+        this.isDeletingAllLinks = false;
+      }
+    });
+  }
+
+  /**
+   * Revoke access for a user
+   * @param user The user to revoke access from
+   */
+  revokeAccess(user: SharingUser) {
+    if (this.isRevokingAccess) return;
+
+    // Confirm with the user before proceeding
+    const userName = this.getUserDisplayName(user);
+    const confirmMessage = `Are you sure you want to revoke all sharing permissions for ${userName}?`;
+    if (!confirm(confirmMessage)) return;
+
+    this.isRevokingAccess = true;
+
+    // Check if the user has global access
+    const hasGlobalAccess = this.hasGlobalAccess(user);
+    
+    if (hasGlobalAccess) {
+      // Revoke global access
+      this.shareService.revokeGlobalAccess(user.id).subscribe({
+        next: () => {
+          this.snackbarService.showSuccess(`Access revoked for ${userName}`);
+          this.loadSharingUsers();
+          this.isRevokingAccess = false;
+        },
+        error: (error) => {
+          this.snackbarService.showError(`Failed to revoke access for ${userName}`);
+          console.error('Error revoking access:', error);
+          this.isRevokingAccess = false;
+        }
+      });
+    } else if (user.shares && user.shares.length > 0) {
+      // If no global access but has specific recipe shares
+      // This would need to revoke each recipe share one by one
+      // For simplicity, we'll use the first recipe share as an example
+      const firstShare = user.shares[0];
+      if (!firstShare.isGlobal && firstShare.recipeId) {
+        this.shareService.revokeRecipeAccess(firstShare.recipeId, user.id).subscribe({
+          next: () => {
+            this.snackbarService.showSuccess(`Recipe access revoked for ${userName}`);
+            this.loadSharingUsers();
+            this.isRevokingAccess = false;
+          },
+          error: (error) => {
+            this.snackbarService.showError(`Failed to revoke recipe access for ${userName}`);
+            console.error('Error revoking recipe access:', error);
+            this.isRevokingAccess = false;
+          }
+        });
+      } else {
+        this.isRevokingAccess = false;
+      }
+    } else {
+      this.isRevokingAccess = false;
+    }
   }
 }

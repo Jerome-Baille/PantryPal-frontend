@@ -98,7 +98,11 @@
     "EXPIRES_IN_DAYS": "Expire dans (jours)",
     "CREATE_SHARE_LINK": "Créer un lien de partage",
     "SHARE_LINKS": "Liens de partage",
-    "SHOW_ALL_LINKS": "Afficher les liens activés, désactivés et expirés",
+    "SHOW_ALL_LINKS": "Afficher tous les liens",
+    "BULK_ACTIONS": "Supprimer tous les liens",
+    "DELETE_EXPIRED_LINKS": "Supprimer les liens expirés",
+    "DELETE_USED_LINKS": "Supprimer les liens utilisés",
+    "DELETE_ACCEPTED_LINKS": "Supprimer les liens acceptés",
     "NO_SHARE_LINKS": "Aucun lien de partage à activer.",
     "ALL_RECIPES": "Toutes les recettes",
     "EXPIRES_AT": "Expiration",
@@ -109,5 +113,6 @@
     "NO_SHARING_WITH_USERS": "Vous ne partagez avec personne pour le moment.",
     "NO_SHARING_WITH_ME_USERS": "Personne ne partage avec vous pour le moment.",
     "LOADING_SHARING_USERS": "Chargement des informations de partage...",
-    "ACCOUNT": "Compte"
+    "ACCOUNT": "Compte",
+    "REVOKE_ACCESS": "Révoquer l'accès"
 }

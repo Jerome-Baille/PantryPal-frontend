@@ -94,5 +94,32 @@ export class ShareService {
     });
   }
 
-  // Add other share-related methods here as needed
+  // New method to delete a specific share link
+  deleteShareLink(token: string): Observable<any> {
+    return this.http.delete(`${this.shareBaseUrl}/links/${token}`, { 
+      withCredentials: true 
+    });
+  }
+
+  // New method to delete multiple share links by status
+  bulkDeleteShareLinks(status: 'expired' | 'used' | 'accepted'): Observable<any> {
+    return this.http.delete(`${this.shareBaseUrl}/links`, { 
+      params: { status },
+      withCredentials: true 
+    });
+  }
+
+  // New method to revoke recipe-specific access from a user
+  revokeRecipeAccess(recipeId: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.shareBaseUrl}/recipe/${recipeId}/${userId}`, {
+      withCredentials: true
+    });
+  }
+
+  // New method to revoke global access from a user
+  revokeGlobalAccess(userId: number): Observable<any> {
+    return this.http.delete(`${this.shareBaseUrl}/all/${userId}`, {
+      withCredentials: true
+    });
+  }
 }
