@@ -139,3 +139,23 @@ h1, h2, h3, h4, h5, h6, .mat-mdc-card-title, .card-title {
     color: white !important;
   }
 }
+
+// Custom dialog styles for sharing users dialog
+.sharing-dialog {
+  .mat-mdc-dialog-container {
+    .mdc-dialog__surface {
+      border-radius: 12px;
+    }
+  }
+
+  mat-dialog-content {
+    padding: 16px;
+    margin: 0;
+  }
+
+  mat-dialog-actions {
+    padding: 12px 16px;
+    margin: 0;
+    background-color: #f8f8f8;
+  }
+}

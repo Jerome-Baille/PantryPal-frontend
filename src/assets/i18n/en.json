@@ -114,5 +114,14 @@
     "NO_SHARING_WITH_ME_USERS": "No one is sharing with you yet.",
     "LOADING_SHARING_USERS": "Loading sharing information...",
     "ACCOUNT": "Account",
-    "REVOKE_ACCESS": "Revoke Access"
+    "REVOKE_ACCESS": "Revoke Access",
+    "MANAGE_SHARING": "Manage Sharing",
+    "CLOSE": "Close",
+    "ACCESS_EXCLUDED": "Access Excluded",
+    "RESTORE_ACCESS": "Restore Access",
+    "RECIPES_EXCLUDED": "Recipes Excluded",
+    "EXCLUDED_RECIPES_FOR": "Excluded Recipes For",
+    "LOADING_RECIPES": "Loading Recipes...",
+    "NO_EXCLUDED_RECIPES": "No excluded recipes available.",
+    "VIEW_EXCLUDED_RECIPES": "View Excluded Recipes"
 }

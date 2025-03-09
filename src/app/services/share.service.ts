@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map, switchMap, of, forkJoin } from 'rxjs';
+import { environment } from 'src/environments/environment.prod';
 
 export interface ShareLinkStats {
   total: number;
@@ -35,6 +36,7 @@ export interface UserShare {
   permissionLevel: 'read' | 'edit';
   recipeId: number | null;
   isGlobal: boolean;
+  isExcluded?: number;  // Adding isExcluded property
 }
 
 export interface SharingUser {
@@ -45,6 +47,12 @@ export interface SharingUser {
   profilePicture?: string;
   shares?: UserShare[];
   highestPermission?: 'read' | 'edit';
+  isExcluded?: boolean;
+  // New properties from updated backend API
+  accessType?: 'global' | 'specific' | 'excluded';
+  shareStatus?: 'granted' | 'revoked';
+  // Added for frontend UI
+  hasExcludedRecipes?: boolean;
 }
 
 export interface SharingUsersResponse {
@@ -52,11 +60,23 @@ export interface SharingUsersResponse {
   sharingWithMeUsers: SharingUser[];
 }
 
+export interface RecipeSharesResponse {
+  shares: any[];
+  totalShares: number;
+  stats?: {
+    specific: number;
+    global: number;
+    excluded: number;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ShareService {
   private shareBaseUrl = 'https://pantry-pal.jerome-baille.fr/api/shares';
+  private authBaseUrl = 'https://auth.jerome-baille.fr/api';
+  private recipesURL = environment.recipesURL;
 
   constructor(
     private http: HttpClient
@@ -94,14 +114,63 @@ export class ShareService {
     });
   }
 
-  // New method to delete a specific share link
+  // Get shares for a specific recipe - Enhanced to include user details
+  getRecipeShares(recipeId: number): Observable<RecipeSharesResponse> {
+    return this.http.get<RecipeSharesResponse>(`${this.shareBaseUrl}/users/${recipeId}`, { 
+      withCredentials: true 
+    }).pipe(
+      switchMap(response => {
+        if (response.shares && response.shares.length > 0) {
+          // Extract all userIds from the shares
+          const userIds = response.shares.map(share => share.sharedWithId);
+          
+          // Fetch user details for these IDs
+          return this.getUserDetails(userIds).pipe(
+            map(userDetails => {
+              // Merge user details with shares
+              const enrichedShares = response.shares.map(share => {
+                const userDetail = userDetails.users.find(u => u.id === share.sharedWithId) || {};
+                return {
+                  ...share,
+                  ...userDetail
+                };
+              });
+              
+              return {
+                ...response,
+                shares: enrichedShares
+              };
+            })
+          );
+        }
+        
+        // If no shares, return the original response
+        return of(response);
+      })
+    );
+  }
+  
+  // Helper method to fetch user details
+  private getUserDetails(userIds: number[]): Observable<{users: any[]}> {
+    if (!userIds.length) {
+      return of({users: []});
+    }
+    
+    return this.http.post<{users: any[]}>(`${this.authBaseUrl}/user/public-info`, {
+      userIds
+    }, { 
+      withCredentials: true 
+    });
+  }
+
+  // Delete a specific share link
   deleteShareLink(token: string): Observable<any> {
     return this.http.delete(`${this.shareBaseUrl}/links/${token}`, { 
       withCredentials: true 
     });
   }
 
-  // New method to delete multiple share links by status
+  // Delete multiple share links by status
   bulkDeleteShareLinks(status: 'expired' | 'used' | 'accepted'): Observable<any> {
     return this.http.delete(`${this.shareBaseUrl}/links`, { 
       params: { status },
@@ -109,16 +178,36 @@ export class ShareService {
     });
   }
 
-  // New method to revoke recipe-specific access from a user
+  // Revoke recipe-specific access from a user by excluding it from global share
+  // Changed to use POST /exclude instead of DELETE /recipe/{recipeId}/{sharedWithId}
   revokeRecipeAccess(recipeId: number, userId: number): Observable<any> {
-    return this.http.delete(`${this.shareBaseUrl}/recipe/${recipeId}/${userId}`, {
+    return this.http.post(`${this.shareBaseUrl}/exclude`, {
+      recipeId,
+      sharedWithId: userId
+    }, {
       withCredentials: true
     });
   }
 
-  // New method to revoke global access from a user
+  // Remove recipe exclusion for a user with global access
+  removeRecipeExclusion(recipeId: number, userId: number): Observable<any> {
+    return this.http.delete(`${this.shareBaseUrl}/exclude/${recipeId}/${userId}`, {
+      withCredentials: true
+    });
+  }
+
+  // Revoke global access from a user
   revokeGlobalAccess(userId: number): Observable<any> {
     return this.http.delete(`${this.shareBaseUrl}/all/${userId}`, {
+      withCredentials: true
+    });
+  }
+
+  // Get recipe titles by array of IDs
+  getRecipeTitlesByIds(recipeIds: number[]): Observable<{ [key: string]: string }> {
+    return this.http.post<{ [key: string]: string }>(`${this.recipesURL}/titles`, {
+      ids: recipeIds
+    }, {
       withCredentials: true
     });
   }

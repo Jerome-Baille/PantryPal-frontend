@@ -156,85 +156,14 @@
 
     <!-- Third row: Sharing Users Section (full width) -->
     <div class="bento-row full-width">
-        <!-- Sharing Users Section -->
+        <!-- Sharing Users Section - Using the new component -->
         <mat-card class="sharing-users-section bento-item">
             <mat-card-header>
                 <mat-icon mat-card-avatar>people</mat-icon>
                 <mat-card-title>{{ 'SHARING_USERS' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div class="sharing-container vertical-layout" *ngIf="!isLoadingSharingUsers">
-                    <!-- Sharing With Users Section -->
-                    <div class="sharing-block">
-                        <h3>{{ 'SHARING_WITH_USERS' | translate }}</h3>
-                        <div class="user-list">
-                            <div *ngIf="sharingWithUsers.length === 0" class="no-users-message">
-                                {{ 'NO_SHARING_WITH_USERS' | translate }}
-                            </div>
-                            <div *ngFor="let user of sharingWithUsers" class="user-item">
-                                <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
-                                    <mat-icon *ngIf="!user.profilePicture">person</mat-icon>
-                                </div>
-                                <div class="user-info">
-                                    <span class="user-name">{{ getUserDisplayName(user) }}</span>
-                                    <div class="permission-container">
-                                        <span class="permission-badge" [ngClass]="user.highestPermission">
-                                            <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
-                                            {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
-                                        </span>
-                                        <span class="share-scope" *ngIf="user.shares && hasGlobalAccess(user)">
-                                            {{ 'ALL_RECIPES' | translate }}
-                                        </span>
-                                    </div>
-                                </div>
-                                
-                                <!-- New: Revoke access button -->
-                                <div class="user-actions">
-                                    <button mat-icon-button color="warn" 
-                                           (click)="revokeAccess(user)"
-                                           [disabled]="isRevokingAccess"
-                                           matTooltip="{{ 'REVOKE_ACCESS' | translate }}">
-                                        <mat-icon>no_accounts</mat-icon>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Divider between sections -->
-                    <mat-divider></mat-divider>
-                    
-                    <!-- Sharing With Me Users Section -->
-                    <div class="sharing-block">
-                        <h3>{{ 'SHARING_WITH_ME_USERS' | translate }}</h3>
-                        <div class="user-list">
-                            <div *ngIf="sharingWithMeUsers.length === 0" class="no-users-message">
-                                {{ 'NO_SHARING_WITH_ME_USERS' | translate }}
-                            </div>
-                            <div *ngFor="let user of sharingWithMeUsers" class="user-item">
-                                <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
-                                    <mat-icon *ngIf="!user.profilePicture">person</mat-icon>
-                                </div>
-                                <div class="user-info">
-                                    <span class="user-name">{{ getUserDisplayName(user) }}</span>
-                                    <div class="permission-container">
-                                        <span class="permission-badge" [ngClass]="user.highestPermission">
-                                            <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
-                                            {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
-                                        </span>
-                                        <span class="share-scope" *ngIf="user.shares && hasGlobalAccess(user)">
-                                            {{ 'ALL_RECIPES' | translate }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="isLoadingSharingUsers" class="loading-container">
-                    <mat-icon class="loading-icon">sync</mat-icon>
-                    <span>{{ 'LOADING_SHARING_USERS' | translate }}</span>
-                </div>
+                <app-sharing-users></app-sharing-users>
             </mat-card-content>
         </mat-card>
     </div>

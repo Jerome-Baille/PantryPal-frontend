@@ -7,8 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatChipsModule, MatChipListbox } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,10 +20,11 @@ import { SnackbarService } from '../services/snackbar.service';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
 import { Recipe } from '../models/favorite.interface';
-import { ShareLink, ShareLinkStats, SharingUser } from '../services/share.service';
+import { ShareLink, ShareLinkStats } from '../services/share.service';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
+import { SharingUsersComponent } from '../shared/sharing-users/sharing-users.component';
 
 @Component({
   selector: 'app-profile',
@@ -46,7 +46,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatDividerModule,
     MatDialogModule,
     MatMenuModule,
-    TranslateModule
+    TranslateModule,
+    SharingUsersComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -60,14 +61,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   shareLinks: ShareLink[] = [];
   shareStats?: ShareLinkStats;
   showAllLinks = false;
-  
-  // New properties for sharing users
-  sharingWithUsers: SharingUser[] = [];
-  sharingWithMeUsers: SharingUser[] = [];
-  isLoadingSharingUsers = false;
   isDeletingLink = false;
   isDeletingAllLinks = false;
-  isRevokingAccess = false;
 
   constructor(
     private languageService: LanguageService,
@@ -75,8 +70,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private shareService: ShareService,
     private router: Router,
     private snackbarService: SnackbarService,
-    private fb: FormBuilder,
-    private dialog: MatDialog
+    private fb: FormBuilder
   ) {
     this.currentLang = languageService.getCurrentLanguage();
     this.shareForm = this.fb.group({
@@ -90,7 +84,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       lang => this.currentLang = lang
     );
     this.loadShareLinks();
-    this.loadSharingUsers();
   }
 
   ngOnDestroy() {
@@ -141,22 +134,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadSharingUsers() {
-    this.isLoadingSharingUsers = true;
-    this.shareService.getSharingUserIds().subscribe({
-      next: (response) => {
-        this.sharingWithUsers = response.sharingWithUsers;
-        this.sharingWithMeUsers = response.sharingWithMeUsers;
-        this.isLoadingSharingUsers = false;
-      },
-      error: (error) => {
-        this.snackbarService.showError('Failed to load sharing users');
-        console.error('Error loading sharing users:', error);
-        this.isLoadingSharingUsers = false;
-      }
-    });
-  }
-
   toggleShowAllLinks() {
     this.showAllLinks = !this.showAllLinks;
     this.loadShareLinks();
@@ -173,19 +150,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
         console.error('Logout failed:', error);
       }
     });
-  }
-
-  getUserDisplayName(user: SharingUser): string {
-    return user.displayName || user.username || user.email || `User ${user.id}`;
-  }
-
-  /**
-   * Check if a user has global access to all recipes
-   * @param user The sharing user to check
-   * @returns true if the user has global access, false otherwise
-   */
-  hasGlobalAccess(user: SharingUser): boolean {
-    return user.shares ? user.shares.some(share => share.isGlobal) : false;
   }
 
   /**
@@ -234,62 +198,5 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.isDeletingAllLinks = false;
       }
     });
-  }
-
-  /**
-   * Revoke access for a user
-   * @param user The user to revoke access from
-   */
-  revokeAccess(user: SharingUser) {
-    if (this.isRevokingAccess) return;
-
-    // Confirm with the user before proceeding
-    const userName = this.getUserDisplayName(user);
-    const confirmMessage = `Are you sure you want to revoke all sharing permissions for ${userName}?`;
-    if (!confirm(confirmMessage)) return;
-
-    this.isRevokingAccess = true;
-
-    // Check if the user has global access
-    const hasGlobalAccess = this.hasGlobalAccess(user);
-    
-    if (hasGlobalAccess) {
-      // Revoke global access
-      this.shareService.revokeGlobalAccess(user.id).subscribe({
-        next: () => {
-          this.snackbarService.showSuccess(`Access revoked for ${userName}`);
-          this.loadSharingUsers();
-          this.isRevokingAccess = false;
-        },
-        error: (error) => {
-          this.snackbarService.showError(`Failed to revoke access for ${userName}`);
-          console.error('Error revoking access:', error);
-          this.isRevokingAccess = false;
-        }
-      });
-    } else if (user.shares && user.shares.length > 0) {
-      // If no global access but has specific recipe shares
-      // This would need to revoke each recipe share one by one
-      // For simplicity, we'll use the first recipe share as an example
-      const firstShare = user.shares[0];
-      if (!firstShare.isGlobal && firstShare.recipeId) {
-        this.shareService.revokeRecipeAccess(firstShare.recipeId, user.id).subscribe({
-          next: () => {
-            this.snackbarService.showSuccess(`Recipe access revoked for ${userName}`);
-            this.loadSharingUsers();
-            this.isRevokingAccess = false;
-          },
-          error: (error) => {
-            this.snackbarService.showError(`Failed to revoke recipe access for ${userName}`);
-            console.error('Error revoking recipe access:', error);
-            this.isRevokingAccess = false;
-          }
-        });
-      } else {
-        this.isRevokingAccess = false;
-      }
-    } else {
-      this.isRevokingAccess = false;
-    }
   }
 }

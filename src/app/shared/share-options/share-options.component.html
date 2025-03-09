@@ -1,6 +1,6 @@
 <div class="sharing-buttons">
     <button mat-icon-button [matMenuTriggerFor]="shareMenu">
-        <mat-icon svgIcon="share"></mat-icon>
+        <mat-icon svgIcon="more_vert"></mat-icon>
     </button>
     <mat-menu #shareMenu="matMenu">
         <button mat-menu-item (click)="downloadPDF()">
@@ -10,6 +10,10 @@
         <button mat-menu-item *ngIf="isWebShareSupported" (click)="shareContent()">
             <mat-icon svgIcon="share"></mat-icon>
             <span>{{ 'SHARE' | translate }}</span>
+        </button>
+        <button mat-menu-item (click)="manageSharing()">
+            <mat-icon>people</mat-icon>
+            <span>{{ 'MANAGE_SHARING' | translate }}</span>
         </button>
     </mat-menu>
 </div>
