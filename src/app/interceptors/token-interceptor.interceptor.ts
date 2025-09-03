@@ -68,7 +68,7 @@ export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
               catchError(refreshError => {
                 isRefreshing = false;
                 authService.logout(); // Log out the user
-                router.navigate(['/login']); // Redirect to login page
+                router.navigate(['/auth/login']); // Redirect to login page
                 return throwError(() => refreshError);
               }),
               finalize(() => {
