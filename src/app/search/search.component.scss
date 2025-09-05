@@ -5,11 +5,6 @@
     border: none;
     border-radius: 20px;
     padding: 5px 10px;
-    transition: background-color 0.3s ease-in-out;
-
-    &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-    }
 
     input {
         border: none;
