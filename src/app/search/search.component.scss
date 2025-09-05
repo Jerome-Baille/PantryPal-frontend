@@ -1,10 +1,30 @@
+.search-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Metrophobic', sans-serif;
+}
+
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: transparent;
-    border: none;
-    border-radius: 20px;
-    padding: 5px 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    padding: 8px 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+        border-color: #c56c5c;
+        box-shadow: 0 4px 12px rgba(197, 108, 92, 0.15);
+    }
+
+    &:focus-within {
+        border-color: #c56c5c;
+        box-shadow: 0 4px 15px rgba(197, 108, 92, 0.2);
+        background-color: white;
+    }
 
     input {
         border: none;
@@ -13,9 +33,15 @@
         margin-right: 10px;
         font-size: 16px;
         color: #333;
+        font-family: 'Metrophobic', sans-serif;
 
         &:focus {
             outline: none;
+        }
+
+        &::placeholder {
+            color: #999;
+            font-style: italic;
         }
     }
 
@@ -24,6 +50,255 @@
         background-color: transparent;
         cursor: pointer;
         font-size: 16px;
+        color: #c56c5c;
+        padding: 5px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: #c56c5c;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    margin-top: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: 'Metrophobic', sans-serif;
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #c56c5c;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a8574a;
+    }
+}
+
+.dropdown-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #666;
+    font-size: 14px;
+
+    mat-spinner {
+        margin-right: 10px;
+    }
+
+    ::ng-deep .mat-mdc-progress-spinner circle {
+        stroke: #c56c5c !important;
+    }
+}
+
+.dropdown-results {
+    padding: 8px 0;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f5f5f5;
+
+    &:hover,
+    &.selected {
+        background-color: #fdf2f0;
+        border-left: 4px solid #c56c5c;
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .recipe-info {
+        flex: 1;
+        min-width: 0; // Allow text truncation
+    }
+
+    .recipe-title {
+        font-size: 16px;
+        font-weight: 500;
         color: #333;
+        margin-bottom: 4px;
+        font-family: 'Oswald', sans-serif;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .recipe-meta {
+        display: flex;
+        gap: 15px;
+        font-size: 12px;
+        color: #666;
+
+        span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            mat-icon {
+                font-size: 14px;
+                width: 14px;
+                height: 14px;
+                color: #c56c5c;
+            }
+        }
+    }
+
+    .arrow-icon {
+        color: #c56c5c;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        opacity: 0.7;
+        transition: all 0.2s ease;
+    }
+
+    &:hover .arrow-icon,
+    &.selected .arrow-icon {
+        opacity: 1;
+        transform: translateX(3px);
+    }
+}
+
+.view-all {
+    background-color: #f8f9fa;
+    border-top: 2px solid #e9ecef;
+    margin-top: 5px;
+    font-weight: 500;
+
+    &:hover,
+    &.selected {
+        background-color: #c56c5c;
+        border-left: none;
+
+        .view-all-text {
+            color: white;
+
+            mat-icon {
+                color: white;
+            }
+        }
+    }
+
+    .view-all-text {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #c56c5c;
+        font-size: 14px;
+        font-family: 'Oswald', sans-serif;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+
+        mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+        }
+    }
+}
+
+.dropdown-no-results {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    color: #666;
+    font-size: 14px;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 8px;
+
+    mat-icon {
+        margin-right: 8px;
+        color: #999;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+// Mobile responsive design
+@media (max-width: 768px) {
+    .search-bar {
+        padding: 10px 12px;
+        
+        input {
+            font-size: 16px; // Prevent zoom on iOS
+        }
+    }
+
+    .dropdown-item {
+        padding: 14px 12px;
+
+        .recipe-title {
+            font-size: 15px;
+        }
+
+        .recipe-meta {
+            font-size: 11px;
+            gap: 10px;
+        }
+    }
+
+    .search-dropdown {
+        max-height: 300px;
+    }
+}
+
+// Animation support
+.dropdown-item {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

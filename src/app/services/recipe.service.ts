@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, mergeMap, throwError } from 'rxjs';
+import { Observable, catchError, map, mergeMap, throwError, of } from 'rxjs';
 import { BookService } from './book.service';
 import { IngredientService } from './ingredient.service';
 import { Book } from 'src/app/models/book.model';
@@ -95,6 +95,20 @@ export class RecipeService {
       }),
       catchError((error) => {
         return throwError(() => error);
+      })
+    );
+  }
+
+  searchRecipesForDropdown(search: string, limit: number = 8): Observable<any[]> {
+    // Use the same endpoint as the working search but limit results for dropdown
+    return this.searchRecipes(search).pipe(
+      map((recipes: any[]) => {
+        // Limit results to the specified number for dropdown
+        return Array.isArray(recipes) ? recipes.slice(0, limit) : [];
+      }),
+      catchError((error) => {
+        // Return empty array instead of throwing error to show "no results" UI
+        return of([]);
       })
     );
   }

@@ -26,37 +26,19 @@
   }
 
   .search-bar {
-    display: flex;
-    align-items: center;
-    background-color: transparent;
-    border: none;
-    border-radius: 20px;
-    padding: 5px 10px;
-    transition: background-color 0.3s ease-in-out;
+    flex: 1;
+    max-width: 400px;
+    margin: 0 20px;
+    position: relative; // Important for dropdown positioning
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
+    // Remove local styling to let the component handle its own styles
+    ::ng-deep .search-container {
+      width: 100%;
     }
 
-    input {
-      border: none;
-      background-color: transparent;
-      flex: 1;
-      margin-right: 10px;
-      font-size: 16px;
-      color: #333;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    button {
-      border: none;
-      background-color: transparent;
-      cursor: pointer;
-      font-size: 16px;
-      color: #333;
+    // Ensure dropdown appears above other elements
+    ::ng-deep .search-dropdown {
+      z-index: 3100; // Higher than toolbar z-index
     }
   }
 
@@ -116,6 +98,11 @@
     .search-bar {
       width: 100%;
       display: block;
+
+      // Ensure dropdown appears above other mobile elements
+      ::ng-deep .search-dropdown {
+        z-index: 5100;
+      }
     }
   }
 

@@ -123,5 +123,8 @@
     "EXCLUDED_RECIPES_FOR": "Recettes exclues pour",
     "LOADING_RECIPES": "Chargement des recettes...",
     "NO_EXCLUDED_RECIPES": "Aucune recette exclue disponible.",
-    "VIEW_EXCLUDED_RECIPES": "Voir les recettes exclues"
+    "VIEW_EXCLUDED_RECIPES": "Voir les recettes exclues",
+    "SEARCHING": "Recherche en cours",
+    "VIEW_ALL_RESULTS": "Voir tous les résultats",
+    "NO_RECIPES_FOUND": "Aucune recette trouvée"
 }

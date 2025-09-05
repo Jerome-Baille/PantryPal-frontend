@@ -123,5 +123,8 @@
     "EXCLUDED_RECIPES_FOR": "Excluded Recipes For",
     "LOADING_RECIPES": "Loading Recipes...",
     "NO_EXCLUDED_RECIPES": "No excluded recipes available.",
-    "VIEW_EXCLUDED_RECIPES": "View Excluded Recipes"
+    "VIEW_EXCLUDED_RECIPES": "View Excluded Recipes",
+    "SEARCHING": "Searching",
+    "VIEW_ALL_RESULTS": "View All Results",
+    "NO_RECIPES_FOUND": "No recipes found"
 }

@@ -1,6 +1,66 @@
-<form [formGroup]="searchForm" class="search-bar">
-    <input type="text" id="search-input" name="search" [placeholder]="'SEARCH_PLACEHOLDER' | translate" aria-label="Search a recipe." formControlName="search">
-    <button (click)="submitSearch()">
-        <mat-icon svgIcon="search"></mat-icon>
-    </button>
-</form>
+<div class="search-container">
+    <form [formGroup]="searchForm" class="search-bar">
+        <input 
+            #searchInput
+            type="text" 
+            id="search-input" 
+            name="search" 
+            [placeholder]="'SEARCH_PLACEHOLDER' | translate" 
+            aria-label="Search a recipe." 
+            formControlName="search"
+            (keydown)="onKeyDown($event)"
+            (focus)="onInputFocus()"
+            autocomplete="off">
+        <button type="button" (click)="submitSearch()">
+            <mat-icon svgIcon="search"></mat-icon>
+        </button>
+    </form>
+
+    <!-- Search Dropdown -->
+    <div class="search-dropdown" *ngIf="showDropdown" [@slideInOut]>
+        <!-- Loading state -->
+        <div class="dropdown-loading" *ngIf="isLoading">
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>{{ 'SEARCHING' | translate }}...</span>
+        </div>
+
+        <!-- Search results -->
+        <div class="dropdown-results" *ngIf="!isLoading && dropdownResults.length > 0">
+            <div 
+                class="dropdown-item" 
+                *ngFor="let recipe of dropdownResults; let i = index"
+                [class.selected]="i === selectedIndex"
+                (click)="selectRecipe(recipe)"
+                (mouseenter)="selectedIndex = i">
+                <div class="recipe-info">
+                    <div class="recipe-title">{{ recipe.title }}</div>
+                    <div class="recipe-meta">
+                        <span *ngIf="recipe.preparationTime">
+                            <mat-icon>schedule</mat-icon>
+                            {{ recipe.preparationTime }} {{ recipe.preparationUnit }}
+                        </span>
+                        <span *ngIf="recipe.servings">
+                            <mat-icon>people</mat-icon>
+                            {{ recipe.servings }} {{ 'SERVINGS' | translate }}
+                        </span>
+                    </div>
+                </div>
+                <mat-icon class="arrow-icon">chevron_right</mat-icon>
+            </div>
+            
+            <!-- View all results -->
+            <div class="dropdown-item view-all" (click)="viewAllResults()">
+                <div class="view-all-text">
+                    <mat-icon>search</mat-icon>
+                    {{ 'VIEW_ALL_RESULTS' | translate }}
+                </div>
+            </div>
+        </div>
+
+        <!-- No results -->
+        <div class="dropdown-no-results" *ngIf="showNoResults">
+            <mat-icon>search_off</mat-icon>
+            <span>{{ 'NO_RECIPES_FOUND' | translate }}</span>
+        </div>
+    </div>
+</div>
