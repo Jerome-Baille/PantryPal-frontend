@@ -16,7 +16,7 @@
                     <div formGroupName="Ingredient">
                         <mat-form-field>
                             <mat-label>{{ 'NAME' | translate }}</mat-label>
-                            <input matInput formControlName="name" placeholder="Enter ingredient name">
+                            <input matInput formControlName="name" placeholder="Enter ingredient name" id="ingredient-name-{{getFormGroupIndex(ingredientForm)}}">
                             <mat-error *ngIf="ingredientForm.get('Ingredient.name')?.invalid">
                                 {{ 'NAME_REQUIRED' | translate }}
                             </mat-error>
@@ -26,7 +26,7 @@
                     <div class="quantity-unit-row">
                         <mat-form-field>
                             <mat-label>{{ 'QUANTITY' | translate }}</mat-label>
-                            <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity">
+                            <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity" id="ingredient-quantity-{{getFormGroupIndex(ingredientForm)}}">
                             <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">
                                 {{ 'QUANTITY_REQUIRED' | translate }}
                             </mat-error>
@@ -34,7 +34,7 @@
 
                         <mat-form-field>
                             <mat-label>{{ 'UNIT' | translate }}</mat-label>
-                            <input matInput formControlName="unit" placeholder="Enter unit">
+                            <input matInput formControlName="unit" placeholder="Enter unit" id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}">
                             <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
                                 {{ 'UNIT_REQUIRED' | translate }}
                             </mat-error>
@@ -44,7 +44,7 @@
                     <mat-form-field>
                         <mat-label>Section</mat-label>
                         <mat-select formControlName="recipeSectionId"
-                                  (selectionChange)="onSectionChange(ingredientForm, $event)">
+                                  (selectionChange)="onSectionChange(ingredientForm, $event)" id="ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
                             <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
                             <mat-option *ngFor="let section of recipeSections" [value]="section.id">
                                 {{ section.name }}
@@ -82,7 +82,7 @@
                         <div formGroupName="Ingredient">
                             <mat-form-field>
                                 <mat-label>{{ 'NAME' | translate }}</mat-label>
-                                <input matInput formControlName="name" placeholder="Enter ingredient name">
+                                <input matInput formControlName="name" placeholder="Enter ingredient name" id="section-ingredient-name-{{getFormGroupIndex(ingredientForm)}}">
                                 <mat-error *ngIf="ingredientForm.get('Ingredient.name')?.invalid">
                                     {{ 'NAME_REQUIRED' | translate }}
                                 </mat-error>
@@ -92,7 +92,7 @@
                         <div class="quantity-unit-row">
                             <mat-form-field>
                                 <mat-label>{{ 'QUANTITY' | translate }}</mat-label>
-                                <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity">
+                                <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity" id="section-ingredient-quantity-{{getFormGroupIndex(ingredientForm)}}">
                                 <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">
                                     {{ 'QUANTITY_REQUIRED' | translate }}
                                 </mat-error>
@@ -100,7 +100,7 @@
 
                             <mat-form-field>
                                 <mat-label>{{ 'UNIT' | translate }}</mat-label>
-                                <input matInput formControlName="unit" placeholder="Enter unit">
+                                <input matInput formControlName="unit" placeholder="Enter unit" id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}">
                                 <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
                                     {{ 'UNIT_REQUIRED' | translate }}
                                 </mat-error>
@@ -110,7 +110,7 @@
                         <mat-form-field>
                             <mat-label>Section</mat-label>
                             <mat-select formControlName="recipeSectionId"
-                                      (selectionChange)="onSectionChange(ingredientForm, $event)">
+                                      (selectionChange)="onSectionChange(ingredientForm, $event)" id="section-ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
                                 <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
                                 <mat-option *ngFor="let section of recipeSections" [value]="section.id">
                                     {{ section.name }}

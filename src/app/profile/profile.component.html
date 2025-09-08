@@ -44,7 +44,7 @@
                 <form [formGroup]="shareForm" (ngSubmit)="createShareLink()">
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>{{ 'PERMISSION_LEVEL' | translate }}</mat-label>
-                        <mat-select formControlName="permissionLevel">
+                        <mat-select formControlName="permissionLevel" id="share-permission-level">
                             <mat-option value="read">{{ 'READ_ONLY' | translate }}</mat-option>
                             <mat-option value="edit">{{ 'READ_WRITE' | translate }}</mat-option>
                         </mat-select>
@@ -52,7 +52,7 @@
 
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>{{ 'EXPIRES_IN_DAYS' | translate }}</mat-label>
-                        <input matInput type="number" formControlName="expiresInDays" min="1" max="30">
+                        <input matInput type="number" formControlName="expiresInDays" min="1" max="30" id="share-expires-in-days">
                     </mat-form-field>
 
                     <button mat-raised-button color="primary" type="submit">
@@ -64,7 +64,7 @@
                 <div *ngIf="shareUrl" class="share-url-container">
                     <mat-form-field class="full-width" appearance="outline">
                         <mat-label>{{ 'SHARE_URL' | translate }}</mat-label>
-                        <input matInput [value]="shareUrl" readonly>
+                        <input matInput [value]="shareUrl" readonly id="share-url">
                         <button matSuffix mat-icon-button (click)="copyShareUrl()" matTooltip="{{ 'COPY_TO_CLIPBOARD' | translate }}">
                             <mat-icon>content_copy</mat-icon>
                         </button>

@@ -16,7 +16,7 @@
                                 <mat-label>
                                     {{ 'SELECT_BOOK' | translate }}
                                 </mat-label>
-                                <input type="text" placeholder="Book" matInput [formControl]="bookControl" />
+                                <input type="text" placeholder="Book" matInput [formControl]="bookControl" id="filter-book-input" />
                             </mat-form-field>
                         </form>
 
@@ -59,7 +59,7 @@
                                     {{ 'SELECT_INGREDIENT' | translate }}
                                 </mat-label>
                                 <input type="text" placeholder="Ingredients" matInput
-                                    [formControl]="ingredientControl" />
+                                    [formControl]="ingredientControl" id="filter-ingredient-input" />
                             </mat-form-field>
                         </form>
 
@@ -102,7 +102,7 @@
                                     {{ 'SELECT_TYPE_OF_MEAL' | translate }}
                                 </mat-label>
                                 <input type="text" placeholder="Type of meal" matInput
-                                    [formControl]="typeOfMealControl" />
+                                    [formControl]="typeOfMealControl" id="filter-type-of-meal-input" />
                             </mat-form-field>
                         </form>
 

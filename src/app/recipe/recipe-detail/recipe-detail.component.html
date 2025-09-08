@@ -60,7 +60,7 @@
                         <div class="servings-selector" *ngIf="recipe?.servings">
                             {{ 'SERVINGS' | translate }}:
                             <mat-select [value]="servingsMultiplier" (selectionChange)="onServingsChange($event.value)"
-                                class="compact-select">
+                                class="compact-select" id="servings-multiplier">
                                 <mat-option *ngFor="let mult of availableServings" [value]="mult">
                                     {{ recipe.servings * mult }}
                                 </mat-option>
