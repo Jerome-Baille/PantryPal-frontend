@@ -1,10 +1,85 @@
 <div class="list-container">
-    <div class="filter-container" *ngIf="!isFavoritesView">
-        <button mat-mini-fab class="btn-color-accent" (click)="toggleOffCanvas()">
-            <mat-icon>filter_list</mat-icon>
-        </button>
-        <button mat-mini-fab class="btn-color-accent" (click)="onReset()">
-            <mat-icon>refresh</mat-icon>
+    <div class="inline-filter-bar" *ngIf="!isFavoritesView">
+        <!-- Books Filter -->
+        <div class="filter-group">
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'FILTERS_BOOK' | translate }}</mat-label>
+                <input matInput 
+                       [formControl]="bookSearchControl"
+                       [matAutocomplete]="bookAuto"
+                       placeholder="{{ 'SELECT_BOOK' | translate }}">
+                <mat-autocomplete #bookAuto="matAutocomplete" 
+                                  (optionSelected)="onBookSelected($event.option.value)">
+                    <mat-option *ngFor="let book of filteredBooks | async" [value]="book">
+                        {{ book.title }} - {{ book.author }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="selected-chips" *ngIf="selectedBooks.length > 0">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let book of selectedBooks" (removed)="removeBook(book)" removable>
+                        {{ book.title }}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-set>
+            </div>
+        </div>
+
+        <!-- Ingredients Filter -->
+        <div class="filter-group">
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'FILTERS_INGREDIENTS' | translate }}</mat-label>
+                <input matInput 
+                       [formControl]="ingredientSearchControl"
+                       [matAutocomplete]="ingredientAuto"
+                       placeholder="{{ 'SELECT_INGREDIENT' | translate }}">
+                <mat-autocomplete #ingredientAuto="matAutocomplete" 
+                                  (optionSelected)="onIngredientSelected($event.option.value)">
+                    <mat-option *ngFor="let ingredient of filteredIngredients | async" [value]="ingredient">
+                        {{ ingredient }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="selected-chips" *ngIf="selectedIngredients.length > 0">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let ingredient of selectedIngredients" (removed)="removeIngredient(ingredient)" removable>
+                        {{ ingredient }}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-set>
+            </div>
+        </div>
+
+        <!-- Type of Meal Filter -->
+        <div class="filter-group">
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>{{ 'FILTERS_TYPE_OF_MEAL' | translate }}</mat-label>
+                <input matInput 
+                       [formControl]="mealTypeSearchControl"
+                       [matAutocomplete]="mealTypeAuto"
+                       placeholder="{{ 'SELECT_TYPE_OF_MEAL' | translate }}">
+                <mat-autocomplete #mealTypeAuto="matAutocomplete" 
+                                  (optionSelected)="onMealTypeSelected($event.option.value)">
+                    <mat-option *ngFor="let mealType of filteredMealTypes | async" [value]="mealType">
+                        {{ mealType.name | translate }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="selected-chips" *ngIf="selectedMealTypes.length > 0">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let mealTypeValue of selectedMealTypes" (removed)="removeMealType(mealTypeValue)" removable>
+                        {{ getMealTypeLabel(mealTypeValue) | translate }}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-set>
+            </div>
+        </div>
+
+        <!-- Clear All Button -->
+        <button mat-stroked-button color="primary" (click)="clearAllFilters()" 
+                [disabled]="!hasActiveFilters()" class="clear-filters-btn">
+            <mat-icon>clear</mat-icon>
+            {{ 'CLEAR' | translate }}
         </button>
     </div>
     <ng-container *ngIf="recipes && recipes.length > 0; else noRecipes">
@@ -55,5 +130,3 @@
 <button mat-fab class="fab-button" (click)="createRecipe()" *ngIf="!isFavoritesView">
     <mat-icon svgIcon="add" class="add-icon"></mat-icon>
 </button>
-
-<app-filters *ngIf="!isFavoritesView"></app-filters>

@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export interface FilterOptions {
@@ -11,18 +11,12 @@ export interface FilterOptions {
   providedIn: 'root'
 })
 export class FilterService {
-  // Signals for reactive state
-  filtersVisible = signal(false);
   private filters = new BehaviorSubject<FilterOptions>({});
   
   // Observable for component communication
   activeFilters = this.filters.asObservable();
   
   constructor() {}
-  
-  toggleFiltersVisibility(): void {
-    this.filtersVisible.update(value => !value);
-  }
   
   applyFilters(filters: FilterOptions): void {
     this.filters.next(filters);
