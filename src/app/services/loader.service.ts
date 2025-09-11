@@ -1,20 +1,27 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoaderService {
-  private isLoadingSubject = new Subject<boolean>();
-  isLoading$ = this.isLoadingSubject.asObservable();
+  // internal counter as a signal
+  private loadingCount = signal(0);
+
+  // derived readonly signal for templates
+  readonly isLoading = computed(() => this.loadingCount() > 0);
+
+  // Observable interop for parts of the app that expect an Observable
+  readonly isLoading$ = toObservable(this.isLoading);
 
   showLoader() {
-    this.isLoadingSubject.next(true);
+    this.loadingCount.update(n => n + 1);
   }
 
   hideLoader() {
+    // small delay to reduce flicker on very fast requests
     setTimeout(() => {
-      this.isLoadingSubject.next(false);
+      this.loadingCount.update(n => Math.max(0, n - 1));
     }, 100);
   }
 }
