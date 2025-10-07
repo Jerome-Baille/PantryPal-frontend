@@ -34,8 +34,8 @@ function notifyRefreshComplete(success: boolean) {
 }
 
 export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
-  // Bypass refresh token endpoints
-  if (req.url.includes('/refresh')) {
+  // Bypass refresh token and logout endpoints
+  if (req.url.includes('/refresh') || req.url.includes('/logout')) {
     return next(req);
   }
 
