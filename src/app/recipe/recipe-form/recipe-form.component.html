@@ -72,6 +72,34 @@
             </mat-card-header>
             <mat-card-content>
                 <div formGroupName="recipe" class="full-width">
+                    <!-- Image Upload Section -->
+                    <div class="image-upload-section">
+                        <label class="image-upload-label">{{ 'RECIPE_IMAGE' | translate }}</label>
+                        
+                        <div class="image-preview-container" *ngIf="imagePreview || recipe?.thumbnail">
+                            <img [src]="imagePreview || recipe?.thumbnail" alt="Recipe preview" class="image-preview">
+                            <button mat-icon-button class="remove-image-btn" (click)="removeImage()" type="button">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
+                        
+                        <div class="image-upload-actions">
+                            <input type="file" 
+                                   #imageInput 
+                                   accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
+                                   (change)="onImageSelected($event)"
+                                   style="display: none"
+                                   id="image-upload">
+                            <button mat-raised-button 
+                                    type="button" 
+                                    (click)="imageInput.click()">
+                                <mat-icon>add_photo_alternate</mat-icon>
+                                {{ (imagePreview || recipe?.thumbnail) ? ('CHANGE_IMAGE' | translate) : ('ADD_IMAGE' | translate) }}
+                            </button>
+                            <span class="image-hint">{{ 'IMAGE_UPLOAD_HINT' | translate }}</span>
+                        </div>
+                    </div>
+
                     <mat-form-field>
                         <mat-label>
                             {{ 'RECIPE_TITLE' | translate }}

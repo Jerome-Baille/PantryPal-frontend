@@ -53,6 +53,8 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
 
   isTimerModified = false;
   removedTimers: number[] = [];
+  selectedImage: File | null = null;
+  imagePreview: string | null = null;
 
   private languageSubscription?: Subscription;
   currentLang: string;
@@ -162,6 +164,11 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         }
       }); // Removed { emitEvent: false } option
 
+      // Set image preview if recipe has an image
+      if (this.recipe.picture) {
+        this.imagePreview = this.recipe.picture;
+      }
+
       // Update timers FormArray including timer id
       if (this.recipe.timers && Array.isArray(this.recipe.timers)) {
         const timersFormArray = this.recipeForm.get('timers') as FormArray;
@@ -255,7 +262,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     const timersRaw = (this.recipeForm.get('timers') as FormArray).value;
 
     // Remove timers from initial recipe creation; they will be created separately.
-    this.recipeService.createRecipe(this.book, recipe, ingredients, []).subscribe({
+    this.recipeService.createRecipe(this.book, recipe, ingredients, [], this.selectedImage || undefined).subscribe({
       next: (recipeResponse) => {
         const recipeId = recipeResponse.id;
         // Create timers separately for new ones (without an id)
@@ -305,7 +312,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
       };
 
       if (JSON.stringify(currentRecipe) !== JSON.stringify(originalRecipe)) {
-        recipeUpdates.push(this.recipeService.updateRecipe(recipeId, updatedRecipe.recipe));
+        recipeUpdates.push(this.recipeService.updateRecipe(recipeId, updatedRecipe.recipe, this.selectedImage || undefined));
       }
     }
 
@@ -465,5 +472,41 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
   onIngredientsSaved() {
     // Optionally handle ingredient save completion
     this.snackbarService.showSuccess('Ingredients saved successfully!');
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif'];
+      if (!allowedTypes.includes(file.type)) {
+        this.snackbarService.showError('Invalid file type. Only JPEG, PNG, WebP, and AVIF are allowed.');
+        return;
+      }
+      
+      // Validate file size (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        this.snackbarService.showError('File size exceeds 10MB limit.');
+        return;
+      }
+      
+      this.selectedImage = file;
+      this.isFormModified = true;
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(): void {
+    this.selectedImage = null;
+    this.imagePreview = null;
+    this.isFormModified = true;
   }
 }

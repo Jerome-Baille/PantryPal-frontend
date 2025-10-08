@@ -278,3 +278,20 @@ mat-card.section-card mat-card-content:has(> .instructions) {
     }
   }
 }
+
+/* Recipe image styles */
+.recipe-image-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  .recipe-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+}

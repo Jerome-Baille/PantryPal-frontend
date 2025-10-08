@@ -126,5 +126,9 @@
     "VIEW_EXCLUDED_RECIPES": "View Excluded Recipes",
     "SEARCHING": "Searching",
     "VIEW_ALL_RESULTS": "View All Results",
-    "NO_RECIPES_FOUND": "No recipes found"
+    "NO_RECIPES_FOUND": "No recipes found",
+    "RECIPE_IMAGE": "Recipe Image",
+    "ADD_IMAGE": "Add Image",
+    "CHANGE_IMAGE": "Change Image",
+    "IMAGE_UPLOAD_HINT": "Max 10MB. Supported formats: JPEG, PNG, WebP, AVIF"
 }

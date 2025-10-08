@@ -20,11 +20,11 @@ export class RecipeService {
     private ingredientService: IngredientService,
   ) { }
 
-  createRecipe(book: Book, recipe: any, ingredients: any[], timers: any[]): Observable<any> {
+  createRecipe(book: Book, recipe: any, ingredients: any[], timers: any[], image?: File): Observable<any> {
     return this.bookService.createBook(book).pipe(
       mergeMap((bookResponse: any) => {
         const bookId = bookResponse.id;
-        return this.createRecipeWithBookId(recipe, bookId);
+        return this.createRecipeWithBookId(recipe, bookId, image);
       }),
       mergeMap((recipeResponse: any) => {
         const recipeId = recipeResponse.id;
@@ -40,24 +40,20 @@ export class RecipeService {
     );
   }
 
-  createRecipeWithBookId(recipe: any, bookId: number): Observable<any> {
-    return this.http.post(`${this.recipesURL}`, {
-      title: recipe.title,
-      instructions: recipe.instructions,
-      notes: recipe.notes,
-      typeOfMeal: recipe.typeOfMeal,
-      servings: recipe.servings,
-      preparationTime: recipe.preparationTime,
-      preparationUnit: recipe.preparationUnit,
-      cookingTime: recipe.cookingTime,
-      cookingUnit: recipe.cookingUnit,
-      fridgeTime: recipe.fridgeTime,
-      fridgeUnit: recipe.fridgeUnit,
-      waitingTime: recipe.waitingTime,
-      waitingUnit: recipe.waitingUnit,
-      bookId: bookId,
-      // Removed timers payload – timers will be created separately.
-    }, { withCredentials: true }).pipe(
+  createRecipeWithBookId(recipe: any, bookId: number, image?: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('title', recipe.title);
+    formData.append('instructions', recipe.instructions);
+    formData.append('bookId', bookId.toString());
+    
+    if (recipe.notes) formData.append('notes', recipe.notes);
+    if (recipe.typeOfMeal) formData.append('typeOfMeal', recipe.typeOfMeal);
+    if (recipe.servings !== undefined && recipe.servings !== null) {
+      formData.append('servings', recipe.servings.toString());
+    }
+    if (image) formData.append('image', image);
+    
+    return this.http.post(`${this.recipesURL}`, formData, { withCredentials: true }).pipe(
       map((response: any) => response),
       catchError((error) => throwError(() => error))
     );
@@ -78,9 +74,20 @@ export class RecipeService {
     return this.http.get<any>(`${this.recipesURL}/${id}`, { withCredentials: true });
   }
 
-  updateRecipe(id: number, recipe: Recipe): Observable<any> {
-    // The recipe payload now includes a 'timers' array which will be processed by the backend.
-    return this.http.put(`${this.recipesURL}/${id}`, recipe, { withCredentials: true });
+  updateRecipe(id: number, recipe: Recipe, image?: File): Observable<any> {
+    const formData = new FormData();
+    
+    // Add recipe fields to FormData
+    if (recipe.title) formData.append('title', recipe.title);
+    if (recipe.instructions) formData.append('instructions', recipe.instructions);
+    if (recipe.notes !== undefined && recipe.notes !== null) formData.append('notes', recipe.notes);
+    if (recipe.typeOfMeal) formData.append('typeOfMeal', recipe.typeOfMeal);
+    if (recipe.servings !== undefined && recipe.servings !== null) {
+      formData.append('servings', recipe.servings.toString());
+    }
+    if (image) formData.append('image', image);
+    
+    return this.http.put(`${this.recipesURL}/${id}`, formData, { withCredentials: true });
   }
 
   deleteRecipe(id: number): Observable<any> {

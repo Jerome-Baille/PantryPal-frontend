@@ -126,5 +126,9 @@
     "VIEW_EXCLUDED_RECIPES": "Voir les recettes exclues",
     "SEARCHING": "Recherche en cours",
     "VIEW_ALL_RESULTS": "Voir tous les résultats",
-    "NO_RECIPES_FOUND": "Aucune recette trouvée"
+    "NO_RECIPES_FOUND": "Aucune recette trouvée",
+    "RECIPE_IMAGE": "Image de la recette",
+    "ADD_IMAGE": "Ajouter une image",
+    "CHANGE_IMAGE": "Changer l'image",
+    "IMAGE_UPLOAD_HINT": "Max 10 Mo. Formats supportés : JPEG, PNG, WebP, AVIF"
 }

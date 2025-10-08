@@ -17,6 +17,12 @@
         <mat-card-subtitle class="card-subtitle">
             <span class="book-title">{{ recipe?.Book?.title }} </span> {{ 'BY' | translate }} {{ recipe?.Book?.author }}
         </mat-card-subtitle>
+
+        <!-- Recipe Image Display -->
+        <div class="recipe-image-container" *ngIf="recipe?.picture">
+            <img [src]="recipe.picture" [alt]="recipe.title" class="recipe-image">
+        </div>
+
         <mat-card-content class="card-content">
 
             <!-- Timers Section -->
