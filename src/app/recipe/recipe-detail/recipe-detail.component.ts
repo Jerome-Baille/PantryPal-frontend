@@ -209,12 +209,17 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     // Add a getter to group ingredients by section
     get groupedIngredients(): { section: string, ingredients: any[] }[] {
         if (!this.recipe?.RecipeIngredients) return [];
-        const groups: { [key: string]: any[] } = {};
+        const groups: { [key: string]: any } = {};
         this.recipe.RecipeIngredients.forEach((item: any) => {
             const key = item.section ? item.section.name : '';
-            groups[key] = groups[key] || [];
+            if (!groups[key]) {
+                groups[key] = {
+                    sectionDisplayOrder: item.section?.displayOrder || 0,
+                    ingredients: []
+                };
+            }
             // Create a new object to avoid modifying the original data
-            groups[key].push({
+            groups[key].ingredients.push({
                 ...item,
                 adjustedQuantity: this.calculateAdjustedQuantity(item.quantity)
             });
@@ -222,13 +227,17 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
         // Sort ingredients by displayOrder within each section
         Object.keys(groups).forEach(key => {
-            groups[key].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+            groups[key].ingredients.sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0));
         });
 
-        return Object.keys(groups).map(key => ({ 
-            section: key, 
-            ingredients: groups[key]
-        }));
+        // Convert to array and sort sections by their displayOrder
+        return Object.keys(groups)
+            .map(key => ({ 
+                section: key, 
+                ingredients: groups[key].ingredients,
+                sectionDisplayOrder: groups[key].sectionDisplayOrder
+            }))
+            .sort((a, b) => a.sectionDisplayOrder - b.sectionDisplayOrder);
     }
 
     calculateAdjustedQuantity(quantity: number): number {

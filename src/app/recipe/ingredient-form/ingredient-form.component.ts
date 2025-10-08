@@ -154,7 +154,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
   loadRecipeSections(recipeId: number) {
     this.itemService.getRecipeSectionsByRecipeId(recipeId).subscribe({
       next: (sections) => { 
-        this.recipeSections = sections; 
+        this.recipeSections = sections.sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0));
       },
       error: (error) => {
         console.error('Error loading recipe sections:', error);
@@ -327,7 +327,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
         // If section changed.
         if (control.get('recipeSectionId')?.dirty) {
           observables.push(
-            this.itemService.updateRecipeSection(id, { recipeSectionId: control.value.recipeSectionId })
+            this.itemService.updateRecipeIngredient(id, { recipeSectionId: control.value.recipeSectionId })
           );
         }
       }
