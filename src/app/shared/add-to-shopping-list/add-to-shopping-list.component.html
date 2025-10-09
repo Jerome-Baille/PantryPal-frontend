@@ -1,14 +1,19 @@
 <button class="add-button" 
-        (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()"
-        [@buttonClick]="buttonState"
-        (@buttonClick.done)="onAnimationDone()">
-    <div class="icon-container">
-        <mat-icon svgIcon="shopping_cart" 
-                [@iconAnimation]="isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'"
-                class="cart-icon">
-        </mat-icon>
-        <mat-icon svgIcon="add_shopping_cart" 
-                [@iconAnimation]="!isRecipeInShoppingList(recipe.id) ? 'visible' : 'hidden'">
-        </mat-icon>
-    </div>
+                (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()"
+                [@buttonClick]="buttonState"
+                (@buttonClick.done)="onAnimationDone()">
+        <div class="icon-container">
+                @if (isRecipeInShoppingList(recipe.id)) {
+                        <!-- Show a green check when the recipe is in the shopping list -->
+                        <mat-icon class="check-icon"
+                                          [@iconAnimation]="'visible'">
+                                check
+                        </mat-icon>
+                } @else {
+                        <!-- Default / add icon when recipe is not in the list -->
+                        <mat-icon svgIcon="add_shopping_cart"
+                                          [@iconAnimation]="'visible'">
+                        </mat-icon>
+                }
+        </div>
 </button>

@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { map, startWith, debounceTime, takeUntil } from 'rxjs/operators';
 import { RecipeService } from '../../services/recipe.service';
 import { SearchService } from '../../services/search.service';
 import { SnackbarService } from '../../services/snackbar.service';
@@ -49,11 +49,15 @@ const PAGE_SIZE_KEY = 'recipesPageSize';
     templateUrl: './recipe-list.component.html',
     styleUrls: ['./recipe-list.component.scss']
 })
-export class RecipeListComponent implements OnInit {
+export class RecipeListComponent implements OnInit, OnDestroy {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     
     // Services
     private filterService = inject(FilterService);
+    
+    // Subscription management
+    private destroy$ = new Subject<void>();
+    private subscriptions = new Subscription();
     
     recipes: Recipe[] = [];
     totalRecipes: number = 0;
@@ -113,10 +117,14 @@ export class RecipeListComponent implements OnInit {
             map(value => this.filterMealTypes(value || ''))
         );
         
-        // Subscribe to filter changes from service
-        this.filterService.activeFilters.subscribe(filters => {
-            if (filters) {
-                this.onFiltersSelect(filters);
+        // Subscribe to filter changes from service with debounce to prevent multiple calls
+        this.filterService.activeFilters.pipe(
+            debounceTime(100),
+            takeUntil(this.destroy$)
+        ).subscribe(filters => {
+            // Only reload if component is initialized and filters actually changed
+            if (filters && !this.isFavoritesView) {
+                this.loadRecipes();
             }
         });
     }
@@ -128,12 +136,12 @@ export class RecipeListComponent implements OnInit {
             this.pageSize = savedPageSize;
         }
 
-        this.route.url.subscribe(url => {
+        this.route.url.pipe(takeUntil(this.destroy$)).subscribe(url => {
             this.isFavoritesView = url[0]?.path === 'favorites';
             if (this.isFavoritesView) {
                 this.loadFavorites();
             } else {
-                this.route.queryParams.subscribe(params => {
+                this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
                     this.currentPage = parseInt(params['page'] || '1') - 1;
                     // Only override pageSize from URL if there's no saved preference
                     if (!savedPageSize && params['limit']) {
@@ -151,7 +159,10 @@ export class RecipeListComponent implements OnInit {
 
         // Only subscribe to search if not in favorites view
         if (!this.isFavoritesView) {
-            this.searchService.searchValue$.subscribe(searchValue => {
+            this.searchService.searchValue$.pipe(
+                debounceTime(300),
+                takeUntil(this.destroy$)
+            ).subscribe(searchValue => {
                 if (searchValue) {
                     this.searchRecipes(searchValue);
                 } else {
@@ -239,10 +250,6 @@ export class RecipeListComponent implements OnInit {
                 this.isSearchActive = false;
             }
         });
-    }
-
-    onFiltersSelect(selectedFilters: { bookIds?: string, ingredientNames?: string, typeOfMeals?: string }): void {
-        this.loadRecipes();
     }
 
     // Utility method to check if component state is in sync with service
@@ -470,7 +477,18 @@ export class RecipeListComponent implements OnInit {
                 this.mealTypes.some(mt => mt.value === value)
             );
         }
+    }
 
+    getThumbnailUrl(recipe: Recipe): string {
+        if (recipe.thumbnail) {
+            return `https://pantry-pal.jerome-baille.fr/backend${recipe.thumbnail}`;
+        }
+        return 'assets/icons/icon-512x512.png'; // Fallback image
+    }
 
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
+        this.subscriptions.unsubscribe();
     }
 }
