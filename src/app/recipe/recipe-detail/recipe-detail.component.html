@@ -19,9 +19,16 @@
         </mat-card-subtitle>
 
         <!-- Recipe Image Display -->
-        <div class="recipe-image-container" *ngIf="recipe?.picture">
-            <img [src]="recipe.picture" [alt]="recipe.title" class="recipe-image">
-        </div>
+        @if (recipe?.picture || recipe?.thumbnail) {
+            <div class="image-wrapper">
+                <div class="recipe-image-container">
+                    <picture>
+                        <source [srcset]="recipe.picture" media="(min-width: 768px)">
+                        <img [src]="recipe.thumbnail || recipe.picture" [alt]="recipe.title" class="recipe-image">
+                    </picture>
+                </div>
+            </div>
+        }
 
         <mat-card-content class="card-content">
 

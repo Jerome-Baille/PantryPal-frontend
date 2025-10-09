@@ -63,6 +63,12 @@ a:hover {
   padding: 20px 0;
 }
 
+@media screen and (max-width: 600px) {
+  .main-container {
+    padding: 0;
+  }
+}
+
 .filters-mat-expansion-panel .mat-expansion-panel-body {
   padding: 0 !important;
 }

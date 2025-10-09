@@ -69,9 +69,18 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        // Get the recipe ID from the route parameters
-        const id = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
+        // Subscribe to route parameter changes to handle navigation between recipe details
+        this.route.paramMap.subscribe(params => {
+            const id = parseInt(params.get('id') || '0', 10);
+            this.loadRecipe(id);
+        });
 
+        this.languageSubscription = this.languageService.currentLanguage$.subscribe(
+            lang => this.currentLang = lang
+        );
+    }
+
+    private loadRecipe(id: number): void {
         // Make the API call with the recipe ID
         this.recipeService.getRecipe(id).subscribe({
             next: (response) => {
@@ -88,6 +97,8 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                     };
                 });
                 this.names = this.recipeTime.map(row => row.name);
+                // Reset servings multiplier when loading a new recipe
+                this.servingsMultiplier = 1;
                 // Removed timeUnits mapping as it's not used anymore
             },
             error: (error) => {
@@ -96,10 +107,6 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                 this.error = error;
             }
         });
-
-        this.languageSubscription = this.languageService.currentLanguage$.subscribe(
-            lang => this.currentLang = lang
-        );
     }
 
     ngOnDestroy(): void {
