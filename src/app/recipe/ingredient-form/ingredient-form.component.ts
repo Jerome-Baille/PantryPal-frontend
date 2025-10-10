@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { ItemService } from 'src/app/services/item.service';
 import { ActivatedRoute } from '@angular/router';
@@ -38,12 +38,10 @@ import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-
 })
 export class IngredientFormComponent implements OnInit, OnDestroy {
   @Input() recipeForm!: FormGroup;
-  @Output() ingredientsSaved = new EventEmitter<void>();
 
   ingredients!: FormArray;
   recipeSections: any[] = [];
   private recipeId: number | null = null;
-  isDirty = false;
   private languageSubscription?: Subscription;
   currentLang: string;
 
@@ -141,7 +139,6 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     if (observables.length > 0) {
       forkJoin(observables).subscribe({
         next: () => {
-          this.isDirty = false;
           this.loadIngredients();
         },
         error: (error) => {
@@ -239,7 +236,6 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
             this.recipeSections.push(createdSection);
             ingredientControl.patchValue({ recipeSectionId: createdSection.id });
             ingredientControl.markAsDirty();
-            this.isDirty = true;
           }
         });
       }, 0);
@@ -248,114 +244,12 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     if (ingredientControl instanceof FormGroup) {
       ingredientControl.patchValue({ recipeSectionId: sectionId });
       ingredientControl.markAsDirty();
-      this.isDirty = true;
     } else {
       console.warn('Expected FormGroup for ingredient control');
     }
   }
 
-  saveIngredients() {
-    if (!this.recipeId) return;
 
-    const observables: Observable<any>[] = [];
-
-    this.ingredients.controls.forEach(control => {
-      if (control.dirty && control.get('id')?.value) {
-        const value = control.value;
-        observables.push(
-          this.itemService.updateRecipeIngredient(value.id, {
-            quantity: value.quantity,
-            unit: value.unit,
-            recipeSectionId: value.recipeSectionId
-          })
-        );
-      }
-    });
-
-    // Updated flow for new ingredients: only call createIngredient as the backend creates recipeIngredient
-    this.ingredients.controls
-      .filter(control => !control.get('id')?.value)
-      .forEach(control => {
-        const value = control.value;
-        observables.push(
-          this.ingredientService.createIngredient(this.recipeId!, value)
-        );
-      });
-
-    if (observables.length > 0) {
-      forkJoin(observables).subscribe({
-        next: () => {
-          this.isDirty = false;
-          this.ingredientsSaved.emit();
-          this.loadIngredients();
-        },
-        error: (error) => {
-          console.error('Error saving ingredients:', error);
-        }
-      });
-    }
-  }
-
-  // Add a getter to determine if any ingredient is being edited (i.e. already saved)
-  public get isEditing(): boolean {
-    return this.ingredients?.controls.some(ctrl => ctrl.get('id')?.value);
-  }
-
-  // New method to update existing ingredients based on field changes.
-  updateIngredients() {
-    if (!this.recipeId) return;
-    const observables: Observable<any>[] = [];
-    this.ingredients.controls.forEach(control => {
-      const id = control.get('id')?.value;
-      if (id) {
-        // If the name in the nested Ingredient group is dirty.
-        if (control.get('Ingredient.name')?.dirty) {
-          const newName = control.get('Ingredient.name')?.value;
-          observables.push(
-            this.ingredientService.updateIngredient(control.get('Ingredient.id')?.value, { name: newName })
-          );
-        }
-        // If quantity or unit changed.
-        if (control.get('quantity')?.dirty || control.get('unit')?.dirty) {
-          observables.push(
-            this.itemService.updateRecipeIngredient(id, {
-              quantity: control.value.quantity,
-              unit: control.value.unit
-            })
-          );
-        }
-        // If section changed.
-        if (control.get('recipeSectionId')?.dirty) {
-          observables.push(
-            this.itemService.updateRecipeIngredient(id, { recipeSectionId: control.value.recipeSectionId })
-          );
-        }
-      }
-    });
-    if (observables.length > 0) {
-      forkJoin(observables).subscribe({
-        next: () => {
-          this.isDirty = false;
-          this.ingredientsSaved.emit();
-          this.loadIngredients();
-        },
-        error: (error) => {
-          console.error('Error updating ingredients:', error);
-        }
-      });
-    }
-  }
-
-  // New getters to decide the button behavior
-  public get isEditingMode(): boolean {
-    // returns true if any ingredient with an id is dirty
-    return this.ingredients?.controls.some(ctrl => ctrl.get('id')?.value && ctrl.dirty);
-  }
-
-  public get isNewMode(): boolean {
-    // returns true if any ingredient without an id is dirty
-    return this.ingredients?.controls.some(ctrl => !ctrl.get('id')?.value && ctrl.dirty);
-  }
 
   getSectionName(sectionId: number | null): string {
     if (!sectionId) return 'No Section';

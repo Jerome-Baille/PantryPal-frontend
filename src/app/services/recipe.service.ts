@@ -30,7 +30,7 @@ export class RecipeService {
         const recipeId = recipeResponse.id;
         return this.ingredientService.createIngredients(ingredients, recipeId).pipe(
           map((ingredientsResponse: any) => {
-            return ingredientsResponse;
+            return recipeResponse; // Return recipe response instead of ingredients response
           }),
           catchError((error) => {
             return throwError(() => error);

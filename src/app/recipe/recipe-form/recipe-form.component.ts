@@ -6,6 +6,7 @@ import { Book as BookModel } from 'src/app/models/book.model';
 import { BookService } from 'src/app/services/book.service';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { ItemService } from 'src/app/services/item.service';
+import { IngredientService } from 'src/app/services/ingredient.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -67,6 +68,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private bookService: BookService,
     private itemService: ItemService,
+    private ingredientService: IngredientService,
     private languageService: LanguageService
   ) {
     this.initializeForm();
@@ -190,10 +192,11 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToFormChanges() {
-    // Only track changes to Book and recipe groups
+    // Track changes to Book, recipe, and ingredients groups
     merge(
       this.recipeForm.get('Book')!.valueChanges,
-      this.recipeForm.get('recipe')!.valueChanges
+      this.recipeForm.get('recipe')!.valueChanges,
+      this.recipeForm.get('ingredients')!.valueChanges
     ).subscribe(() => {
       this.isFormModified = true;
     });
@@ -281,12 +284,14 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
             next: () => {
               this.resetForm();
               this.snackbarService.showSuccess('Recipe and timers created successfully!');
+              this.router.navigate(['/recipe/detail', recipeId]);
             },
             error: (error) => this.snackbarService.showError(error)
           });
         } else {
           this.resetForm();
           this.snackbarService.showSuccess('Recipe created successfully!');
+          this.router.navigate(['/recipe/detail', recipeId]);
         }
       },
       error: (error) => {
@@ -301,6 +306,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     const updatedRecipe = { ...this.recipe, ...this.recipeForm.value };
     delete updatedRecipe.timers;
     const recipeUpdates: Observable<any>[] = [];
+    const ingredientObservables: Observable<any>[] = [];
 
     if (this.isFormModified) {
       const currentRecipe = this.recipeForm.get('recipe')?.value;
@@ -315,6 +321,36 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         recipeUpdates.push(this.recipeService.updateRecipe(recipeId, updatedRecipe.recipe, this.selectedImage || undefined));
       }
     }
+
+    // Process ingredient updates and creations
+    const ingredientsArray = this.recipeForm.get('ingredients') as FormArray;
+    ingredientsArray.controls.forEach(control => {
+      const id = control.get('id')?.value;
+      if (id && control.dirty) {
+        // Update existing ingredient
+        if (control.get('Ingredient.name')?.dirty) {
+          const ingredientId = control.get('Ingredient.id')?.value;
+          const newName = control.get('Ingredient.name')?.value;
+          ingredientObservables.push(
+            this.ingredientService.updateIngredient(ingredientId, { name: newName })
+          );
+        }
+        if (control.get('quantity')?.dirty || control.get('unit')?.dirty || control.get('recipeSectionId')?.dirty) {
+          ingredientObservables.push(
+            this.itemService.updateRecipeIngredient(id, {
+              quantity: control.value.quantity,
+              unit: control.value.unit,
+              recipeSectionId: control.value.recipeSectionId
+            })
+          );
+        }
+      } else if (!id) {
+        // Create new ingredient
+        ingredientObservables.push(
+          this.ingredientService.createIngredient(recipeId, control.value)
+        );
+      }
+    });
 
     // Process timers: update only dirty timers or create new ones.
     const timersFormArray = this.recipeForm.get('timers') as FormArray;
@@ -337,75 +373,41 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Execute recipe updates and timer updates separately.
-    if (recipeUpdates.length > 0) {
-      forkJoin(recipeUpdates).subscribe({
+    // Combine all observables
+    const allObservables = [...recipeUpdates, ...ingredientObservables, ...timerObservables];
+
+    // Execute all updates together
+    if (allObservables.length > 0) {
+      forkJoin(allObservables).subscribe({
         next: () => {
           this.recipe = { ...this.recipe, ...updatedRecipe };
-          forkJoin(timerObservables.length > 0 ? timerObservables : [new Observable(sub => { sub.next(); sub.complete(); })])
-            .subscribe({
-              next: () => {
-                // Now process deletions for removed timers.
-                if (this.removedTimers.length > 0) {
-                  const deleteObservables = this.removedTimers.map(id => this.itemService.deleteTimer(id));
-                  forkJoin(deleteObservables).subscribe({
-                    next: () => {
-                      this.removedTimers = [];
-                      this.snackbarService.showSuccess('Recipe updated successfully!');
-                      this.router.navigate(['/recipe/detail', this.recipe.id]);
-                    },
-                    error: (error) => {
-                      console.error('Error deleting timers: ', error);
-                      this.removedTimers = [];
-                      this.snackbarService.showSuccess('Recipe updated successfully!');
-                      this.router.navigate(['/recipe/detail', this.recipe.id]);
-                    }
-                  });
-                } else {
-                  this.snackbarService.showSuccess('Recipe updated successfully!');
-                  this.router.navigate(['/recipe/detail', this.recipe.id]);
-                }
-              },
-              error: (error) => {
-                this.snackbarService.showError(error);
-                console.error('Error updating timers: ', error);
-              }
-            });
-        },
-        error: (error) => {
-          this.snackbarService.showError(error);
-          console.error('Error while updating recipe: ', error);
-        }
-      });
-    } else if (timerObservables.length > 0) { // Only timer updates present.
-      forkJoin(timerObservables).subscribe({
-        next: () => {
+          // Process deletions for removed timers
           if (this.removedTimers.length > 0) {
             const deleteObservables = this.removedTimers.map(id => this.itemService.deleteTimer(id));
             forkJoin(deleteObservables).subscribe({
               next: () => {
                 this.removedTimers = [];
-                this.snackbarService.showSuccess('Timers updated successfully!');
+                this.snackbarService.showSuccess('Recipe updated successfully!');
                 this.router.navigate(['/recipe/detail', this.recipe.id]);
               },
               error: (error) => {
                 console.error('Error deleting timers: ', error);
                 this.removedTimers = [];
-                this.snackbarService.showSuccess('Timers updated successfully!');
+                this.snackbarService.showSuccess('Recipe updated successfully!');
                 this.router.navigate(['/recipe/detail', this.recipe.id]);
               }
             });
           } else {
-            this.snackbarService.showSuccess('Timers updated successfully!');
+            this.snackbarService.showSuccess('Recipe updated successfully!');
             this.router.navigate(['/recipe/detail', this.recipe.id]);
           }
         },
         error: (error) => {
           this.snackbarService.showError(error);
-          console.error('Error updating timers: ', error);
+          console.error('Error updating recipe: ', error);
         }
       });
-    } else if (this.removedTimers.length > 0) { // Add this new condition
+    } else if (this.removedTimers.length > 0) {
       // Handle case where only timer deletions exist
       const deleteObservables = this.removedTimers.map(id => this.itemService.deleteTimer(id));
       forkJoin(deleteObservables).subscribe({
@@ -468,11 +470,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     timersArray.removeAt(index);
   }
 
-  // Add handler for ingredient saves
-  onIngredientsSaved() {
-    // Optionally handle ingredient save completion
-    this.snackbarService.showSuccess('Ingredients saved successfully!');
-  }
+
 
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

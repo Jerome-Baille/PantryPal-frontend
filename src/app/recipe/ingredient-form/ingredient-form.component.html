@@ -140,10 +140,5 @@
         <button mat-raised-button color="basic" type="button" (click)="addSaltAndPepper()">
             {{ 'ADD_SALT_PEPPER' | translate }}
         </button>
-        <button mat-raised-button color="primary" type="button" 
-                *ngIf="isDirty || ingredients.controls.length"
-                (click)="isEditingMode ? updateIngredients() : saveIngredients()">
-            {{ (isEditingMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
-        </button>
     </div>
 </div>
