@@ -1,3 +1,2 @@
-- Add a select for ingredients unit (g, kg, ml, l, tsp, tbsp, cup, piece, etc.)
 - Translate confirmation dialogs
 - Update Angular to the latest version

@@ -63,6 +63,7 @@
     "UNIT_TEASPOON": "teaspoon",
     "UNIT_CUP": "cup",
     "UNIT_MILLILITER": "milliliter",
+    "UNIT_CENTILITER": "centiliter",
     "UNIT_LITER": "liter",
     "UNIT_GRAM": "gram",
     "UNIT_KILOGRAM": "kilogram",

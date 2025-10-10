@@ -63,6 +63,7 @@
     "UNIT_TEASPOON": "C. à café",
     "UNIT_CUP": "tasse",
     "UNIT_MILLILITER": "millilitre",
+    "UNIT_CENTILITER": "centilitre",
     "UNIT_LITER": "litre",
     "UNIT_GRAM": "gramme",
     "UNIT_KILOGRAM": "kilogramme",
