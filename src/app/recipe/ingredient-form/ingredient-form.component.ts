@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormArray, AbstractControl, Reactiv
 import { ItemService } from 'src/app/services/item.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, forkJoin, Subscription } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { SectionDialogComponent } from '../section-dialog/section-dialog.component';
 import { CommonModule } from '@angular/common';
@@ -12,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule, MatSelectChange } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,6 +32,7 @@ import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-
       MatInputModule,
       MatSelectModule,
       MatButtonModule,
+      MatAutocompleteModule,
       TranslateModule,
       DragDropModule
     ],
@@ -44,6 +47,40 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
   private recipeId: number | null = null;
   private languageSubscription?: Subscription;
   currentLang: string;
+  
+  // Available units for autocomplete
+  units: { value: string; key: string }[] = [
+    { value: 'teaspoon', key: 'UNIT_TEASPOON' },
+    { value: 'tablespoon', key: 'UNIT_TABLESPOON' },
+    { value: 'cup', key: 'UNIT_CUP' },
+    { value: 'ml', key: 'UNIT_MILLILITER' },
+    { value: 'l', key: 'UNIT_LITER' },
+    { value: 'g', key: 'UNIT_GRAM' },
+    { value: 'kg', key: 'UNIT_KILOGRAM' },
+    { value: 'oz', key: 'UNIT_OUNCE' },
+    { value: 'lb', key: 'UNIT_POUND' },
+    { value: 'pinch', key: 'UNIT_PINCH' },
+    { value: 'dash', key: 'UNIT_DASH' },
+    { value: 'clove', key: 'UNIT_CLOVE' },
+    { value: 'piece', key: 'UNIT_PIECE' },
+    { value: 'slice', key: 'UNIT_SLICE' },
+    { value: 'can', key: 'UNIT_CAN' },
+    { value: 'package', key: 'UNIT_PACKAGE' },
+    { value: 'packet', key: 'UNIT_PACKET' },
+    { value: 'stick', key: 'UNIT_STICK' },
+    { value: 'sprig', key: 'UNIT_SPRIG' },
+    { value: 'bunch', key: 'UNIT_BUNCH' },
+    { value: 'sheet', key: 'UNIT_SHEET' },
+    { value: 'fillet', key: 'UNIT_FILLET' },
+    { value: 'unit', key: 'UNIT_UNIT' },
+    { value: 'serving', key: 'UNIT_SERVING' },
+    { value: 'to taste', key: 'UNIT_TO_TASTE' },
+    { value: 'as needed', key: 'UNIT_AS_NEEDED' },
+    { value: 'leaf', key: 'UNIT_LEAF' },
+    { value: 'leaves', key: 'UNIT_LEAVES' }
+  ];
+  
+  filteredUnitsMap: Map<number, Observable<{ value: string; key: string }[]>> = new Map();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -103,6 +140,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
             displayOrder: [ing.displayOrder || index]
           });
           this.ingredients.push(control);
+          this.setupUnitAutocomplete(this.ingredients.length - 1);
         });
       },
       error: (error) => {
@@ -163,11 +201,12 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     const ingredientForm = this.formBuilder.group({
       Ingredient: this.formBuilder.group({ name: ['', Validators.required] }),
       quantity: [null, Validators.required],
-      unit: ['Unit'],
+      unit: ['unit'],
       recipeSectionId: [null]
     });
     ingredientForm.markAsDirty();
     this.ingredients.push(ingredientForm);
+    this.setupUnitAutocomplete(this.ingredients.length - 1);
   }
 
   onRemoveIngredient(index: number) {
@@ -196,23 +235,27 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
   }
 
   addSaltAndPepper() {
+    const saltIndex = this.ingredients.length;
     const selForm = this.formBuilder.group({
       Ingredient: this.formBuilder.group({ name: ['Sel'] }),
       quantity: [1],
-      unit: ['Unit'],
+      unit: ['pinch'],
       recipeSectionId: [null]
     });
     selForm.markAsDirty();
     this.ingredients.push(selForm);
+    this.setupUnitAutocomplete(saltIndex);
     
+    const pepperIndex = this.ingredients.length;
     const poivreForm = this.formBuilder.group({
       Ingredient: this.formBuilder.group({ name: ['Poivre'] }),
       quantity: [1],
-      unit: ['Unit'],
+      unit: ['pinch'],
       recipeSectionId: [null]
     });
     poivreForm.markAsDirty();
     this.ingredients.push(poivreForm);
+    this.setupUnitAutocomplete(pepperIndex);
   }
 
   onSectionChange(ingredientControl: AbstractControl, event: MatSelectChange) {
@@ -265,5 +308,30 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
 
   getFormGroupIndex(control: AbstractControl): number {
     return this.ingredients.controls.indexOf(control);
+  }
+
+  setupUnitAutocomplete(index: number) {
+    const control = this.ingredients.at(index).get('unit');
+    if (control) {
+      const filtered$ = control.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterUnits(value || ''))
+      );
+      this.filteredUnitsMap.set(index, filtered$);
+    }
+  }
+
+  private _filterUnits(value: string): { value: string; key: string }[] {
+    const filterValue = value.toLowerCase();
+    return this.units.filter(unit => 
+      unit.value.toLowerCase().includes(filterValue)
+    );
+  }
+
+  getFilteredUnits(index: number): Observable<{ value: string; key: string }[]> {
+    if (!this.filteredUnitsMap.has(index)) {
+      this.setupUnitAutocomplete(index);
+    }
+    return this.filteredUnitsMap.get(index) || new Observable();
   }
 }

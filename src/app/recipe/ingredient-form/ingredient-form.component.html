@@ -34,7 +34,16 @@
 
                         <mat-form-field>
                             <mat-label>{{ 'UNIT' | translate }}</mat-label>
-                            <input matInput formControlName="unit" placeholder="Enter unit" id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}">
+                            <input matInput 
+                                   formControlName="unit" 
+                                   placeholder="Enter unit" 
+                                   id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
+                                   [matAutocomplete]="unitAuto">
+                            <mat-autocomplete #unitAuto="matAutocomplete">
+                                <mat-option *ngFor="let unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async" [value]="unit.value">
+                                    {{ unit.key | translate }}
+                                </mat-option>
+                            </mat-autocomplete>
                             <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
                                 {{ 'UNIT_REQUIRED' | translate }}
                             </mat-error>
@@ -100,7 +109,16 @@
 
                             <mat-form-field>
                                 <mat-label>{{ 'UNIT' | translate }}</mat-label>
-                                <input matInput formControlName="unit" placeholder="Enter unit" id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}">
+                                <input matInput 
+                                       formControlName="unit" 
+                                       placeholder="Enter unit" 
+                                       id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
+                                       [matAutocomplete]="sectionUnitAuto">
+                                <mat-autocomplete #sectionUnitAuto="matAutocomplete">
+                                    <mat-option *ngFor="let unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async" [value]="unit.value">
+                                        {{ unit.key | translate }}
+                                    </mat-option>
+                                </mat-autocomplete>
                                 <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
                                     {{ 'UNIT_REQUIRED' | translate }}
                                 </mat-error>
