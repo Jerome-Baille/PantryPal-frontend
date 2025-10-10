@@ -16,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { ConfirmationDialogComponent } from 'src/app/shared/confirmation-dialog/confirmation-dialog.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -54,6 +54,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     { value: 'tablespoon', key: 'UNIT_TABLESPOON' },
     { value: 'cup', key: 'UNIT_CUP' },
     { value: 'ml', key: 'UNIT_MILLILITER' },
+    { value: 'cl', key: 'UNIT_CENTILITER' },
     { value: 'l', key: 'UNIT_LITER' },
     { value: 'g', key: 'UNIT_GRAM' },
     { value: 'kg', key: 'UNIT_KILOGRAM' },
@@ -88,9 +89,23 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     private ingredientService: IngredientService, // <-- new injection
     private route: ActivatedRoute,
     private dialog: MatDialog,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private translateService: TranslateService
   ) {
     this.currentLang = languageService.getCurrentLanguage();
+  }
+
+  // displayWith function for mat-autocomplete to show translated label while keeping the stored value
+  displayUnit(unitValue: string | null): string {
+    if (!unitValue) return '';
+    // Find matching unit key
+    const matched = this.units.find(u => u.value === unitValue);
+    if (matched) {
+      // Use instant translate to get immediate label
+      return this.translateService.instant(matched.key);
+    }
+    // If the user typed a free-text unit, just return it
+    return unitValue;
   }
 
   ngOnInit() {

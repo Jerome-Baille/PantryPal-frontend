@@ -39,7 +39,7 @@
                                    placeholder="Enter unit" 
                                    id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
                                    [matAutocomplete]="unitAuto">
-                            <mat-autocomplete #unitAuto="matAutocomplete">
+                            <mat-autocomplete #unitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
                                 <mat-option *ngFor="let unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async" [value]="unit.value">
                                     {{ unit.key | translate }}
                                 </mat-option>
@@ -114,7 +114,7 @@
                                        placeholder="Enter unit" 
                                        id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
                                        [matAutocomplete]="sectionUnitAuto">
-                                <mat-autocomplete #sectionUnitAuto="matAutocomplete">
+                                <mat-autocomplete #sectionUnitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
                                     <mat-option *ngFor="let unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async" [value]="unit.value">
                                         {{ unit.key | translate }}
                                     </mat-option>
