@@ -8,6 +8,7 @@ mat-card {
 mat-card-title {
   font-size: 24px;
   font-weight: bold;
+  text-transform: capitalize;
 }
 
 mat-card-subtitle {
@@ -78,14 +79,11 @@ li:before {
     text-align: center;
     cursor: pointer;
     transition: transform 0.2s;
+    box-sizing: border-box;
+    padding: 16px 0;
 
     &:hover {
       transform: scale(1.02);
-    }
-
-    mat-card-title {
-      font-size: 16px;
-      margin-bottom: 8px;
     }
   }
 }
@@ -112,8 +110,31 @@ li:before {
   font-style: italic;
 }
 
-.timer-container {
+.time-container > .timer-container {
   position: relative;
+  flex: 1;
+  min-width: 160px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  app-timer {
+    flex: 1;
+    display: flex;
+    
+    ::ng-deep .timer-container {
+      width: 100%;
+      margin: 0;
+      padding: 16px;
+      box-shadow: none;
+      background-color: transparent;
+      min-height: auto;
+    }
+  }
 }
 
 .timer-button {
