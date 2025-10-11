@@ -83,6 +83,15 @@
   }
 }
 
+.no-recipe-container {
+  display: flex;
+  justify-content: center;
+
+  .recipe-card {
+    padding: 16px;
+  }
+}
+
 .pagination-container {
   display: flex;
   justify-content: center;
