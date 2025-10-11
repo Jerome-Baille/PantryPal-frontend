@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -11,17 +11,19 @@ import { SnackbarService } from '../../services/snackbar.service';
 @Component({
   selector: 'app-share-accept',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatCardModule, TranslateModule],
+  imports: [MatProgressSpinnerModule, MatCardModule, TranslateModule],
   template: `
     <div class="loading-container">
       <mat-card>
         <mat-card-content>
           <h2>{{ message | translate }}</h2>
-          <mat-spinner *ngIf="loading"></mat-spinner>
+          @if (loading) {
+            <mat-spinner></mat-spinner>
+          }
         </mat-card-content>
       </mat-card>
     </div>
-  `,
+    `,
   styles: [`
     .loading-container {
       display: flex;

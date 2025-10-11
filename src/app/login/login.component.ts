@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ import { SnackbarService } from '../services/snackbar.service';
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [CommonModule, MatCardModule, ReactiveFormsModule, RouterLink, TranslateModule],
+    imports: [MatCardModule, ReactiveFormsModule, RouterLink, TranslateModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })

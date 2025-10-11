@@ -310,7 +310,7 @@
         }
 
         .mat-mdc-form-field-icon-prefix {
-          color: #a8c4a2;
+          color: #009c0e;
           margin-right: 8px;
         }
 
@@ -336,7 +336,7 @@
         gap: 8px;
         
         .custom-chip {
-          background-color: #a8c4a2;
+          background-color: #009c0e;
           color: white;
           font-size: 13px;
           font-weight: 500;
@@ -397,11 +397,11 @@
   bottom: 20px;
   right: 20px;
   z-index: 1000;
-  background-color: #a8c4a2;
+  background-color: #009c0e;
   color: white;
 
   &:hover {
-    background-color: color.adjust(#a8c4a2, $lightness: -10%);
+    background-color: color.adjust(#009c0e, $lightness: -10%);
   }
 
   @media screen and (max-width: 768px) {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { CommonModule } from '@angular/common';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SnackbarService } from '../services/snackbar.service';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-after-register',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, TranslateModule],
+  imports: [MatProgressSpinnerModule, TranslateModule],
   template: `
     <div class="loading-container">
       <h2>{{ 'FINALIZING_REGISTRATION' | translate }}</h2>

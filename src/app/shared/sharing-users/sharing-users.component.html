@@ -1,99 +1,123 @@
-<div class="sharing-container vertical-layout" *ngIf="!isLoadingSharingUsers">
+@if (!isLoadingSharingUsers) {
+  <div class="sharing-container vertical-layout">
     <!-- Sharing With Users Section -->
     <div class="sharing-block">
-        <h3>{{ 'SHARING_WITH_USERS' | translate }}</h3>
-        <div class="user-list">
-            <div *ngIf="sharingWithUsers.length === 0" class="no-users-message">
-                {{ 'NO_SHARING_WITH_USERS' | translate }}
+      <h3>{{ 'SHARING_WITH_USERS' | translate }}</h3>
+      <div class="user-list">
+        @if (sharingWithUsers.length === 0) {
+          <div class="no-users-message">
+            {{ 'NO_SHARING_WITH_USERS' | translate }}
+          </div>
+        }
+        @for (user of sharingWithUsers; track user) {
+          <div class="user-item" [class.excluded]="user.isExcluded">
+            <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
+              @if (!user.profilePicture) {
+                <mat-icon>person</mat-icon>
+              }
             </div>
-            <div *ngFor="let user of sharingWithUsers" class="user-item" [class.excluded]="user.isExcluded">
-                <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
-                    <mat-icon *ngIf="!user.profilePicture">person</mat-icon>
-                </div>
-                <div class="user-info">
-                    <span class="user-name">{{ getUserDisplayName(user) }}</span>
-                    <div class="permission-container">
-                        <!-- Show exclusion badge if excluded in recipe-specific view -->
-                        <span *ngIf="user.isExcluded" class="permission-badge excluded">
-                            <mat-icon>block</mat-icon>
-                            {{ 'ACCESS_EXCLUDED' | translate }}
-                        </span>
-                        
-                        <!-- Show partial exclusion badge in global view -->
-                        <span *ngIf="!recipeId && user.hasExcludedRecipes" 
-                              class="permission-badge partial-excluded clickable"
-                              (click)="showExcludedRecipes(user)"
-                              matTooltip="{{ 'VIEW_EXCLUDED_RECIPES' | translate }}">
-                            <mat-icon>block</mat-icon>
-                            {{ getExcludedRecipeCount(user) }} {{ 'RECIPES_EXCLUDED' | translate }}
-                        </span>
-                        
-                        <!-- Otherwise show regular permission badge -->
-                        <span *ngIf="!user.isExcluded" class="permission-badge" [ngClass]="user.highestPermission">
-                            <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
-                            {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
-                        </span>
-                        <span class="share-scope" *ngIf="user.shares && hasGlobalAccess(user)">
-                            {{ 'ALL_RECIPES' | translate }}
-                        </span>
-                    </div>
-                </div>
-                
-                <!-- User actions -->
-                <div class="user-actions">
-                    <!-- Show cancel exclusion button for excluded users in recipe-specific view -->
-                    <button *ngIf="user.isExcluded && recipeId" 
-                            mat-icon-button color="primary" 
-                            (click)="cancelExclusion(user)"
-                            [disabled]="isRevokingAccess"
-                            matTooltip="{{ 'RESTORE_ACCESS' | translate }}">
-                        <mat-icon>settings_backup_restore</mat-icon>
-                    </button>
-                    
-                    <!-- Show revoke access button for non-excluded users -->
-                    <button *ngIf="!user.isExcluded"
-                            mat-icon-button color="warn" 
-                            (click)="revokeAccess(user)"
-                            [disabled]="isRevokingAccess"
-                            matTooltip="{{ 'REVOKE_ACCESS' | translate }}">
-                        <mat-icon>no_accounts</mat-icon>
-                    </button>
-                </div>
+            <div class="user-info">
+              <span class="user-name">{{ getUserDisplayName(user) }}</span>
+              <div class="permission-container">
+                <!-- Show exclusion badge if excluded in recipe-specific view -->
+                @if (user.isExcluded) {
+                  <span class="permission-badge excluded">
+                    <mat-icon>block</mat-icon>
+                    {{ 'ACCESS_EXCLUDED' | translate }}
+                  </span>
+                }
+                <!-- Show partial exclusion badge in global view -->
+                @if (!recipeId && user.hasExcludedRecipes) {
+                  <span
+                    class="permission-badge partial-excluded clickable"
+                    (click)="showExcludedRecipes(user)"
+                    matTooltip="{{ 'VIEW_EXCLUDED_RECIPES' | translate }}">
+                    <mat-icon>block</mat-icon>
+                    {{ getExcludedRecipeCount(user) }} {{ 'RECIPES_EXCLUDED' | translate }}
+                  </span>
+                }
+                <!-- Otherwise show regular permission badge -->
+                @if (!user.isExcluded) {
+                  <span class="permission-badge" [ngClass]="user.highestPermission">
+                    <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
+                    {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
+                  </span>
+                }
+                @if (user.shares && hasGlobalAccess(user)) {
+                  <span class="share-scope">
+                    {{ 'ALL_RECIPES' | translate }}
+                  </span>
+                }
+              </div>
             </div>
-        </div>
+            <!-- User actions -->
+            <div class="user-actions">
+              <!-- Show cancel exclusion button for excluded users in recipe-specific view -->
+              @if (user.isExcluded && recipeId) {
+                <button
+                  mat-icon-button color="primary"
+                  (click)="cancelExclusion(user)"
+                  [disabled]="isRevokingAccess"
+                  matTooltip="{{ 'RESTORE_ACCESS' | translate }}">
+                  <mat-icon>settings_backup_restore</mat-icon>
+                </button>
+              }
+              <!-- Show revoke access button for non-excluded users -->
+              @if (!user.isExcluded) {
+                <button
+                  mat-icon-button color="warn"
+                  (click)="revokeAccess(user)"
+                  [disabled]="isRevokingAccess"
+                  matTooltip="{{ 'REVOKE_ACCESS' | translate }}">
+                  <mat-icon>no_accounts</mat-icon>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
     </div>
-    
     <!-- Divider between sections -->
     <mat-divider></mat-divider>
-    
     <!-- Sharing With Me Users Section -->
     <div class="sharing-block">
-        <h3>{{ 'SHARING_WITH_ME_USERS' | translate }}</h3>
-        <div class="user-list">
-            <div *ngIf="sharingWithMeUsers.length === 0" class="no-users-message">
-                {{ 'NO_SHARING_WITH_ME_USERS' | translate }}
+      <h3>{{ 'SHARING_WITH_ME_USERS' | translate }}</h3>
+      <div class="user-list">
+        @if (sharingWithMeUsers.length === 0) {
+          <div class="no-users-message">
+            {{ 'NO_SHARING_WITH_ME_USERS' | translate }}
+          </div>
+        }
+        @for (user of sharingWithMeUsers; track user) {
+          <div class="user-item">
+            <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
+              @if (!user.profilePicture) {
+                <mat-icon>person</mat-icon>
+              }
             </div>
-            <div *ngFor="let user of sharingWithMeUsers" class="user-item">
-                <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
-                    <mat-icon *ngIf="!user.profilePicture">person</mat-icon>
-                </div>
-                <div class="user-info">
-                    <span class="user-name">{{ getUserDisplayName(user) }}</span>
-                    <div class="permission-container">
-                        <span class="permission-badge" [ngClass]="user.highestPermission">
-                            <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
-                            {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
-                        </span>
-                        <span class="share-scope" *ngIf="user.shares && hasGlobalAccess(user)">
-                            {{ 'ALL_RECIPES' | translate }}
-                        </span>
-                    </div>
-                </div>
+            <div class="user-info">
+              <span class="user-name">{{ getUserDisplayName(user) }}</span>
+              <div class="permission-container">
+                <span class="permission-badge" [ngClass]="user.highestPermission">
+                  <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
+                  {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
+                </span>
+                @if (user.shares && hasGlobalAccess(user)) {
+                  <span class="share-scope">
+                    {{ 'ALL_RECIPES' | translate }}
+                  </span>
+                }
+              </div>
             </div>
-        </div>
+          </div>
+        }
+      </div>
     </div>
-</div>
-<div *ngIf="isLoadingSharingUsers" class="loading-container">
+  </div>
+}
+@if (isLoadingSharingUsers) {
+  <div class="loading-container">
     <mat-icon class="loading-icon">sync</mat-icon>
     <span>{{ 'LOADING_SHARING_USERS' | translate }}</span>
-</div>
+  </div>
+}

@@ -1,31 +1,36 @@
-<mat-toolbar class="toolbar" *ngIf="!isMobile">
+@if (!isMobile) {
+  <mat-toolbar class="toolbar">
     <span class="toolbar__title" routerLink="/">PantryPal</span>
     <app-search class="search-bar" (onSearch)="handleSearch($event, 'desktop')"></app-search>
-    
     <div class="desktop-menu">
-        <button mat-button routerLink="/shopping/list" routerLinkActive="active">{{ 'GROCERY_LIST' | translate }}</button>
-        <button mat-button routerLink="/favorites" routerLinkActive="active">{{ 'FAVORITES' | translate }}</button>
-        <button mat-button [routerLink]="authService.isAuthenticated() ? '/profile' : '/auth/login'" routerLinkActive="active">
-            <mat-icon svgIcon="account_circle"></mat-icon>
-        </button>
+      <button mat-button routerLink="/shopping/list" routerLinkActive="active">{{ 'GROCERY_LIST' | translate }}</button>
+      <button mat-button routerLink="/favorites" routerLinkActive="active">{{ 'FAVORITES' | translate }}</button>
+      <button mat-button [routerLink]="authService.isAuthenticated() ? '/profile' : '/auth/login'" routerLinkActive="active">
+        <mat-icon svgIcon="account_circle"></mat-icon>
+      </button>
     </div>
-</mat-toolbar>
+  </mat-toolbar>
+}
 
-<div *ngIf="isMobile && isRecipeListRoute" class="mobile-search-container">
+@if (isMobile && isRecipeListRoute) {
+  <div class="mobile-search-container">
     <app-search class="search-bar" (onSearch)="handleSearch($event, 'mobile')"></app-search>
-</div>
+  </div>
+}
 
-<nav *ngIf="isMobile" class="mobile-menu">
+@if (isMobile) {
+  <nav class="mobile-menu">
     <button mat-button routerLink="/recipe/list" routerLinkActive="active">
-        <mat-icon svgIcon="skillet"></mat-icon>
+      <mat-icon svgIcon="skillet"></mat-icon>
     </button>
     <button mat-button routerLink="/shopping/list" routerLinkActive="active">
-        <mat-icon svgIcon="shopping_cart"></mat-icon>
+      <mat-icon svgIcon="shopping_cart"></mat-icon>
     </button>
     <button mat-button routerLink="/favorites" routerLinkActive="active">
-        <mat-icon svgIcon="favorite"></mat-icon>
+      <mat-icon svgIcon="favorite"></mat-icon>
     </button>
     <button mat-button [routerLink]="authService.isAuthenticated() ? '/profile' : '/auth/login'" routerLinkActive="active">
-        <mat-icon svgIcon="account_circle"></mat-icon>
+      <mat-icon svgIcon="account_circle"></mat-icon>
     </button>
-</nav>
+  </nav>
+}

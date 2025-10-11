@@ -1,49 +1,60 @@
 <div [formGroup]="bookForm">
-    <mat-radio-group formControlName="bookSelection" class="book-form-header">
-        <mat-radio-button value="existing">
-            {{ 'SELECT_EXISTING_BOOK' | translate }}
-        </mat-radio-button>
-        <mat-radio-button value="new">
-            {{ 'ADD_NEW_BOOK' | translate }}
-        </mat-radio-button>
-    </mat-radio-group>
+  <mat-radio-group formControlName="bookSelection" class="book-form-header">
+    <mat-radio-button value="existing">
+      {{ 'SELECT_EXISTING_BOOK' | translate }}
+    </mat-radio-button>
+    <mat-radio-button value="new">
+      {{ 'ADD_NEW_BOOK' | translate }}
+    </mat-radio-button>
+  </mat-radio-group>
 
-    <div *ngIf="bookForm.get('bookSelection')?.value === 'existing'" class="full-width">
-        <mat-form-field class="full-width">
-            <mat-label>
-                {{ 'SELECT_BOOK' | translate }}
-            </mat-label>
-            <mat-select formControlName="id" (selectionChange)="onBookSelectionChange()" id="book-select">
-                <mat-option *ngFor="let book of bookList" [value]="book.id">{{ book.title }} {{ 'BY' | translate }} {{ book.author
-                    }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="bookForm.get('id')?.invalid && bookForm.get('id')?.touched">
-                {{ 'BOOK_REQUIRED' | translate }}
-            </mat-error>
-        </mat-form-field>
+  @if (bookForm.get('bookSelection')?.value === 'existing') {
+    <div class="full-width">
+      <mat-form-field class="full-width">
+        <mat-label>
+          {{ 'SELECT_BOOK' | translate }}
+        </mat-label>
+        <mat-select formControlName="id" (selectionChange)="onBookSelectionChange()" id="book-select">
+          @for (book of bookList; track book) {
+            <mat-option [value]="book.id">{{ book.title }} {{ 'BY' | translate }} {{ book.author
+            }}</mat-option>
+          }
+        </mat-select>
+        @if (bookForm.get('id')?.invalid && bookForm.get('id')?.touched) {
+          <mat-error>
+            {{ 'BOOK_REQUIRED' | translate }}
+          </mat-error>
+        }
+      </mat-form-field>
     </div>
+  }
 
-    <div *ngIf="bookForm.get('bookSelection')?.value === 'new'" class="full-width new-book-container">
-        <mat-form-field>
-            <mat-label>
-                {{ 'TITLE' | translate }}
-            </mat-label>
-            <input matInput formControlName="title" placeholder="Enter book title" aria-label="Title of the book"
-                required (change)="onBookSelectionChange()" id="book-title">
-            <mat-error *ngIf="bookForm.get('title')?.invalid && bookForm.get('title')?.touched">
-                {{ 'TITLE_REQUIRED' | translate }}
+  @if (bookForm.get('bookSelection')?.value === 'new') {
+    <div class="full-width new-book-container">
+      <mat-form-field>
+        <mat-label>
+          {{ 'TITLE' | translate }}
+        </mat-label>
+        <input matInput formControlName="title" placeholder="Enter book title" aria-label="Title of the book"
+          required (change)="onBookSelectionChange()" id="book-title">
+          @if (bookForm.get('title')?.invalid && bookForm.get('title')?.touched) {
+            <mat-error>
+              {{ 'TITLE_REQUIRED' | translate }}
             </mat-error>
+          }
         </mat-form-field>
-
         <mat-form-field>
-            <mat-label>
-                {{ 'AUTHOR' | translate }}
-            </mat-label>
-            <input matInput formControlName="author" placeholder="Enter author" aria-label="Author of the book" required
-                (change)="onBookSelectionChange()" id="book-author">
-            <mat-error *ngIf="bookForm.get('author')?.invalid && bookForm.get('author')?.touched">
+          <mat-label>
+            {{ 'AUTHOR' | translate }}
+          </mat-label>
+          <input matInput formControlName="author" placeholder="Enter author" aria-label="Author of the book" required
+            (change)="onBookSelectionChange()" id="book-author">
+            @if (bookForm.get('author')?.invalid && bookForm.get('author')?.touched) {
+              <mat-error>
                 {{ 'AUTHOR_REQUIRED' | translate }}
-            </mat-error>
-        </mat-form-field>
+              </mat-error>
+            }
+          </mat-form-field>
+        </div>
+      }
     </div>
-</div>

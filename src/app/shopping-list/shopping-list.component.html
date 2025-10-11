@@ -1,71 +1,77 @@
-<ng-container *ngIf="shoppingList.length === 0 && doneList.length === 0; else shoppingListTemplate">
-    <div class="main-container">
-        <mat-card>
-            <mat-card-content>
-                <p>
-                    {{ 'NO_ITEMS_IN_GROCERY_LIST' | translate }}
-                </p>
-            </mat-card-content>
-        </mat-card>
-    </div>
-</ng-container>
+@if (shoppingList.length === 0 && doneList.length === 0) {
+  <div class="main-container">
+    <mat-card>
+      <mat-card-content>
+        <p>
+          {{ 'NO_ITEMS_IN_GROCERY_LIST' | translate }}
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+} @else {
+  <div class="main-container">
+    <mat-card>
+      <mat-card-title class="card-title">
+        <div class="title">
+          {{ 'GROCERY_LIST' | translate }}
+        </div>
+        <div class="action-buttons">
+          <button mat-icon-button (click)="refreshList()">
+            <mat-icon class="refresh">refresh</mat-icon>
+          </button>
+          <button mat-icon-button (click)="clearList()">
+            <mat-icon class="reset">close</mat-icon>
+          </button>
+        </div>
+      </mat-card-title>
+      <mat-card-content>
+        <mat-selection-list>
+          @for (item of shoppingList; track item) {
+            <mat-list-option
+              [ngClass]="{ 'strikethrough': isItemSelected(item.key) }"
+              (click)="toggleItemSelection(item.key)">
+              <strong>{{ item.key }}:</strong>
+              @for (ingredient of item.value; track ingredient; let last = $last) {
+                <span>
+                  {{ ingredient.quantity | number: '1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
+                </span>
+                @if (!last) {
+                  <span> + </span>
+                }
+              }
+            </mat-list-option>
+          }
+        </mat-selection-list>
+      </mat-card-content>
+    </mat-card>
+    <!-- New code for the "Done" list -->
+    @if (isAnyItemSelected() || doneList.length !== 0) {
+      <mat-card>
+        <mat-card-title class="card-title">
+          <div class="title">
+            {{ 'DONE_LIST' | translate }}
+          </div>
+        </mat-card-title>
+        <mat-card-content>
+          <mat-selection-list>
+            @for (item of doneList; track item) {
+              <mat-list-option [ngClass]="{ 'strikethrough': true }" (click)="onDoneItemSelected(item.key)">
+                <strong>{{ item.key }}:</strong>
+                @for (ingredient of item.value; track ingredient; let last = $last) {
+                  <span>
+                    {{ ingredient.quantity | number: '1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
+                  </span>
+                  @if (!last) {
+                    <span> + </span>
+                  }
+                }
+              </mat-list-option>
+            }
+          </mat-selection-list>
+        </mat-card-content>
+      </mat-card>
+    }
+    <!-- End of the "Done" list -->
+  </div>
+}
 
-<ng-template #shoppingListTemplate>
-    <div class="main-container">
-        <mat-card>
-            <mat-card-title class="card-title">
-                <div class="title">
-                    {{ 'GROCERY_LIST' | translate }}
-                </div>
-                <div class="action-buttons">
-                    <button mat-icon-button (click)="refreshList()">
-                        <mat-icon class="refresh">refresh</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="clearList()">
-                        <mat-icon class="reset">close</mat-icon>
-                    </button>
-                </div>
-            </mat-card-title>
-            <mat-card-content>
-                <mat-selection-list>
-                    <mat-list-option *ngFor="let item of shoppingList"
-                        [ngClass]="{ 'strikethrough': isItemSelected(item.key) }"
-                        (click)="toggleItemSelection(item.key)">
-                        <strong>{{ item.key }}:</strong>
-                        <ng-container *ngFor="let ingredient of item.value; let last = last">
-                            <span>
-                                {{ ingredient.quantity | number: '1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
-                            </span>
-                            <span *ngIf="!last"> + </span>
-                        </ng-container>
-                    </mat-list-option>
-                </mat-selection-list>
-            </mat-card-content>
-        </mat-card>
-
-        <!-- New code for the "Done" list -->
-        <ng-container *ngIf="isAnyItemSelected() || doneList.length !== 0">
-            <mat-card>
-                <mat-card-title class="card-title">
-                    <div class="title">
-                        {{ 'DONE_LIST' | translate }}
-                    </div>
-                </mat-card-title>
-                <mat-card-content>
-                    <mat-selection-list>
-                        <mat-list-option *ngFor="let item of doneList" [ngClass]="{ 'strikethrough': true }" (click)="onDoneItemSelected(item.key)">
-                            <strong>{{ item.key }}:</strong>
-                            <ng-container *ngFor="let ingredient of item.value; let last = last">
-                                <span>
-                                    {{ ingredient.quantity | number: '1.0-2' }} {{ translateUnit(ingredient.unit) | translate }}
-                                </span>
-                                <span *ngIf="!last"> + </span>
-                            </ng-container>
-                        </mat-list-option>
-                    </mat-selection-list>
-                </mat-card-content>
-            </mat-card>
-        </ng-container>
-        <!-- End of the "Done" list -->
-    </div>
-</ng-template>

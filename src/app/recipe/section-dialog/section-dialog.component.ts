@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItemService } from 'src/app/services/item.service';
-import { CommonModule } from '@angular/common';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
@@ -17,14 +17,13 @@ export interface SectionDialogData {
   selector: 'app-section-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
     MatFormFieldModule,
     MatProgressSpinnerModule
-  ],
+],
   templateUrl: './section-dialog.component.html',
   styleUrls: ['./section-dialog.component.scss']
 })

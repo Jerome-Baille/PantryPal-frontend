@@ -1,162 +1,182 @@
 <div [formGroup]="recipeForm">
-    <div formArrayName="ingredients">
-        <!-- No section group - only show if it has ingredients -->
-        <div *ngIf="getIngredientsForSection(null).length > 0" 
-             class="no-section-group" 
-             cdkDropList 
-             [cdkDropListData]="null" 
-             (cdkDropListDropped)="drop($event)" 
-             cdkDropListGroup>
-            <div *ngFor="let ingredientForm of getIngredientsForSection(null); let i = index" 
-                 [formGroupName]="getFormGroupIndex(ingredientForm)" 
-                 class="ingredient-container"
-                 cdkDrag>
+  <div formArrayName="ingredients">
+    <!-- No section group - only show if it has ingredients -->
+    @if (getIngredientsForSection(null).length > 0) {
+      <div
+        class="no-section-group"
+        cdkDropList
+        [cdkDropListData]="null"
+        (cdkDropListDropped)="drop($event)"
+        cdkDropListGroup>
+        @for (ingredientForm of getIngredientsForSection(null); track ingredientForm; let i = $index) {
+          <div
+            [formGroupName]="getFormGroupIndex(ingredientForm)"
+            class="ingredient-container"
+            cdkDrag>
+            <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
+            <div class="content-wrapper">
+              <div formGroupName="Ingredient">
+                <mat-form-field>
+                  <mat-label>{{ 'NAME' | translate }}</mat-label>
+                  <input matInput formControlName="name" placeholder="Enter ingredient name" id="ingredient-name-{{getFormGroupIndex(ingredientForm)}}">
+                  @if (ingredientForm.get('Ingredient.name')?.invalid) {
+                    <mat-error>
+                      {{ 'NAME_REQUIRED' | translate }}
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+              <div class="quantity-unit-row">
+                <mat-form-field>
+                  <mat-label>{{ 'QUANTITY' | translate }}</mat-label>
+                  <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity" id="ingredient-quantity-{{getFormGroupIndex(ingredientForm)}}">
+                  @if (ingredientForm.get('quantity')?.invalid) {
+                    <mat-error>
+                      {{ 'QUANTITY_REQUIRED' | translate }}
+                    </mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>{{ 'UNIT' | translate }}</mat-label>
+                  <input matInput
+                    formControlName="unit"
+                    placeholder="Enter unit"
+                    id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
+                    [matAutocomplete]="unitAuto">
+                    <mat-autocomplete #unitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
+                      @for (unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async; track unit) {
+                        <mat-option [value]="unit.value">
+                          {{ unit.key | translate }}
+                        </mat-option>
+                      }
+                    </mat-autocomplete>
+                    @if (ingredientForm.get('unit')?.invalid) {
+                      <mat-error>
+                        {{ 'UNIT_REQUIRED' | translate }}
+                      </mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+                <mat-form-field>
+                  <mat-label>Section</mat-label>
+                  <mat-select formControlName="recipeSectionId"
+                    (selectionChange)="onSectionChange(ingredientForm, $event)" id="ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
+                    <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
+                    @for (section of recipeSections; track section) {
+                      <mat-option [value]="section.id">
+                        {{ section.name }}
+                      </mat-option>
+                    }
+                    <mat-option value="create">{{ 'CREATE_SECTION' | translate }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="remove-button-container">
+                <button mat-icon-button color="warn" class="desktop-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
+                  <mat-icon svgIcon="delete"></mat-icon>
+                </button>
+                <button mat-raised-button color="warn" class="mobile-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
+                  {{ 'REMOVE' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Sections groups - only show non-empty sections -->
+      @for (section of recipeSections; track section) {
+        @if (getIngredientsForSection(section.id).length > 0) {
+          <div
+            class="section-group"
+            cdkDropList
+            [cdkDropListData]="section.id"
+            (cdkDropListDropped)="drop($event)">
+            <div class="section-header">{{ section.name }}</div>
+            @for (ingredientForm of getIngredientsForSection(section.id); track ingredientForm; let i = $index) {
+              <div
+                [formGroupName]="getFormGroupIndex(ingredientForm)"
+                class="ingredient-container"
+                cdkDrag>
                 <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
                 <div class="content-wrapper">
-                    <div formGroupName="Ingredient">
-                        <mat-form-field>
-                            <mat-label>{{ 'NAME' | translate }}</mat-label>
-                            <input matInput formControlName="name" placeholder="Enter ingredient name" id="ingredient-name-{{getFormGroupIndex(ingredientForm)}}">
-                            <mat-error *ngIf="ingredientForm.get('Ingredient.name')?.invalid">
-                                {{ 'NAME_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-
-                    <div class="quantity-unit-row">
-                        <mat-form-field>
-                            <mat-label>{{ 'QUANTITY' | translate }}</mat-label>
-                            <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity" id="ingredient-quantity-{{getFormGroupIndex(ingredientForm)}}">
-                            <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">
-                                {{ 'QUANTITY_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-
-                        <mat-form-field>
-                            <mat-label>{{ 'UNIT' | translate }}</mat-label>
-                            <input matInput 
-                                   formControlName="unit" 
-                                   placeholder="Enter unit" 
-                                   id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
-                                   [matAutocomplete]="unitAuto">
-                            <mat-autocomplete #unitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
-                                <mat-option *ngFor="let unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async" [value]="unit.value">
-                                    {{ unit.key | translate }}
-                                </mat-option>
-                            </mat-autocomplete>
-                            <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
-                                {{ 'UNIT_REQUIRED' | translate }}
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-
+                  <div formGroupName="Ingredient">
                     <mat-form-field>
-                        <mat-label>Section</mat-label>
-                        <mat-select formControlName="recipeSectionId"
-                                  (selectionChange)="onSectionChange(ingredientForm, $event)" id="ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
-                            <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
-                            <mat-option *ngFor="let section of recipeSections" [value]="section.id">
-                                {{ section.name }}
-                            </mat-option>
-                            <mat-option value="create">{{ 'CREATE_SECTION' | translate }}</mat-option>
-                        </mat-select>
+                      <mat-label>{{ 'NAME' | translate }}</mat-label>
+                      <input matInput formControlName="name" placeholder="Enter ingredient name" id="section-ingredient-name-{{getFormGroupIndex(ingredientForm)}}">
+                      @if (ingredientForm.get('Ingredient.name')?.invalid) {
+                        <mat-error>
+                          {{ 'NAME_REQUIRED' | translate }}
+                        </mat-error>
+                      }
                     </mat-form-field>
-                </div>
-
-                <div class="remove-button-container">
+                  </div>
+                  <div class="quantity-unit-row">
+                    <mat-form-field>
+                      <mat-label>{{ 'QUANTITY' | translate }}</mat-label>
+                      <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity" id="section-ingredient-quantity-{{getFormGroupIndex(ingredientForm)}}">
+                      @if (ingredientForm.get('quantity')?.invalid) {
+                        <mat-error>
+                          {{ 'QUANTITY_REQUIRED' | translate }}
+                        </mat-error>
+                      }
+                    </mat-form-field>
+                    <mat-form-field>
+                      <mat-label>{{ 'UNIT' | translate }}</mat-label>
+                      <input matInput
+                        formControlName="unit"
+                        placeholder="Enter unit"
+                        id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
+                        [matAutocomplete]="sectionUnitAuto">
+                        <mat-autocomplete #sectionUnitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
+                          @for (unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async; track unit) {
+                            <mat-option [value]="unit.value">
+                              {{ unit.key | translate }}
+                            </mat-option>
+                          }
+                        </mat-autocomplete>
+                        @if (ingredientForm.get('unit')?.invalid) {
+                          <mat-error>
+                            {{ 'UNIT_REQUIRED' | translate }}
+                          </mat-error>
+                        }
+                      </mat-form-field>
+                    </div>
+                    <mat-form-field>
+                      <mat-label>Section</mat-label>
+                      <mat-select formControlName="recipeSectionId"
+                        (selectionChange)="onSectionChange(ingredientForm, $event)" id="section-ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
+                        <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
+                        @for (section of recipeSections; track section) {
+                          <mat-option [value]="section.id">
+                            {{ section.name }}
+                          </mat-option>
+                        }
+                        <mat-option value="create">{{ 'CREATE_SECTION' | translate }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="remove-button-container">
                     <button mat-icon-button color="warn" class="desktop-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
-                        <mat-icon svgIcon="delete"></mat-icon>
+                      <mat-icon svgIcon="delete"></mat-icon>
                     </button>
                     <button mat-raised-button color="warn" class="mobile-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
-                        {{ 'REMOVE' | translate }}
+                      {{ 'REMOVE' | translate }}
                     </button>
+                  </div>
                 </div>
+              }
             </div>
-        </div>
+          }
+        }
+      </div>
 
-        <!-- Sections groups - only show non-empty sections -->
-        <ng-container *ngFor="let section of recipeSections">
-            <div *ngIf="getIngredientsForSection(section.id).length > 0"
-                 class="section-group" 
-                 cdkDropList
-                 [cdkDropListData]="section.id" 
-                 (cdkDropListDropped)="drop($event)">
-                <div class="section-header">{{ section.name }}</div>
-                <div *ngFor="let ingredientForm of getIngredientsForSection(section.id); let i = index" 
-                     [formGroupName]="getFormGroupIndex(ingredientForm)" 
-                     class="ingredient-container"
-                     cdkDrag>
-                    <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
-                    <div class="content-wrapper">
-                        <div formGroupName="Ingredient">
-                            <mat-form-field>
-                                <mat-label>{{ 'NAME' | translate }}</mat-label>
-                                <input matInput formControlName="name" placeholder="Enter ingredient name" id="section-ingredient-name-{{getFormGroupIndex(ingredientForm)}}">
-                                <mat-error *ngIf="ingredientForm.get('Ingredient.name')?.invalid">
-                                    {{ 'NAME_REQUIRED' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-
-                        <div class="quantity-unit-row">
-                            <mat-form-field>
-                                <mat-label>{{ 'QUANTITY' | translate }}</mat-label>
-                                <input matInput type="number" inputmode="decimal" formControlName="quantity" placeholder="Enter quantity" id="section-ingredient-quantity-{{getFormGroupIndex(ingredientForm)}}">
-                                <mat-error *ngIf="ingredientForm.get('quantity')?.invalid">
-                                    {{ 'QUANTITY_REQUIRED' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-
-                            <mat-form-field>
-                                <mat-label>{{ 'UNIT' | translate }}</mat-label>
-                                <input matInput 
-                                       formControlName="unit" 
-                                       placeholder="Enter unit" 
-                                       id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
-                                       [matAutocomplete]="sectionUnitAuto">
-                                <mat-autocomplete #sectionUnitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
-                                    <mat-option *ngFor="let unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async" [value]="unit.value">
-                                        {{ unit.key | translate }}
-                                    </mat-option>
-                                </mat-autocomplete>
-                                <mat-error *ngIf="ingredientForm.get('unit')?.invalid">
-                                    {{ 'UNIT_REQUIRED' | translate }}
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-
-                        <mat-form-field>
-                            <mat-label>Section</mat-label>
-                            <mat-select formControlName="recipeSectionId"
-                                      (selectionChange)="onSectionChange(ingredientForm, $event)" id="section-ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
-                                <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
-                                <mat-option *ngFor="let section of recipeSections" [value]="section.id">
-                                    {{ section.name }}
-                                </mat-option>
-                                <mat-option value="create">{{ 'CREATE_SECTION' | translate }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-
-                    <div class="remove-button-container">
-                        <button mat-icon-button color="warn" class="desktop-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
-                            <mat-icon svgIcon="delete"></mat-icon>
-                        </button>
-                        <button mat-raised-button color="warn" class="mobile-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
-                            {{ 'REMOVE' | translate }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </ng-container>
-    </div>
-
-    <div class="button-container">
+      <div class="button-container">
         <button mat-raised-button color="accent" type="button" (click)="addIngredient()">
-            {{ 'ADD_INGREDIENT' | translate }}
+          {{ 'ADD_INGREDIENT' | translate }}
         </button>
         <button mat-raised-button color="basic" type="button" (click)="addSaltAndPepper()">
-            {{ 'ADD_SALT_PEPPER' | translate }}
+          {{ 'ADD_SALT_PEPPER' | translate }}
         </button>
+      </div>
     </div>
-</div>

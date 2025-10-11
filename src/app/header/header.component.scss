@@ -59,23 +59,23 @@
       }
 
       &.active {
-        color: #a8c4a2 !important;
+        color: #009c0e !important;
         
         svg {
-          fill: #a8c4a2;
+          fill: #009c0e;
         }
         mat-icon,
         mat-icon svg {
-          color: #a8c4a2;
-          fill: #a8c4a2;
+          color: #009c0e;
+          fill: #009c0e;
         }
         mat-icon svg {
-          fill: #a8c4a2 !important;
-          color: #a8c4a2 !important;
+          fill: #009c0e !important;
+          color: #009c0e !important;
         }
         ::ng-deep mat-icon svg {
-          fill: #a8c4a2 !important;
-          color: #a8c4a2 !important;
+          fill: #009c0e !important;
+          color: #009c0e !important;
         }
       }
     }
@@ -139,19 +139,19 @@
 
       &.active {       
         svg {
-          fill: #a8c4a2;
+          fill: #009c0e;
         }
-        color: #a8c4a2;
+        color: #009c0e;
         mat-icon {
-          color: #a8c4a2;
+          color: #009c0e;
         }
         mat-icon svg {
-          fill: #a8c4a2 !important;
-          color: #a8c4a2 !important;
+          fill: #009c0e !important;
+          color: #009c0e !important;
         }
         ::ng-deep mat-icon svg {
-          fill: #a8c4a2 !important;
-          color: #a8c4a2 !important;
+          fill: #009c0e !important;
+          color: #009c0e !important;
         }
       }
     }

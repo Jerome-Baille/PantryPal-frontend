@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,12 +14,11 @@ interface DialogData {
   selector: 'app-sharing-users-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     TranslateModule,
     SharingUsersComponent
-  ],
+],
   template: `
     <h2 mat-dialog-title>{{ 'MANAGE_SHARING' | translate }}: {{ data.recipeTitle }}</h2>
     <mat-dialog-content>

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -20,7 +20,6 @@ export interface ExcludedRecipesDialogData {
   selector: 'app-excluded-recipes-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
@@ -28,38 +27,50 @@ export interface ExcludedRecipesDialogData {
     MatProgressSpinnerModule,
     MatTooltipModule,
     TranslateModule
-  ],
+],
   template: `
     <h2 mat-dialog-title>{{ 'EXCLUDED_RECIPES_FOR' | translate }} {{ data.userName }}</h2>
     <mat-dialog-content>
-      <div *ngIf="isLoading" class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>{{ 'LOADING_RECIPES' | translate }}</p>
-      </div>
-      
-      <div *ngIf="!isLoading && recipes.length === 0" class="empty-state">
-        <mat-icon>info</mat-icon>
-        <p>{{ 'NO_EXCLUDED_RECIPES' | translate }}</p>
-      </div>
-      
-      <mat-list *ngIf="!isLoading && recipes.length > 0">
-        <mat-list-item *ngFor="let recipe of recipes">
-          <span matListItemTitle>{{ recipe.title }}</span>
-          <div matListItemMeta>
-            <button mat-icon-button color="primary" (click)="restoreAccess(recipe.id)" 
-                   [disabled]="restoringRecipeIds.includes(recipe.id)"
-                   matTooltip="{{ 'RESTORE_ACCESS' | translate }}">
-              <mat-icon *ngIf="!restoringRecipeIds.includes(recipe.id)">settings_backup_restore</mat-icon>
-              <mat-spinner diameter="20" *ngIf="restoringRecipeIds.includes(recipe.id)"></mat-spinner>
-            </button>
-          </div>
-        </mat-list-item>
-      </mat-list>
+      @if (isLoading) {
+        <div class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>{{ 'LOADING_RECIPES' | translate }}</p>
+        </div>
+      }
+    
+      @if (!isLoading && recipes.length === 0) {
+        <div class="empty-state">
+          <mat-icon>info</mat-icon>
+          <p>{{ 'NO_EXCLUDED_RECIPES' | translate }}</p>
+        </div>
+      }
+    
+      @if (!isLoading && recipes.length > 0) {
+        <mat-list>
+          @for (recipe of recipes; track recipe) {
+            <mat-list-item>
+              <span matListItemTitle>{{ recipe.title }}</span>
+              <div matListItemMeta>
+                <button mat-icon-button color="primary" (click)="restoreAccess(recipe.id)"
+                  [disabled]="restoringRecipeIds.includes(recipe.id)"
+                  matTooltip="{{ 'RESTORE_ACCESS' | translate }}">
+                  @if (!restoringRecipeIds.includes(recipe.id)) {
+                    <mat-icon>settings_backup_restore</mat-icon>
+                  }
+                  @if (restoringRecipeIds.includes(recipe.id)) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                  }
+                </button>
+              </div>
+            </mat-list-item>
+          }
+        </mat-list>
+      }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>{{ 'CLOSE' | translate }}</button>
     </mat-dialog-actions>
-  `,
+    `,
   styles: [`
     mat-dialog-content {
       min-height: 200px;

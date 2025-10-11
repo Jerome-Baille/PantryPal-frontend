@@ -1,4 +1,6 @@
-<div class="loader-container" *ngIf="loaderService.isLoading()">
+@if (loaderService.isLoading()) {
+  <div class="loader-container">
     <!-- <mat-spinner diameter="50"></mat-spinner> -->
     <img src="./assets/icons/icon-384x384.png" alt="Angora cat holding a smartphone and surrounded by food.">
-</div>
+  </div>
+}

@@ -1,137 +1,144 @@
-<div class="main-container" *ngIf="!error && recipe?.id">
+@if (!error && recipe?.id) {
+  <div class="main-container">
     <mat-card class="section-card">
-        <div class="option-buttons">
-            <button class="favorite-button" [class.favorite]="isFavorite" [class.favorite-animation]="isFavorite"
-                (click)="toggleFavorite()" mat-icon-button>
-                <mat-icon class="heart-icon">favorite</mat-icon>
-            </button>
-
-            <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
-
-            <app-share-options [recipe]="recipe"></app-share-options>
-        </div>
-
-        <mat-card-subtitle class="card-subtitle" *ngIf="recipe?.typeOfMeal">
-            [ {{ recipe?.typeOfMeal }} ]
-        </mat-card-subtitle>
+      <div class="option-buttons">
+        <button class="favorite-button" [class.favorite]="isFavorite" [class.favorite-animation]="isFavorite"
+          (click)="toggleFavorite()" mat-icon-button>
+          <mat-icon class="heart-icon">favorite</mat-icon>
+        </button>
+        <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
+        <app-share-options [recipe]="recipe"></app-share-options>
+      </div>
+      @if (recipe?.typeOfMeal) {
         <mat-card-subtitle class="card-subtitle">
-            <span class="book-title">{{ recipe?.Book?.title }} </span> {{ 'BY' | translate }} {{ recipe?.Book?.author }}
+          [ {{ recipe?.typeOfMeal }} ]
         </mat-card-subtitle>
-
-        <!-- Recipe Image Display -->
-        @if (recipe?.picture || recipe?.thumbnail) {
-            <div class="image-wrapper">
-                <div class="recipe-image-container">
-                    <picture>
-                        <source [srcset]="recipe.picture" media="(min-width: 768px)">
-                        <img [src]="recipe.thumbnail || recipe.picture" [alt]="recipe.title" class="recipe-image">
-                    </picture>
+      }
+      <mat-card-subtitle class="card-subtitle">
+        <span class="book-title">{{ recipe?.Book?.title }} </span> {{ 'BY' | translate }} {{ recipe?.Book?.author }}
+      </mat-card-subtitle>
+      <!-- Recipe Image Display -->
+      @if (recipe?.picture || recipe?.thumbnail) {
+        <div class="image-wrapper">
+          <div class="recipe-image-container">
+            <picture>
+              <source [srcset]="recipe.picture" media="(min-width: 768px)">
+              <img [src]="recipe.thumbnail || recipe.picture" [alt]="recipe.title" class="recipe-image">
+            </picture>
+          </div>
+        </div>
+      }
+      <mat-card-content class="card-content">
+        <!-- Timers Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'TIMERS_SECTION' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="time-container">
+              @for (element of recipeTime; track element; let i = $index) {
+                @if (!element.showTimer) {
+                  <mat-card (click)="toggleTimer(element)">
+                    <mat-card-title>{{ getTranslatedTimerName(element.name) | translate
+                    }}</mat-card-title>
+                    <mat-card-content>
+                      {{ formatTime(element.time) }}
+                    </mat-card-content>
+                  </mat-card>
+                }
+                @if (element.showTimer) {
+                  <div class="timer-container">
+                    <app-timer [timerInfo]="createTimerState(element)"></app-timer>
+                    <button mat-icon-button class="timer-button" (click)="toggleTimer(element)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <!-- Ingredients Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'INGREDIENTS' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="ingredients-header">
+              @if (recipe?.servings) {
+                <div class="servings-selector">
+                  {{ 'SERVINGS' | translate }}:
+                  <mat-select [value]="servingsMultiplier" (selectionChange)="onServingsChange($event.value)"
+                    class="compact-select" id="servings-multiplier">
+                    @for (mult of availableServings; track mult) {
+                      <mat-option [value]="mult">
+                        {{ recipe.servings * mult }}
+                      </mat-option>
+                    }
+                  </mat-select>
                 </div>
+              }
+              <app-add-to-shopping-list [recipe]="recipe"
+              [multiplier]="servingsMultiplier"></app-add-to-shopping-list>
             </div>
+            <div class="ingredients-grid">
+              @for (group of groupedIngredients; track group) {
+                <div class="ingredient-section">
+                  @if (group.section) {
+                    <h3 class="section-title">{{ group.section }}</h3>
+                  }
+                  <ul>
+                    @for (ingredient of group.ingredients; track ingredient) {
+                      <li>
+                        {{ ingredient?.Ingredient?.name }}{{ ((ingredient?.Ingredient?.name?.toLowerCase()
+                        === 'sel' || ingredient?.Ingredient?.name?.toLowerCase() === 'poivre') &&
+                        ingredient.unit?.toLowerCase() === 'unit') ? '' : ' - ' +
+                        (ingredient.adjustedQuantity | number:'1.0-2') + (ingredient.unit?.toLowerCase() !==
+                        'unit' ? ' ' + (translateUnit(ingredient.unit) | translate) : '') }}
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <!-- Instructions Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>{{ 'INSTRUCTIONS_SECTION' | translate }}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @for (instruction of isolatedInstructions; track instruction; let last = $last) {
+              <p>
+                {{ instruction }}
+              </p>
+              @if (!last) {
+                <mat-divider></mat-divider>
+              }
+            }
+          </mat-card-content>
+        </mat-card>
+        <!-- Notes Section -->
+        @if (recipe?.notes) {
+          <mat-card class="section-card">
+            <mat-card-header>
+              <mat-card-title>{{ 'NOTES_SECTION' | translate }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <p class="instructions">{{ recipe?.notes }}</p>
+            </mat-card-content>
+          </mat-card>
         }
-
-        <mat-card-content class="card-content">
-
-            <!-- Timers Section -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'TIMERS_SECTION' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div class="time-container">
-                        <ng-container *ngFor="let element of recipeTime; let i = index">
-                            <ng-container *ngIf="!element.showTimer">
-                                <mat-card (click)="toggleTimer(element)">
-                                    <mat-card-title>{{ getTranslatedTimerName(element.name) | translate
-                                        }}</mat-card-title>
-                                    <mat-card-content>
-                                        {{ formatTime(element.time) }}
-                                    </mat-card-content>
-                                </mat-card>
-                            </ng-container>
-
-                            <ng-container *ngIf="element.showTimer">
-                                <div class="timer-container">
-                                    <app-timer [timerInfo]="createTimerState(element)"></app-timer>
-                                    <button mat-icon-button class="timer-button" (click)="toggleTimer(element)">
-                                        <mat-icon>close</mat-icon>
-                                    </button>
-                                </div>
-                            </ng-container>
-                        </ng-container>
-                    </div>
-                </mat-card-content>
-            </mat-card>
-
-            <!-- Ingredients Section -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'INGREDIENTS' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <div class="ingredients-header">
-                        <div class="servings-selector" *ngIf="recipe?.servings">
-                            {{ 'SERVINGS' | translate }}:
-                            <mat-select [value]="servingsMultiplier" (selectionChange)="onServingsChange($event.value)"
-                                class="compact-select" id="servings-multiplier">
-                                <mat-option *ngFor="let mult of availableServings" [value]="mult">
-                                    {{ recipe.servings * mult }}
-                                </mat-option>
-                            </mat-select>
-                        </div>
-                        <app-add-to-shopping-list [recipe]="recipe"
-                            [multiplier]="servingsMultiplier"></app-add-to-shopping-list>
-                    </div>
-                    <div class="ingredients-grid">
-                        <div class="ingredient-section" *ngFor="let group of groupedIngredients">
-                            <h3 class="section-title" *ngIf="group.section">{{ group.section }}</h3>
-                            <ul>
-                                <li *ngFor="let ingredient of group.ingredients">
-                                    {{ ingredient?.Ingredient?.name }}{{ ((ingredient?.Ingredient?.name?.toLowerCase()
-                                    === 'sel' || ingredient?.Ingredient?.name?.toLowerCase() === 'poivre') &&
-                                    ingredient.unit?.toLowerCase() === 'unit') ? '' : ' - ' +
-                                    (ingredient.adjustedQuantity | number:'1.0-2') + (ingredient.unit?.toLowerCase() !==
-                                    'unit' ? ' ' + (translateUnit(ingredient.unit) | translate) : '') }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </mat-card-content>
-            </mat-card>
-
-            <!-- Instructions Section -->
-            <mat-card class="section-card">
-                <mat-card-header>
-                    <mat-card-title>{{ 'INSTRUCTIONS_SECTION' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <ng-container *ngFor="let instruction of isolatedInstructions; let last = last">
-                        <p>
-                            {{ instruction }}
-                        </p>
-                        <mat-divider *ngIf="!last"></mat-divider>
-                    </ng-container>
-                </mat-card-content>
-            </mat-card>
-
-            <!-- Notes Section -->
-            <mat-card class="section-card" *ngIf="recipe?.notes">
-                <mat-card-header>
-                    <mat-card-title>{{ 'NOTES_SECTION' | translate }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p class="instructions">{{ recipe?.notes }}</p>
-                </mat-card-content>
-            </mat-card>
-
-            <div class="card-button">
-                <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">
-                    {{ 'RECIPE_UPDATE' | translate }}
-                </button>
-                <button mat-raised-button class="btn-color-accent" (click)="deleteRecipe()">
-                    {{ 'DELETE' | translate }}
-                </button>
-            </div>
-        </mat-card-content>
+        <div class="card-button">
+          <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">
+            {{ 'RECIPE_UPDATE' | translate }}
+          </button>
+          <button mat-raised-button class="btn-color-accent" (click)="deleteRecipe()">
+            {{ 'DELETE' | translate }}
+          </button>
+        </div>
+      </mat-card-content>
     </mat-card>
-</div>
+  </div>
+}

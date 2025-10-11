@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { RecipeService } from 'src/app/services/recipe.service';
-import { CommonModule } from '@angular/common';
+
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +11,7 @@ import { SharingUsersDialogComponent } from '../sharing-users-dialog/sharing-use
 @Component({
     selector: 'app-share-options',
     standalone: true,
-    imports: [CommonModule, MatIconModule, MatMenuModule, MatButtonModule, MatDialogModule, TranslateModule],
+    imports: [MatIconModule, MatMenuModule, MatButtonModule, MatDialogModule, TranslateModule],
     templateUrl: './share-options.component.html',
     styleUrls: ['./share-options.component.scss']
 })

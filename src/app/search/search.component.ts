@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, OnInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SearchService } from '../services/search.service';
@@ -13,12 +13,11 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   selector: 'app-search',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatIconModule,
     MatProgressSpinnerModule,
     TranslateModule
-  ],
+],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   animations: [

@@ -1,66 +1,76 @@
 <div class="search-container">
-    <form [formGroup]="searchForm" class="search-bar">
-        <input 
-            #searchInput
-            type="text" 
-            id="search-input" 
-            name="search" 
-            [placeholder]="'SEARCH_PLACEHOLDER' | translate" 
-            aria-label="Search a recipe." 
-            formControlName="search"
-            (keydown)="onKeyDown($event)"
-            (focus)="onInputFocus()"
-            autocomplete="off">
-        <button type="button" (click)="submitSearch()">
-            <mat-icon svgIcon="search"></mat-icon>
-        </button>
+  <form [formGroup]="searchForm" class="search-bar">
+    <input
+      #searchInput
+      type="text"
+      id="search-input"
+      name="search"
+      [placeholder]="'SEARCH_PLACEHOLDER' | translate"
+      aria-label="Search a recipe."
+      formControlName="search"
+      (keydown)="onKeyDown($event)"
+      (focus)="onInputFocus()"
+      autocomplete="off">
+      <button type="button" (click)="submitSearch()">
+        <mat-icon svgIcon="search"></mat-icon>
+      </button>
     </form>
 
     <!-- Search Dropdown -->
-    <div class="search-dropdown" *ngIf="showDropdown" [@slideInOut]>
+    @if (showDropdown) {
+      <div class="search-dropdown" [@slideInOut]>
         <!-- Loading state -->
-        <div class="dropdown-loading" *ngIf="isLoading">
+        @if (isLoading) {
+          <div class="dropdown-loading">
             <mat-spinner diameter="20"></mat-spinner>
             <span>{{ 'SEARCHING' | translate }}...</span>
-        </div>
-
+          </div>
+        }
         <!-- Search results -->
-        <div class="dropdown-results" *ngIf="!isLoading && dropdownResults.length > 0">
-            <div 
-                class="dropdown-item" 
-                *ngFor="let recipe of dropdownResults; let i = index"
+        @if (!isLoading && dropdownResults.length > 0) {
+          <div class="dropdown-results">
+            @for (recipe of dropdownResults; track recipe; let i = $index) {
+              <div
+                class="dropdown-item"
                 [class.selected]="i === selectedIndex"
                 (click)="selectRecipe(recipe)"
                 (mouseenter)="selectedIndex = i">
                 <div class="recipe-info">
-                    <div class="recipe-title">{{ recipe.title }}</div>
-                    <div class="recipe-meta">
-                        <span *ngIf="recipe.preparationTime">
-                            <mat-icon>schedule</mat-icon>
-                            {{ recipe.preparationTime }} {{ recipe.preparationUnit }}
-                        </span>
-                        <span *ngIf="recipe.servings">
-                            <mat-icon>people</mat-icon>
-                            {{ recipe.servings }} {{ 'SERVINGS' | translate }}
-                        </span>
-                    </div>
+                  <div class="recipe-title">{{ recipe.title }}</div>
+                  <div class="recipe-meta">
+                    @if (recipe.preparationTime) {
+                      <span>
+                        <mat-icon>schedule</mat-icon>
+                        {{ recipe.preparationTime }} {{ recipe.preparationUnit }}
+                      </span>
+                    }
+                    @if (recipe.servings) {
+                      <span>
+                        <mat-icon>people</mat-icon>
+                        {{ recipe.servings }} {{ 'SERVINGS' | translate }}
+                      </span>
+                    }
+                  </div>
                 </div>
                 <mat-icon class="arrow-icon">chevron_right</mat-icon>
-            </div>
-            
+              </div>
+            }
             <!-- View all results -->
             <div class="dropdown-item view-all" (click)="viewAllResults()">
-                <div class="view-all-text">
-                    <mat-icon>search</mat-icon>
-                    {{ 'VIEW_ALL_RESULTS' | translate }}
-                </div>
+              <div class="view-all-text">
+                <mat-icon>search</mat-icon>
+                {{ 'VIEW_ALL_RESULTS' | translate }}
+              </div>
             </div>
-        </div>
-
+          </div>
+        }
         <!-- No results -->
-        <div class="dropdown-no-results" *ngIf="showNoResults">
+        @if (showNoResults) {
+          <div class="dropdown-no-results">
             <mat-icon>search_off</mat-icon>
             <span>{{ 'NO_RECIPES_FOUND' | translate }}</span>
-        </div>
-    </div>
-</div>
+          </div>
+        }
+      </div>
+    }
+  </div>

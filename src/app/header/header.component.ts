@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,17 +19,16 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     selector: 'app-header',
     standalone: true,
     imports: [
-        CommonModule,
-        RouterLink,
-        RouterLinkActive,
-        MatToolbarModule,
-        MatButtonModule,
-        MatIconModule,
-        MatMenuModule,
-        MatInputModule,
-        TranslateModule,
-        SearchComponent
-    ],
+    RouterLink,
+    RouterLinkActive,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatInputModule,
+    TranslateModule,
+    SearchComponent
+],
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })

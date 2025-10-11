@@ -1,185 +1,197 @@
 <div class="main-container">
-    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="form">
-        <!-- Book Section Card -->
-        <mat-card class="section-card">
-            <mat-card-header>
-                <mat-card-title>{{ 'BOOK_SECTION' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
-                    class="full-width"></app-book-form>
-            </mat-card-content>
-        </mat-card>
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" class="form">
+    <!-- Book Section Card -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'BOOK_SECTION' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
+        class="full-width"></app-book-form>
+      </mat-card-content>
+    </mat-card>
 
-        <!-- Timer Section Card -->
-        <mat-card class="section-card">
-            <mat-card-header>
-                <mat-card-title>{{ 'TIMERS_SECTION' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <div formArrayName="timers" class="timers-section">
-                    <div *ngFor="let timerCtrl of timers.controls; let i = index" [formGroupName]="i"
-                        class="timer-card">
-                        <div class="timer-group">
-                            <mat-form-field>
-                                <mat-label>
-                                    {{ 'TIMER_NAME' | translate }}
-                                </mat-label>
-                                <input matInput placeholder="Timer Name" formControlName="name" id="timer-name-{{i}}">
-                            </mat-form-field>
-                            <div class="time-input-group">
-                                <mat-form-field>
-                                    <mat-label>
-                                        {{ 'HOURS' | translate }}
-                                    </mat-label>
-                                    <input matInput type="number" placeholder="Hours" formControlName="hours" id="timer-hours-{{i}}">
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <mat-label>
-                                        {{ 'MINUTES' | translate }}
-                                    </mat-label>
-                                    <input matInput type="number" placeholder="Minutes" formControlName="minutes" id="timer-minutes-{{i}}">
-                                </mat-form-field>
-                                <mat-form-field>
-                                    <mat-label>
-                                        {{ 'SECONDS' | translate }}
-                                    </mat-label>
-                                    <input matInput type="number" placeholder="Seconds" formControlName="seconds" id="timer-seconds-{{i}}">
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <mat-divider class="divider"></mat-divider>
-                        <div class="timer-group">
-                            <button mat-icon-button (click)="removeTimer(i)" class="icon-delete">
-                                <mat-icon svgIcon="delete"></mat-icon>
-                            </button>
-                            <button mat-raised-button color="warn" (click)="removeTimer(i)" class="text-delete">
-                                {{ 'DELETE' | translate }}
-                            </button>
-                        </div>
-                    </div>
-                    <button mat-raised-button type="button" (click)="addTimer()">
-                        {{ 'ADD_TIMER' | translate }}
-                    </button>
+    <!-- Timer Section Card -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'TIMERS_SECTION' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div formArrayName="timers" class="timers-section">
+          @for (timerCtrl of timers.controls; track timerCtrl; let i = $index) {
+            <div [formGroupName]="i"
+              class="timer-card">
+              <div class="timer-group">
+                <mat-form-field>
+                  <mat-label>
+                    {{ 'TIMER_NAME' | translate }}
+                  </mat-label>
+                  <input matInput placeholder="Timer Name" formControlName="name" id="timer-name-{{i}}">
+                </mat-form-field>
+                <div class="time-input-group">
+                  <mat-form-field>
+                    <mat-label>
+                      {{ 'HOURS' | translate }}
+                    </mat-label>
+                    <input matInput type="number" placeholder="Hours" formControlName="hours" id="timer-hours-{{i}}">
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>
+                      {{ 'MINUTES' | translate }}
+                    </mat-label>
+                    <input matInput type="number" placeholder="Minutes" formControlName="minutes" id="timer-minutes-{{i}}">
+                  </mat-form-field>
+                  <mat-form-field>
+                    <mat-label>
+                      {{ 'SECONDS' | translate }}
+                    </mat-label>
+                    <input matInput type="number" placeholder="Seconds" formControlName="seconds" id="timer-seconds-{{i}}">
+                  </mat-form-field>
                 </div>
-            </mat-card-content>
-        </mat-card>
+              </div>
+              <mat-divider class="divider"></mat-divider>
+              <div class="timer-group">
+                <button mat-icon-button (click)="removeTimer(i)" class="icon-delete">
+                  <mat-icon svgIcon="delete"></mat-icon>
+                </button>
+                <button mat-raised-button color="warn" (click)="removeTimer(i)" class="text-delete">
+                  {{ 'DELETE' | translate }}
+                </button>
+              </div>
+            </div>
+          }
+          <button mat-raised-button type="button" (click)="addTimer()">
+            {{ 'ADD_TIMER' | translate }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-        <!-- Recipe Details Card -->
-        <mat-card class="section-card">
+    <!-- Recipe Details Card -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>{{ 'RECIPE_SECTION' | translate }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div formGroupName="recipe" class="full-width">
+          <!-- Image Upload Section -->
+          <div class="image-upload-section">
+            <label class="image-upload-label">{{ 'RECIPE_IMAGE' | translate }}</label>
+
+            @if (imagePreview || recipe?.thumbnail) {
+              <div class="image-preview-container">
+                <img [src]="imagePreview || recipe?.thumbnail" alt="Recipe preview" class="image-preview">
+                <button mat-icon-button class="remove-image-btn" (click)="removeImage()" type="button">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            }
+
+            <div class="image-upload-actions">
+              <input type="file"
+                #imageInput
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
+                (change)="onImageSelected($event)"
+                style="display: none"
+                id="image-upload">
+                <button mat-raised-button
+                  type="button"
+                  (click)="imageInput.click()">
+                  <mat-icon>add_photo_alternate</mat-icon>
+                  {{ (imagePreview || recipe?.thumbnail) ? ('CHANGE_IMAGE' | translate) : ('ADD_IMAGE' | translate) }}
+                </button>
+                <span class="image-hint">{{ 'IMAGE_UPLOAD_HINT' | translate }}</span>
+              </div>
+            </div>
+
+            <mat-form-field>
+              <mat-label>
+                {{ 'RECIPE_TITLE' | translate }}
+              </mat-label>
+              <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
+                formControlName="title" class="recipe-title" id="recipe-title">
+                @if (recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched) {
+                  <mat-error
+                    >
+                    {{ 'RECIPE_TITLE_REQUIRED' | translate }}
+                  </mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>
+                  {{ 'TYPE_OF_MEAL' | translate }}
+                </mat-label>
+                <mat-select placeholder="Type of Meal" formControlName="typeOfMeal" id="type-of-meal">
+                  <mat-option value="starter">
+                    {{ 'STARTER' | translate }}
+                  </mat-option>
+                  <mat-option value="main-course">
+                    {{ 'MAIN_COURSE' | translate }}
+                  </mat-option>
+                  <mat-option value="dessert">
+                    {{ 'DESSERT' | translate }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>
+                  {{ 'SERVINGS' | translate }}
+                </mat-label>
+                <input matInput type="number" min="1" placeholder="Number of servings"
+                  formControlName="servings" id="recipe-servings">
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Instructions</mat-label>
+                  <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
+                  required formControlName="instructions" id="recipe-instructions"></textarea>
+                  @if (recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched) {
+                    <mat-error
+                      >
+                      {{ 'INSTRUCTIONS_REQUIRED' | translate }}
+                    </mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Notes</mat-label>
+                  <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
+                  rows="5" id="recipe-notes"></textarea>
+                  @if (recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched) {
+                    <mat-error
+                      >
+                      {{ 'NOTES_REQUIRED' | translate }}
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <!-- Ingredients Card -->
+          <mat-card class="section-card">
             <mat-card-header>
-                <mat-card-title>{{ 'RECIPE_SECTION' | translate }}</mat-card-title>
+              <mat-card-title>{{ 'INGREDIENTS' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-                <div formGroupName="recipe" class="full-width">
-                    <!-- Image Upload Section -->
-                    <div class="image-upload-section">
-                        <label class="image-upload-label">{{ 'RECIPE_IMAGE' | translate }}</label>
-                        
-                        <div class="image-preview-container" *ngIf="imagePreview || recipe?.thumbnail">
-                            <img [src]="imagePreview || recipe?.thumbnail" alt="Recipe preview" class="image-preview">
-                            <button mat-icon-button class="remove-image-btn" (click)="removeImage()" type="button">
-                                <mat-icon>close</mat-icon>
-                            </button>
-                        </div>
-                        
-                        <div class="image-upload-actions">
-                            <input type="file" 
-                                   #imageInput 
-                                   accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
-                                   (change)="onImageSelected($event)"
-                                   style="display: none"
-                                   id="image-upload">
-                            <button mat-raised-button 
-                                    type="button" 
-                                    (click)="imageInput.click()">
-                                <mat-icon>add_photo_alternate</mat-icon>
-                                {{ (imagePreview || recipe?.thumbnail) ? ('CHANGE_IMAGE' | translate) : ('ADD_IMAGE' | translate) }}
-                            </button>
-                            <span class="image-hint">{{ 'IMAGE_UPLOAD_HINT' | translate }}</span>
-                        </div>
-                    </div>
-
-                    <mat-form-field>
-                        <mat-label>
-                            {{ 'RECIPE_TITLE' | translate }}
-                        </mat-label>
-                        <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
-                            formControlName="title" class="recipe-title" id="recipe-title">
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched">
-                            {{ 'RECIPE_TITLE_REQUIRED' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>
-                            {{ 'TYPE_OF_MEAL' | translate }}
-                        </mat-label>
-                        <mat-select placeholder="Type of Meal" formControlName="typeOfMeal" id="type-of-meal">
-                            <mat-option value="starter">
-                                {{ 'STARTER' | translate }}
-                            </mat-option>
-                            <mat-option value="main-course">
-                                {{ 'MAIN_COURSE' | translate }}
-                            </mat-option>
-                            <mat-option value="dessert">
-                                {{ 'DESSERT' | translate }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>
-                            {{ 'SERVINGS' | translate }}
-                        </mat-label>
-                        <input matInput type="number" min="1" placeholder="Number of servings"
-                            formControlName="servings" id="recipe-servings">
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Instructions</mat-label>
-                        <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
-                            required formControlName="instructions" id="recipe-instructions"></textarea>
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched">
-                            {{ 'INSTRUCTIONS_REQUIRED' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>Notes</mat-label>
-                        <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
-                            rows="5" id="recipe-notes"></textarea>
-                        <mat-error
-                            *ngIf="recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched">
-                            {{ 'NOTES_REQUIRED' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+              <app-ingredient-form class="full-width" [recipeForm]="recipeForm">
+              </app-ingredient-form>
             </mat-card-content>
-        </mat-card>
+          </mat-card>
 
-        <!-- Ingredients Card -->
-        <mat-card class="section-card">
-            <mat-card-header>
-                <mat-card-title>{{ 'INGREDIENTS' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-                <app-ingredient-form class="full-width" [recipeForm]="recipeForm">
-                </app-ingredient-form>
-            </mat-card-content>
-        </mat-card>
-
-        <!-- Action Buttons -->
-        <div class="button-container" [ngClass]="isUpdateMode? '' : 'button-container__create'">
-            <button *ngIf="isUpdateMode" mat-stroked-button color="basic" type="button"
+          <!-- Action Buttons -->
+          <div class="button-container" [ngClass]="isUpdateMode? '' : 'button-container__create'">
+            @if (isUpdateMode) {
+              <button mat-stroked-button color="basic" type="button"
                 routerLink="/recipe/detail/{{ recipe?.id }}">
                 {{ 'CANCEL' | translate }}
-            </button>
+              </button>
+            }
             <button mat-raised-button color="primary" type="submit" [disabled]="!(isFormModified || isTimerModified)">
-                {{ (isUpdateMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
+              {{ (isUpdateMode ? 'UPDATE_SUBMIT' : 'CREATE_SUBMIT') | translate }}
             </button>
-        </div>
-    </form>
-</div>
+          </div>
+        </form>
+      </div>

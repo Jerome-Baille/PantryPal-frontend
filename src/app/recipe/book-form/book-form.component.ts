@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { FormGroup, FormControl, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BookService } from 'src/app/services/book.service';
 import { Book as BookModel } from 'src/app/models/book.model';
-import { CommonModule } from '@angular/common';
+
 import { MatRadioModule } from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
@@ -16,7 +16,6 @@ import { LanguageService } from '../../services/language.service';
   selector: 'app-book-form',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatRadioModule,
     MatInputModule,
@@ -24,7 +23,7 @@ import { LanguageService } from '../../services/language.service';
     MatOptionModule,
     MatSelectModule,
     TranslateModule
-  ],
+],
   templateUrl: './book-form.component.html',
   styleUrls: ['./book-form.component.scss'],
 })
