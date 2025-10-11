@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
+import { TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FavoriteService } from 'src/app/services/favorite.service';
 
@@ -63,7 +64,8 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         private recipeService: RecipeService,
         private favoriteService: FavoriteService,
         private dialog: MatDialog,
-        private languageService: LanguageService
+            private languageService: LanguageService,
+            private translateService: TranslateService
     ) { 
         this.currentLang = languageService.getCurrentLanguage();
     }
@@ -141,12 +143,15 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     }
 
     deleteRecipe(): void {
-        // Open the confirmation dialog
+        // Open the confirmation dialog with translated strings
+        const title = this.translateService.instant('CONFIRM_DELETE_RECIPE_TITLE');
+        const message = this.translateService.instant('CONFIRM_DELETE_RECIPE_MESSAGE');
+
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
             width: '300px',
             data: {
-                title: 'Delete Recipe',
-                message: 'Are you sure you want to delete this recipe?'
+                title,
+                message
             }
         });
 

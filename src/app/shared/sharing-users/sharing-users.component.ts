@@ -4,7 +4,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ShareService, SharingUser, UserShare } from '../../services/share.service';
 import { SnackbarService } from '../../services/snackbar.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -40,7 +40,8 @@ export class SharingUsersComponent implements OnInit {
   constructor(
     private shareService: ShareService,
     private snackbarService: SnackbarService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -186,14 +187,10 @@ export class SharingUsersComponent implements OnInit {
 
     // Confirm with the user before proceeding
     const userName = this.getUserDisplayName(user);
-    let title = 'Revoke Access';
-    let message = '';
-    
-    if (this.recipeId) {
-      message = `Are you sure you want to revoke access to this recipe for ${userName}?`;
-    } else {
-      message = `Are you sure you want to revoke all sharing permissions for ${userName}?`;
-    }
+    const title = this.translateService.instant('CONFIRM_REVOKE_ACCESS_TITLE');
+    const message = this.recipeId
+      ? this.translateService.instant('CONFIRM_REVOKE_ACCESS_MESSAGE_SINGLE', { userName })
+      : this.translateService.instant('CONFIRM_REVOKE_ACCESS_MESSAGE_ALL', { userName });
 
     // Open confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

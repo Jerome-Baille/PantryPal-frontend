@@ -155,4 +155,13 @@
     "ADD_IMAGE": "Ajouter une image",
     "CHANGE_IMAGE": "Changer l'image",
     "IMAGE_UPLOAD_HINT": "Max 10 Mo. Formats supportés : JPEG, PNG, WebP, AVIF"
+    ,
+    "CONFIRM_DELETE_RECIPE_TITLE": "Supprimer la recette",
+    "CONFIRM_DELETE_RECIPE_MESSAGE": "Êtes-vous sûr de vouloir supprimer cette recette ?"
+    ,
+    "CONFIRM_DELETE_INGREDIENT_TITLE": "Confirmer la suppression",
+    "CONFIRM_DELETE_INGREDIENT_MESSAGE": "Êtes-vous sûr de vouloir supprimer cet ingrédient ?",
+    "CONFIRM_REVOKE_ACCESS_TITLE": "Révoquer l'accès",
+    "CONFIRM_REVOKE_ACCESS_MESSAGE_SINGLE": "Êtes-vous sûr de vouloir révoquer l'accès à cette recette pour {{userName}} ?",
+    "CONFIRM_REVOKE_ACCESS_MESSAGE_ALL": "Êtes-vous sûr de vouloir révoquer toutes les autorisations de partage pour {{userName}} ?"
 }

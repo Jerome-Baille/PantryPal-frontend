@@ -225,9 +225,12 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
   }
 
   onRemoveIngredient(index: number) {
+    const title = this.translateService.instant('CONFIRM_DELETE_INGREDIENT_TITLE');
+    const message = this.translateService.instant('CONFIRM_DELETE_INGREDIENT_MESSAGE');
+
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '350px',
-      data: { title: 'Confirm Delete', message: 'Are you sure you want to delete this ingredient?' }
+      data: { title, message }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
