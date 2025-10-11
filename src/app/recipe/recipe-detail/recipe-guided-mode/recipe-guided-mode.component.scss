@@ -1,0 +1,353 @@
+.guided-mode-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  background: #ffffff;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10001;
+}
+
+.guided-mode-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 10002;
+  flex-shrink: 0;
+
+  .close-button {
+    color: white;
+    margin-right: 12px;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .header-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+
+    .recipe-title {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 500;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .step-counter {
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 16px;
+    }
+  }
+}
+
+.progress-bar {
+  height: 6px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10002;
+  
+  ::ng-deep .mdc-linear-progress__bar-inner {
+    border-color: #667eea;
+  }
+}
+
+.instruction-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  overflow-y: auto;
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+
+  .instruction-wrapper {
+    max-width: 800px;
+    width: 100%;
+    
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .step-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+      }
+
+      button {
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        mat-icon {
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+          color: #ccc;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        &.completed mat-icon {
+          color: #4caf50;
+          animation: checkPulse 0.3s ease;
+        }
+
+        &:hover mat-icon {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .instruction-text {
+      font-size: 20px;
+      line-height: 1.8;
+      color: #333;
+      margin: 0;
+      padding: 24px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+
+      &.completed-text {
+        opacity: 0.6;
+        text-decoration: line-through;
+        text-decoration-color: #4caf50;
+        text-decoration-thickness: 2px;
+      }
+    }
+  }
+}
+
+.guided-mode-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 10002;
+  flex-shrink: 0;
+
+  .nav-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 24px;
+    height: 48px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 24px;
+    transition: all 0.3s ease;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:not(:disabled):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+    
+    &.close-nav-button {
+      background-color: #4caf50;
+      color: white;
+      
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+  }
+
+  .center-info {
+    flex: 1;
+    text-align: center;
+
+    .swipe-hint {
+      font-size: 14px;
+      color: #666;
+      font-style: italic;
+    }
+  }
+}
+
+@keyframes checkPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// Mobile optimizations
+@media (max-width: 768px) {
+  .guided-mode-header {
+    padding: 12px 16px;
+
+    .header-content {
+      .recipe-title {
+        font-size: 18px;
+      }
+
+      .step-counter {
+        font-size: 16px;
+        padding: 4px 10px;
+      }
+    }
+  }
+
+  .instruction-content {
+    padding: 24px 16px;
+
+    .instruction-wrapper {
+      .step-header {
+        .step-title {
+          font-size: 20px;
+        }
+      }
+
+      .instruction-text {
+        font-size: 18px;
+        padding: 20px;
+      }
+    }
+  }
+
+  .guided-mode-footer {
+    padding: 16px;
+    gap: 12px;
+
+    .nav-button {
+      padding: 0 16px;
+      height: 44px;
+      font-size: 14px;
+
+      .button-text {
+        display: none;
+      }
+
+      mat-icon {
+        margin: 0;
+      }
+    }
+
+    .center-info {
+      display: none;
+    }
+  }
+}
+
+// Landscape mobile optimizations
+@media (max-height: 500px) and (orientation: landscape) {
+  .instruction-content {
+    padding: 16px;
+
+    .instruction-wrapper {
+      .instruction-text {
+        font-size: 16px;
+        padding: 16px;
+      }
+    }
+  }
+}
+
+// Desktop large screen
+@media (min-width: 1200px) {
+  .instruction-content {
+    .instruction-wrapper {
+      max-width: 1000px;
+
+      .instruction-text {
+        font-size: 22px;
+        padding: 32px;
+      }
+    }
+  }
+}
+
+// Focus styles for accessibility
+button:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 2px;
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .instruction-text {
+    border: 2px solid #333;
+  }
+
+  .guided-mode-header {
+    border-bottom: 2px solid #fff;
+  }
+
+  .guided-mode-footer {
+    border-top: 2px solid #333;
+  }
+}
+
+// Dark mode support (if needed in future)
+@media (prefers-color-scheme: dark) {
+  .guided-mode-container {
+    background: #1a1a1a;
+  }
+
+  .instruction-content {
+    background: linear-gradient(to bottom, #2a2a2a 0%, #1a1a1a 100%);
+
+    .instruction-wrapper {
+      .step-header .step-title {
+        color: #e0e0e0;
+      }
+
+      .instruction-text {
+        background: #2a2a2a;
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  .guided-mode-footer {
+    background: #2a2a2a;
+    border-top-color: #444;
+  }
+}

@@ -1,0 +1,91 @@
+<div class="guided-mode-container" 
+     (touchstart)="onTouchStart($event)" 
+     (touchend)="onTouchEnd($event)"
+     role="dialog"
+     aria-modal="true"
+     [attr.aria-label]="'GUIDED_MODE_TITLE' | translate">
+  
+  <!-- Header -->
+  <div class="guided-mode-header">
+    <button mat-icon-button 
+            (click)="close()" 
+            class="close-button"
+            [attr.aria-label]="'CLOSE' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+    <div class="header-content">
+      <h2 class="recipe-title">{{ recipeTitle }}</h2>
+      <span class="step-counter" aria-live="polite">{{ stepNumber }}</span>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <mat-progress-bar 
+    mode="determinate" 
+    [value]="progress"
+    class="progress-bar"
+    role="progressbar"
+    [attr.aria-valuenow]="currentStepIndex + 1"
+    [attr.aria-valuemin]="1"
+    [attr.aria-valuemax]="instructions.length">
+  </mat-progress-bar>
+
+  <!-- Instruction Content -->
+  <div class="instruction-content" role="main">
+    <div class="instruction-wrapper">
+      <div class="step-header">
+        <h3 class="step-title">{{ 'STEP' | translate }} {{ currentStepIndex + 1 }}</h3>
+        <button 
+          mat-icon-button 
+          [class.completed]="isCurrentStepCompleted"
+          (click)="toggleStepCompletion()"
+          [attr.aria-label]="(isCurrentStepCompleted ? 'MARK_INCOMPLETE' : 'MARK_COMPLETE') | translate"
+          [attr.aria-pressed]="isCurrentStepCompleted">
+          <mat-icon>{{ isCurrentStepCompleted ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+        </button>
+      </div>
+      <p class="instruction-text" [class.completed-text]="isCurrentStepCompleted">
+        {{ currentInstruction }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Navigation Footer -->
+  <div class="guided-mode-footer">
+    <button 
+      mat-raised-button 
+      (click)="previousStep()" 
+      [disabled]="isFirstStep"
+      class="nav-button"
+      [attr.aria-label]="'PREVIOUS_STEP' | translate">
+      <mat-icon>arrow_back</mat-icon>
+      <span class="button-text">{{ 'PREVIOUS' | translate }}</span>
+    </button>
+
+    <div class="center-info">
+      <span class="swipe-hint">{{ 'SWIPE_OR_ARROW_KEYS' | translate }}</span>
+    </div>
+
+    @if (!isLastStep) {
+      <button 
+        mat-raised-button 
+        color="primary"
+        (click)="nextStep()" 
+        class="nav-button"
+        [attr.aria-label]="'NEXT_STEP' | translate">
+        <span class="button-text">{{ 'NEXT' | translate }}</span>
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    } @else {
+      <button 
+        mat-raised-button 
+        color="accent"
+        (click)="close()" 
+        class="nav-button close-nav-button"
+        [attr.aria-label]="'CLOSE' | translate">
+        <span class="button-text">{{ 'CLOSE' | translate }}</span>
+        <mat-icon>check</mat-icon>
+      </button>
+    }
+  </div>
+</div>

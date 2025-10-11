@@ -106,16 +106,55 @@
         <!-- Instructions Section -->
         <mat-card class="section-card">
           <mat-card-header>
-            <mat-card-title>{{ 'INSTRUCTIONS_SECTION' | translate }}</mat-card-title>
+            <div class="instructions-header">
+              <mat-card-title>{{ 'INSTRUCTIONS_SECTION' | translate }}</mat-card-title>
+              <div class="instructions-actions">
+                @if (completedStepsCount > 0) {
+                  <span class="progress-indicator">
+                    {{ completedStepsCount }} / {{ totalSteps }} {{ 'STEPS_COMPLETED' | translate }}
+                  </span>
+                }
+                <button 
+                  mat-raised-button 
+                  color="primary" 
+                  (click)="openGuidedMode()"
+                  class="guided-mode-button"
+                  [matTooltip]="'START_GUIDED_MODE' | translate">
+                  <mat-icon>play_circle_outline</mat-icon>
+                  {{ 'GUIDED_MODE' | translate }}
+                </button>
+              </div>
+            </div>
           </mat-card-header>
           <mat-card-content>
-            @for (instruction of isolatedInstructions; track instruction; let last = $last) {
-              <p>
-                {{ instruction }}
-              </p>
+            @for (instruction of isolatedInstructions; track instruction; let i = $index; let last = $last) {
+              <div class="instruction-item" [class.completed]="isStepCompleted(i)">
+                <button 
+                  class="step-checkbox"
+                  (click)="toggleStepCompletion(i)"
+                  [attr.aria-label]="(isStepCompleted(i) ? 'MARK_INCOMPLETE' : 'MARK_COMPLETE') | translate"
+                  [attr.aria-pressed]="isStepCompleted(i)"
+                  mat-icon-button>
+                  <mat-icon>{{ isStepCompleted(i) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                </button>
+                <p class="instruction-text" [class.completed-text]="isStepCompleted(i)">
+                  {{ instruction }}
+                </p>
+              </div>
               @if (!last) {
                 <mat-divider></mat-divider>
               }
+            }
+            @if (completedStepsCount > 0) {
+              <div class="clear-progress">
+                <button 
+                  mat-stroked-button 
+                  (click)="clearCompletedSteps()"
+                  class="clear-button">
+                  <mat-icon>restart_alt</mat-icon>
+                  {{ 'CLEAR' | translate }}
+                </button>
+              </div>
             }
           </mat-card-content>
         </mat-card>

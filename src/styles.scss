@@ -166,3 +166,43 @@ h1, h2, h3, h4, h5, h6, .mat-mdc-card-title, .card-title {
     background-color: #f8f8f8;
   }
 }
+
+// Fullscreen dialog for guided mode - must be above header
+.cdk-overlay-container {
+  z-index: 10000 !important;
+  
+  .cdk-global-overlay-wrapper {
+    &:has(.fullscreen-dialog) {
+      z-index: 10000 !important;
+    }
+  }
+  
+  .fullscreen-dialog {
+    z-index: 10000 !important;
+    
+    .cdk-overlay-backdrop {
+      display: none;
+    }
+    
+    .cdk-overlay-pane {
+      z-index: 10000 !important;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+}
+
+// Prevent body scroll when fullscreen dialog is open
+body.cdk-global-scrollblock {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}

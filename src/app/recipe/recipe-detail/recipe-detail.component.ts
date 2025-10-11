@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -17,6 +17,8 @@ import { LanguageService } from '../../services/language.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FavoriteService } from 'src/app/services/favorite.service';
+import { RecipeGuidedModeComponent } from './recipe-guided-mode/recipe-guided-mode.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
     selector: 'app-recipe-detail',
@@ -33,6 +35,7 @@ import { FavoriteService } from 'src/app/services/favorite.service';
         TimerComponent,
         TranslateModule,
         MatSelectModule,
+        MatTooltipModule,
     ],
     templateUrl: './recipe-detail.component.html',
     styleUrls: ['./recipe-detail.component.scss']
@@ -58,6 +61,10 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     servingsMultiplier = 1;
     availableServings = [0.5, 1, 2, 3, 4];
 
+    // Step tracking for checklist and guided mode
+    completedSteps: Set<number> = new Set();
+    private storageKey = '';
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
@@ -65,7 +72,8 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         private favoriteService: FavoriteService,
         private dialog: MatDialog,
             private languageService: LanguageService,
-            private translateService: TranslateService
+            private translateService: TranslateService,
+        private viewContainerRef: ViewContainerRef
     ) { 
         this.currentLang = languageService.getCurrentLanguage();
     }
@@ -101,6 +109,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                 this.names = this.recipeTime.map(row => row.name);
                 // Reset servings multiplier when loading a new recipe
                 this.servingsMultiplier = 1;
+                // Load completed steps from localStorage
+                this.storageKey = `recipe-${id}-completed-steps`;
+                this.loadCompletedSteps();
                 // Removed timeUnits mapping as it's not used anymore
             },
             error: (error) => {
@@ -276,5 +287,82 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                 error: (error) => console.error('Error adding favorite:', error)
             });
         }
+    }
+
+    // Step completion methods for checklist mode
+    toggleStepCompletion(index: number): void {
+        if (this.completedSteps.has(index)) {
+            this.completedSteps.delete(index);
+        } else {
+            this.completedSteps.add(index);
+        }
+        this.saveCompletedSteps();
+    }
+
+    isStepCompleted(index: number): boolean {
+        return this.completedSteps.has(index);
+    }
+
+    get completedStepsCount(): number {
+        return this.completedSteps.size;
+    }
+
+    get totalSteps(): number {
+        return this.isolatedInstructions.length;
+    }
+
+    private loadCompletedSteps(): void {
+        try {
+            const stored = localStorage.getItem(this.storageKey);
+            if (stored) {
+                const steps = JSON.parse(stored);
+                this.completedSteps = new Set(steps);
+            } else {
+                this.completedSteps = new Set();
+            }
+        } catch (error) {
+            console.error('Error loading completed steps:', error);
+            this.completedSteps = new Set();
+        }
+    }
+
+    private saveCompletedSteps(): void {
+        try {
+            const steps = Array.from(this.completedSteps);
+            localStorage.setItem(this.storageKey, JSON.stringify(steps));
+        } catch (error) {
+            console.error('Error saving completed steps:', error);
+        }
+    }
+
+    clearCompletedSteps(): void {
+        this.completedSteps.clear();
+        this.saveCompletedSteps();
+    }
+
+    // Guided mode
+    openGuidedMode(): void {
+        const dialogRef = this.dialog.open(RecipeGuidedModeComponent, {
+            width: '100%',
+            height: '100%',
+            maxWidth: '100vw',
+            maxHeight: '100vh',
+            panelClass: 'fullscreen-dialog',
+            hasBackdrop: false,
+            position: { top: '0', left: '0' },
+            viewContainerRef: this.viewContainerRef,
+            data: {
+                instructions: this.isolatedInstructions,
+                recipeTitle: this.recipe.title,
+                completedSteps: new Set(this.completedSteps)
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result && result.completedSteps) {
+                this.completedSteps = result.completedSteps;
+                this.saveCompletedSteps();
+            }
+        });
     }
 }

@@ -335,3 +335,206 @@ mat-card.section-card mat-card-content:has(> .instructions) {
     margin: 0 20px;
   }
 }
+
+/* Instructions checklist styles */
+.instructions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+
+  mat-card-title {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .instructions-actions {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+    /* Ensure there's always reserved space for the progress indicator so the button stays right-aligned
+       even when the indicator is not rendered (important on small screens). */
+    --progress-placeholder-width: 96px; /* approximate width for the indicator */
+
+    /* If the progress indicator exists, give it a fixed min-width so layout is stable */
+    .progress-indicator {
+      min-width: var(--progress-placeholder-width);
+    }
+
+    .progress-indicator {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .guided-mode-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 12px;
+      
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+.instruction-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+  transition: all 0.3s ease;
+
+  &.completed {
+    opacity: 0.7;
+  }
+
+  .step-checkbox {
+    flex-shrink: 0;
+    margin-top: -8px;
+    transition: all 0.3s ease;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: #ccc;
+      transition: color 0.3s ease;
+    }
+
+    &:hover mat-icon {
+      color: #999;
+    }
+  }
+
+  .instruction-text {
+    flex: 1;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    transition: all 0.3s ease;
+
+    &.completed-text {
+      text-decoration: line-through;
+      text-decoration-color: #4caf50;
+      text-decoration-thickness: 2px;
+      color: #666;
+    }
+  }
+}
+
+.instruction-item .step-checkbox mat-icon {
+  color: #ccc;
+}
+
+.instruction-item.completed .step-checkbox mat-icon {
+  color: #4caf50;
+  animation: checkPulse 0.3s ease;
+}
+
+@keyframes checkPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.clear-progress {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+
+  .clear-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .instructions-header {
+    .instructions-actions {
+        width: 100%;
+        justify-content: space-between;
+
+        /* On small screens if the progress indicator is missing, insert an invisible placeholder
+           to reserve the same width so the guided-mode button remains right-aligned. */
+        &:not(:has(.progress-indicator))::before {
+          content: '';
+          display: inline-block;
+          width: var(--progress-placeholder-width);
+        }
+
+        .progress-indicator {
+          font-size: 12px;
+        }
+
+      .guided-mode-button {
+        font-size: 14px;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+
+  .instruction-item {
+    .instruction-text {
+      font-size: 15px;
+    }
+  }
+}
+
+/* Fullscreen dialog styles */
+::ng-deep .fullscreen-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0;
+    border-radius: 0;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    
+    .mat-mdc-dialog-surface {
+      padding: 0;
+      border-radius: 0;
+      max-width: 100% !important;
+      max-height: 100% !important;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+  
+  // Ensure it covers the entire viewport without causing scrollbar
+  .cdk-overlay-pane {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 100%;
+    height: 100%;
+  }
+}

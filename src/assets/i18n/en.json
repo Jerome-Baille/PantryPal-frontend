@@ -163,5 +163,18 @@
     "CONFIRM_DELETE_INGREDIENT_MESSAGE": "Are you sure you want to delete this ingredient?",
     "CONFIRM_REVOKE_ACCESS_TITLE": "Revoke Access",
     "CONFIRM_REVOKE_ACCESS_MESSAGE_SINGLE": "Are you sure you want to revoke access to this recipe for {{userName}}?",
-    "CONFIRM_REVOKE_ACCESS_MESSAGE_ALL": "Are you sure you want to revoke all sharing permissions for {{userName}}?"
+    "CONFIRM_REVOKE_ACCESS_MESSAGE_ALL": "Are you sure you want to revoke all sharing permissions for {{userName}}?",
+    "GUIDED_MODE": "Guided Mode",
+    "GUIDED_MODE_TITLE": "Step-by-Step Cooking Guide",
+    "START_GUIDED_MODE": "Start Guided Mode",
+    "STEP": "Step",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "PREVIOUS_STEP": "Go to previous step",
+    "NEXT_STEP": "Go to next step",
+    "MARK_COMPLETE": "Mark step as complete",
+    "MARK_INCOMPLETE": "Mark step as incomplete",
+    "SWIPE_OR_ARROW_KEYS": "Swipe or use arrow keys to navigate",
+    "STEP_COMPLETED": "Step completed",
+    "STEPS_COMPLETED": "steps completed"
 }
