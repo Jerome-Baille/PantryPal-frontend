@@ -1,20 +1,23 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment.prod';
-import { Recipe } from '../models/favorite.interface';
+import { Injectable, inject } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
+
+interface FavoriteResponse {
+  recipes: { id: number; title: string }[];
+  totalRecipes: number;
+  currentPage: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteService {
+  private http = inject(HttpClient);
+
   private favoriteURL = environment.favoriteURL;
 
-  constructor(
-    private http: HttpClient
-  ) { }
-
-  createFavorite(favorite: any) {
+  createFavorite(favorite: { recipeId: number }) {
     return this.http.post(`${this.favoriteURL}/add`, favorite, { withCredentials: true });
   }
 
@@ -22,7 +25,7 @@ export class FavoriteService {
     return this.http.delete(`${this.favoriteURL}/remove/${recipeId}`, { withCredentials: true });
   }
 
-  getUsersFavorites(): Observable<any> {
-    return this.http.get<any>(`${this.favoriteURL}/user`, { withCredentials: true });
+  getUsersFavorites(): Observable<FavoriteResponse> {
+    return this.http.get<FavoriteResponse>(`${this.favoriteURL}/user`, { withCredentials: true });
   }
 }

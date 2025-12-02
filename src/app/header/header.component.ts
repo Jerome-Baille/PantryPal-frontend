@@ -1,5 +1,5 @@
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -33,21 +33,21 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+    private searchService = inject(SearchService);
+    authService = inject(AuthService);
+    private router = inject(Router);
+    private snackbarService = inject(SnackbarService);
+    private languageService = inject(LanguageService);
+    private breakpointObserver = inject(BreakpointObserver);
+
     isDropdownMenuOpen = false;
-    isMobile: boolean = false;
-    isRecipeListRoute: boolean = false;
+    isMobile = false;
+    isRecipeListRoute = false;
     private languageSubscription?: Subscription;
     private breakpointSubscription?: Subscription;
     currentLang: string;
 
-    constructor(
-        private searchService: SearchService,
-        public authService: AuthService,
-        private router: Router,
-        private snackbarService: SnackbarService,
-        private languageService: LanguageService,
-        private breakpointObserver: BreakpointObserver
-    ) {
+    constructor() {
         this.currentLang = this.languageService.getCurrentLanguage();
     }
 

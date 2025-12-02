@@ -6,7 +6,6 @@ import { map, startWith, debounceTime, takeUntil } from 'rxjs/operators';
 import { RecipeService } from '../../services/recipe.service';
 import { SearchService } from '../../services/search.service';
 import { SnackbarService } from '../../services/snackbar.service';
-import { Recipe } from '../../models/recipe.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { AddToShoppingListComponent } from 'src/app/shared/add-to-shopping-list/add-to-shopping-list.component';
@@ -50,6 +49,15 @@ const PAGE_SIZE_KEY = 'recipesPageSize';
     styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
+    private router = inject(Router);
+    private route = inject(ActivatedRoute);
+    private recipeService = inject(RecipeService);
+    private searchService = inject(SearchService);
+    private snackbarService = inject(SnackbarService);
+    private favoriteService = inject(FavoriteService);
+    private bookService = inject(BookService);
+    private ingredientService = inject(IngredientService);
+
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     
     // Services
@@ -59,15 +67,15 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     private destroy$ = new Subject<void>();
     private subscriptions = new Subscription();
     
-    recipes: Recipe[] = [];
-    totalRecipes: number = 0;
-    pageSize: number = 10;
-    currentPage: number = 0;
+    recipes: { id: number; title: string }[] = [];
+    totalRecipes = 0;
+    pageSize = 10;
+    currentPage = 0;
     pageSizeOptions: number[] = [5, 10, 25, 50];
-    isSearchActive: boolean = false;
-    books: any[] = [];
+    isSearchActive = false;
+    books: { id: number; title: string; author: string }[] = [];
     ingredients: string[] = [];
-    isFavoritesView: boolean = false;
+    isFavoritesView = false;
     
     // Autocomplete search controls
     bookSearchControl = new FormControl('');
@@ -75,14 +83,14 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     mealTypeSearchControl = new FormControl('');
     
     // Selected items arrays
-    selectedBooks: any[] = [];
+    selectedBooks: { id: number; title: string; author: string }[] = [];
     selectedIngredients: string[] = [];
     selectedMealTypes: string[] = [];
     
     // Filtered observables for autocomplete
-    filteredBooks!: Observable<any[]>;
+    filteredBooks!: Observable<{ id: number; title: string; author: string }[]>;
     filteredIngredients!: Observable<string[]>;
-    filteredMealTypes!: Observable<any[]>;
+    filteredMealTypes!: Observable<{ name: string; value: string }[]>;
     
     // Meal types data
     mealTypes = [
@@ -91,16 +99,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
         { name: 'DESSERT', value: 'dessert' }
     ];
 
-    constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-        private recipeService: RecipeService,
-        private searchService: SearchService,
-        private snackbarService: SnackbarService,
-        private favoriteService: FavoriteService,
-        private bookService: BookService,
-        private ingredientService: IngredientService
-    ) {
+    constructor() {
         // Initialize filtered observables for autocomplete
         this.filteredBooks = this.bookSearchControl.valueChanges.pipe(
             startWith(''),
@@ -131,7 +130,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         // Get page size from local storage or use default
-        const savedPageSize = getLocalStorageData(PAGE_SIZE_KEY);
+        const savedPageSize = getLocalStorageData<number>(PAGE_SIZE_KEY);
         if (savedPageSize) {
             this.pageSize = savedPageSize;
         }
@@ -176,7 +175,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     loadRecipes() {
         const filters = this.filterService.getFilters();
         const selectedQueryParams = Object.entries(filters)
-            .filter(([key, value]) => value)
+            .filter((entry) => entry[1])
             .map(([key, value]) => `${key}=${value}`);
 
         this.recipeService.getRecipes(this.currentPage + 1, this.pageSize, selectedQueryParams).subscribe({
@@ -188,7 +187,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
                     this.paginator.length = response.totalRecipes;
                 }
             },
-            error: (error) => {
+            error: (error: unknown) => {
                 console.error(error);
                 this.recipes = [];
             }
@@ -206,7 +205,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
                     this.paginator.length = response.totalRecipes;
                 }
             },
-            error: (error) => {
+            error: (error: unknown) => {
                 console.error(error);
                 this.snackbarService.showError('Failed to load favorites');
                 this.recipes = [];
@@ -300,10 +299,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     loadBooks(callback?: () => void): void {
         this.bookService.getBooks().subscribe({
             next: (books) => {
-                this.books = books;
+                this.books = books as { id: number; title: string; author: string }[];
                 if (callback) callback();
             },
-            error: (error) => {
+            error: (error: unknown) => {
                 console.error('Error loading books:', error);
                 this.books = [];
                 if (callback) callback();
@@ -317,7 +316,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
                 this.ingredients = ingredients;
                 if (callback) callback();
             },
-            error: (error) => {
+            error: (error: unknown) => {
                 console.error('Error loading ingredients:', error);
                 this.ingredients = [];
                 if (callback) callback();
@@ -326,7 +325,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
 
     // Filter methods for autocomplete
-    filterBooks(value: string): any[] {
+    filterBooks(value: string): { id: number; title: string; author: string }[] {
         const filterValue = value.toLowerCase();
         return this.books.filter(book => 
             (book.title.toLowerCase().includes(filterValue) || 
@@ -343,7 +342,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
         );
     }
 
-    filterMealTypes(value: string): any[] {
+    filterMealTypes(value: string): { name: string; value: string }[] {
         const filterValue = value.toLowerCase();
         return this.mealTypes.filter(mealType => 
             mealType.name.toLowerCase().includes(filterValue) &&
@@ -352,7 +351,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
 
     // Selection methods
-    onBookSelected(book: any): void {
+    onBookSelected(book: { id: number; title: string; author: string }): void {
         if (book && !this.selectedBooks.find(b => b.id === book.id)) {
             this.selectedBooks.push(book);
             this.bookSearchControl.setValue('');
@@ -368,7 +367,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
         }
     }
 
-    onMealTypeSelected(mealType: any): void {
+    onMealTypeSelected(mealType: { name: string; value: string }): void {
         if (mealType && !this.selectedMealTypes.includes(mealType.value)) {
             this.selectedMealTypes.push(mealType.value);
             this.mealTypeSearchControl.setValue('');
@@ -377,7 +376,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
 
     // Remove methods
-    removeBook(book: any): void {
+    removeBook(book: { id: number }): void {
         const index = this.selectedBooks.findIndex(b => b.id === book.id);
         if (index >= 0) {
             this.selectedBooks.splice(index, 1);
@@ -479,7 +478,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
         }
     }
 
-    getThumbnailUrl(recipe: Recipe): string {
+    getThumbnailUrl(recipe: { id: number; title: string; thumbnail?: string }): string {
         if (recipe.thumbnail) {
             return `https://pantry-pal.jerome-baille.fr/backend${recipe.thumbnail}`;
         }

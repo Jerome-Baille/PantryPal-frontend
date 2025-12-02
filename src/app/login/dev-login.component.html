@@ -1,0 +1,47 @@
+<div class="login-container">
+  @if (isDev) {
+  <mat-card>
+    <mat-card-title>Dev Login</mat-card-title>
+    <mat-card-subtitle>Pick a test user or enter credentials</mat-card-subtitle>
+    <mat-card-content>
+      @if (loading) {
+      <div>Loading users...</div>
+      }
+      @if (error) {
+      <div class="error">{{ error }}</div>
+      }
+      @if (users.length) {
+      <ul>
+        @for (u of users; track u) {
+        <li>
+          <button mat-stroked-button color="primary" (click)="loginAs(u)">Login as {{ u.username }}</button>
+          <span class="muted"> — {{ u.email }}</span>
+        </li>
+        }
+      </ul>
+      }
+      <div class="divider">Or</div>
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="dev-username">Username</label>
+          <input [(ngModel)]="usernameInput" name="username" id="dev-username" />
+        </div>
+        <div class="form-group">
+          <label for="dev-password">Password</label>
+          <input type="password" [(ngModel)]="passwordInput" name="password" id="dev-password" />
+        </div>
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit">Login</button>
+          <a routerLink="/auth/login" class="switch-button">Back</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  }
+
+  @if (!isDev) {
+  <div class="not-allowed">
+    Dev login is disabled in production.
+  </div>
+  }
+</div>

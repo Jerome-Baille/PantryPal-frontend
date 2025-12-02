@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,23 +16,21 @@ import { Subscription, takeWhile, timer } from 'rxjs';
     styleUrls: ['./timer.component.scss']
 })
 export class TimerComponent implements OnInit, OnDestroy {
-  @Input() timerInfo!: any;
+  private snackbarService = inject(SnackbarService);
+  private snackBar = inject(MatSnackBar);
+
+  @Input() timerInfo!: { name: string; timeInSeconds: number; recipe?: string };
 
   private timerSubscription: Subscription | null = null;
-  private remainingTimeInSeconds: number = 0;
-  private startTime: number = 0;
-  private timePaused: number = 0;
+  private remainingTimeInSeconds = 0;
+  private startTime = 0;
+  private timePaused = 0;
 
-  displayTime: string = '';
-  timerRunning: boolean = false;
+  displayTime = '';
+  timerRunning = false;
 
   private audio: HTMLAudioElement | null = null;
-  private audioInterval: any = null;
-
-  constructor(
-    private snackbarService: SnackbarService,
-    private snackBar: MatSnackBar
-  ) { }
+  private audioInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit(): void {
     this.displayTime = this.formatTime(this.timerInfo.timeInSeconds);

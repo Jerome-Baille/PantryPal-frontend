@@ -123,13 +123,23 @@
             <div class="recipe-container">
               @for (recipe of recipes; track recipe) {
                 <mat-card class="recipe-card">
-                  <div class="recipe-image-container" (click)="goToRecipeDetails(recipe.id)">
+                  <div class="recipe-image-container" 
+                       (click)="goToRecipeDetails(recipe.id)"
+                       (keydown.enter)="goToRecipeDetails(recipe.id)"
+                       tabindex="0"
+                       role="button"
+                       [attr.aria-label]="'View ' + recipe.title">
                     <img [src]="getThumbnailUrl(recipe)"
                       [alt]="recipe.title"
                       class="recipe-thumbnail"
                       loading="lazy">
                     </div>
-                    <div class="recipe-content" (click)="goToRecipeDetails(recipe.id)">
+                    <div class="recipe-content" 
+                         (click)="goToRecipeDetails(recipe.id)"
+                         (keydown.enter)="goToRecipeDetails(recipe.id)"
+                         tabindex="0"
+                         role="button"
+                         [attr.aria-label]="'View ' + recipe.title">
                       <mat-card-title>{{ recipe.title }}</mat-card-title>
                       <mat-card-actions (click)="$event.stopPropagation()">
                         <app-add-to-shopping-list [recipe]="recipe" [recipes]="recipes"></app-add-to-shopping-list>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -48,18 +48,16 @@ import { SnackbarService } from '../../services/snackbar.service';
   `]
 })
 export class ShareAcceptComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  private shareService = inject(ShareService);
+  private snackbarService = inject(SnackbarService);
+  private translate = inject(TranslateService);
+
   loading = true;
   message = 'PROCESSING_SHARE_LINK';
   private token: string | null = null;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService,
-    private shareService: ShareService,
-    private snackbarService: SnackbarService,
-    private translate: TranslateService
-  ) {}
 
   ngOnInit() {
     this.token = this.route.snapshot.paramMap.get('token');

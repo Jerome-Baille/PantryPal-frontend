@@ -1,20 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, forkJoin, map, of, throwError } from 'rxjs';
 import { RecipeIngredient } from 'src/app/models/recipe-ingredient.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IngredientService {
+  private http = inject(HttpClient);
+
   private ingredientsURL = environment.ingredientsURL;
 
-  constructor(
-    private http: HttpClient
-  ) { }
-
-  createIngredients(ingredients: RecipeIngredient[], recipeId: number): Observable<any[]> {
+  createIngredients(ingredients: RecipeIngredient[], recipeId: number): Observable<RecipeIngredient[]> {
     if (ingredients.length === 0) {
       return of([]);
     }
@@ -28,8 +26,8 @@ export class IngredientService {
     return forkJoin(ingredientObservables);
   }
 
-  createIngredient(recipeId: number, ingredient: RecipeIngredient): Observable<any> {
-    return this.http.post(`${this.ingredientsURL}`, {
+  createIngredient(recipeId: number, ingredient: RecipeIngredient): Observable<RecipeIngredient> {
+    return this.http.post<RecipeIngredient>(`${this.ingredientsURL}`, {
       name: ingredient.Ingredient?.name,
       recipeId: recipeId,
       quantity: ingredient.quantity || 1,
@@ -38,15 +36,15 @@ export class IngredientService {
     }, { withCredentials: true });
   }
 
-  getSetOfIngredients(): Observable<any> {
-    return this.http.get(`${this.ingredientsURL}/set`, { withCredentials: true });
+  getSetOfIngredients(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.ingredientsURL}/set`, { withCredentials: true });
   }
 
-  updateIngredient(id: number, ingredient: { name: string }): Observable<any> {
-    return this.http.put(`${this.ingredientsURL}/${id}`, ingredient, { withCredentials: true });
+  updateIngredient(id: number, ingredient: { name: string }): Observable<{ id: number; name: string }> {
+    return this.http.put<{ id: number; name: string }>(`${this.ingredientsURL}/${id}`, ingredient, { withCredentials: true });
   }
 
-  deleteIngredient(id: number): Observable<any> {
-    return this.http.delete(`${this.ingredientsURL}/${id}`, { withCredentials: true });
+  deleteIngredient(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.ingredientsURL}/${id}`, { withCredentials: true });
   }
 }

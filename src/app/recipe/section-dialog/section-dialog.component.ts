@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ItemService } from 'src/app/services/item.service';
@@ -28,15 +28,13 @@ export interface SectionDialogData {
   styleUrls: ['./section-dialog.component.scss']
 })
 export class SectionDialogComponent {
+  private dialogRef = inject<MatDialogRef<SectionDialogComponent>>(MatDialogRef);
+  data = inject<SectionDialogData>(MAT_DIALOG_DATA);
+  private itemService = inject(ItemService);
+  private fb = inject(FormBuilder);
+
   isLoading = false;
   errorMessage = '';
-
-  constructor(
-    private dialogRef: MatDialogRef<SectionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: SectionDialogData,
-    private itemService: ItemService,
-    private fb: FormBuilder
-  ) { }
 
   sectionForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(1)]],

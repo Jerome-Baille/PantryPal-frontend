@@ -1,7 +1,7 @@
 @if (!isMobile) {
   <mat-toolbar class="toolbar">
     <span class="toolbar__title" routerLink="/">PantryPal</span>
-    <app-search class="search-bar" (onSearch)="handleSearch($event, 'desktop')"></app-search>
+    <app-search class="search-bar" (searchTriggered)="handleSearch($event, 'desktop')"></app-search>
     <div class="desktop-menu">
       <button mat-button routerLink="/shopping/list" routerLinkActive="active">{{ 'GROCERY_LIST' | translate }}</button>
       <button mat-button routerLink="/favorites" routerLinkActive="active">{{ 'FAVORITES' | translate }}</button>
@@ -14,7 +14,7 @@
 
 @if (isMobile && isRecipeListRoute) {
   <div class="mobile-search-container">
-    <app-search class="search-bar" (onSearch)="handleSearch($event, 'mobile')"></app-search>
+    <app-search class="search-bar" (searchTriggered)="handleSearch($event, 'mobile')"></app-search>
   </div>
 }
 

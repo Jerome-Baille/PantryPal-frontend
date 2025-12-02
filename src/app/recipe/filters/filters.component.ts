@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild, signal, effect, inject, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, signal, effect, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -16,26 +16,26 @@ import { LanguageService } from 'src/app/services/language.service';
 import { FilterService } from 'src/app/services/filter.service';
 
 @Component({
-    selector: 'app-filters',
-    standalone: true,
-    imports: [
-      CommonModule, 
-      ReactiveFormsModule, 
-      MatAccordion, 
-      MatButtonModule,
-      MatInputModule,
-      MatListModule, 
-      MatFormFieldModule, 
-      MatExpansionModule, 
-      MatChipsModule,
-      TranslateModule
-    ],
-    templateUrl: './filters.component.html',
-    styleUrls: ['./filters.component.scss'],
+  selector: 'app-filters',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAccordion,
+    MatButtonModule,
+    MatInputModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatExpansionModule,
+    MatChipsModule,
+    TranslateModule
+  ],
+  templateUrl: './filters.component.html',
+  styleUrls: ['./filters.component.scss'],
 })
 export class FiltersComponent implements OnInit, OnDestroy {
-  @ViewChild('bookList') bookList: any;
-  @ViewChild('ingredientList') ingredientList: any;
+  @ViewChild('bookList') bookList: MatSelectionList | undefined;
+  @ViewChild('ingredientList') ingredientList: MatSelectionList | undefined;
   @ViewChild('typeOfMealList') typeOfMealList!: MatSelectionList;
 
   @ViewChild(MatAccordion) accordion!: MatAccordion;
@@ -48,18 +48,18 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   // Signals
   visible = this.filterService.filtersVisible;
-  books = signal<any[]>([]);
-  ingredients = signal<any[]>([]);
+  books = signal<{ id: string; title: string; author: string }[]>([]);
+  ingredients = signal<string[]>([]);
   dataLoaded = signal(false);
 
   bookControl = new FormControl();
   ingredientControl = new FormControl();
   typeOfMealControl = new FormControl();
 
-  filteredBooks!: Observable<any[]>;
-  filteredIngredients!: Observable<any[]>;
+  filteredBooks!: Observable<{ id: string; title: string }[]>;
+  filteredIngredients!: Observable<string[]>;
 
-  typeOfMeals: any = [
+  typeOfMeals: { name: string; value: string }[] = [
     { name: 'Starter', value: 'starter' },
     { name: 'Main Course', value: 'main-course' },
     { name: 'Dessert', value: 'dessert' }
@@ -74,7 +74,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.currentLang = this.languageService.getCurrentLanguage();
-    
+
     // Effect to load data when filter becomes visible
     effect(() => {
       if (this.visible()) {
@@ -113,7 +113,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _filterBooks(value: string): any[] {
+  private _filterBooks(value: string): { id: string; title: string }[] {
     const filterValue = value.toLowerCase();
     return this.books().filter(
       book =>
@@ -122,7 +122,7 @@ export class FiltersComponent implements OnInit, OnDestroy {
     ).map(book => ({ id: book.id, title: book.title }));
   }
 
-  private _filterIngredients(value: string): any {
+  private _filterIngredients(value: string): string[] {
     const filterIngredientValue = value.toLowerCase();
 
     return this.ingredients().filter(
@@ -218,15 +218,15 @@ export class FiltersComponent implements OnInit, OnDestroy {
     })
   }
 
-  getSelectedBooks(): any[] {
+  getSelectedBooks(): string[] {
     // Map the selected book ids to their corresponding titles
     return Array.from(this.selectedBooks).map(id => {
-      const book = this.books().find(book => book.id === id);
+      const book = this.books().find(b => b.id === id);
       return book ? book.title : '';
     });
   }
 
-  getSelectedIngredients(): any[] {
+  getSelectedIngredients(): string[] {
     // Convert the selectedIngredients Set to an array
     return Array.from(this.selectedIngredients);
   }

@@ -1,4 +1,4 @@
-@if (!error && recipe?.id) {
+@if (!error && recipe.id) {
   <div class="main-container">
     <mat-card class="section-card">
       <div class="option-buttons">
@@ -6,19 +6,19 @@
           (click)="toggleFavorite()" mat-icon-button>
           <mat-icon class="heart-icon">favorite</mat-icon>
         </button>
-        <mat-card-title class="card-title">{{ recipe?.title }}</mat-card-title>
+        <mat-card-title class="card-title">{{ recipe.title }}</mat-card-title>
         <app-share-options [recipe]="recipe"></app-share-options>
       </div>
-      @if (recipe?.typeOfMeal) {
+      @if (recipe.typeOfMeal) {
         <mat-card-subtitle class="card-subtitle">
-          [ {{ recipe?.typeOfMeal }} ]
+          [ {{ recipe.typeOfMeal }} ]
         </mat-card-subtitle>
       }
       <mat-card-subtitle class="card-subtitle">
-        <span class="book-title">{{ recipe?.Book?.title }} </span> {{ 'BY' | translate }} {{ recipe?.Book?.author }}
+        <span class="book-title">{{ recipe.Book?.title }} </span> {{ 'BY' | translate }} {{ recipe.Book?.author }}
       </mat-card-subtitle>
       <!-- Recipe Image Display -->
-      @if (recipe?.picture || recipe?.thumbnail) {
+      @if (recipe.picture || recipe.thumbnail) {
         <div class="image-wrapper">
           <div class="recipe-image-container">
             <picture>
@@ -65,14 +65,14 @@
           </mat-card-header>
           <mat-card-content>
             <div class="ingredients-header">
-              @if (recipe?.servings) {
+              @if (recipe.servings) {
                 <div class="servings-selector">
                   {{ 'SERVINGS' | translate }}:
                   <mat-select [value]="servingsMultiplier" (selectionChange)="onServingsChange($event.value)"
                     class="compact-select" id="servings-multiplier">
                     @for (mult of availableServings; track mult) {
                       <mat-option [value]="mult">
-                        {{ recipe.servings * mult }}
+                        {{ recipe.servings! * mult }}
                       </mat-option>
                     }
                   </mat-select>
@@ -94,7 +94,7 @@
                         === 'sel' || ingredient?.Ingredient?.name?.toLowerCase() === 'poivre') &&
                         ingredient.unit?.toLowerCase() === 'unit') ? '' : ' - ' +
                         (ingredient.adjustedQuantity | number:'1.0-2') + (ingredient.unit?.toLowerCase() !==
-                        'unit' ? ' ' + (translateUnit(ingredient.unit) | translate) : '') }}
+                        'unit' ? ' ' + (translateUnit(ingredient.unit || '') | translate) : '') }}
                       </li>
                     }
                   </ul>
@@ -159,18 +159,18 @@
           </mat-card-content>
         </mat-card>
         <!-- Notes Section -->
-        @if (recipe?.notes) {
+        @if (recipe.notes) {
           <mat-card class="section-card">
             <mat-card-header>
               <mat-card-title>{{ 'NOTES_SECTION' | translate }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-              <p class="instructions">{{ recipe?.notes }}</p>
+              <p class="instructions">{{ recipe.notes }}</p>
             </mat-card-content>
           </mat-card>
         }
         <div class="card-button">
-          <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe?.id }}">
+          <button mat-raised-button color="primary" routerLink="/recipe/update/{{ recipe.id }}">
             {{ 'RECIPE_UPDATE' | translate }}
           </button>
           <button mat-raised-button class="btn-color-accent" (click)="deleteRecipe()">

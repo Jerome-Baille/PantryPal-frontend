@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { RouterOutlet } from '@angular/router';
 import { LoaderComponent } from './shared/loader/loader.component';
@@ -12,9 +12,11 @@ import { IconService } from './services/icon.service';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  private iconService = inject(IconService);
+
   title = 'pantry-pal';
 
-  constructor(private iconService: IconService) {
+  constructor() {
     this.generateCat();
   }
 

@@ -12,29 +12,28 @@
         <div class="filter-group">
           <div class="filters-form">
             @if (books().length > 0) {
-              <form>
-                <mat-form-field>
-                  <mat-label>
-                    {{ 'SELECT_BOOK' | translate }}
-                  </mat-label>
-                  <input type="text" placeholder="Book" matInput [formControl]="bookControl" id="filter-book-input" />
-                </mat-form-field>
-              </form>
+            <form>
+              <mat-form-field>
+                <mat-label>
+                  {{ 'SELECT_BOOK' | translate }}
+                </mat-label>
+                <input type="text" placeholder="Book" matInput [formControl]="bookControl" id="filter-book-input" />
+              </mat-form-field>
+            </form>
             }
 
             <!-- Wrap the mat-selection-list in a container -->
             <div class="selection-list-container">
               @if (books().length > 0) {
-                <form>
-                  <mat-selection-list #bookList>
-                    @for (book of filteredBooks | async; track book) {
-                      <mat-list-option [value]="book.id"
-                        (click)="toggleSelection(book.id)">
-                        {{ book.title }}
-                      </mat-list-option>
-                    }
-                  </mat-selection-list>
-                </form>
+              <form>
+                <mat-selection-list #bookList>
+                  @for (book of filteredBooks | async; track book) {
+                  <mat-list-option [value]="book.id" (click)="toggleSelection(book.id)">
+                    {{ book.title }}
+                  </mat-list-option>
+                  }
+                </mat-selection-list>
+              </form>
               }
             </div>
           </div>
@@ -43,9 +42,9 @@
           <div class="selected-items-container">
             <div class="selected-items" aria-label="Ingredient selection">
               @for (selectedBook of getSelectedBooks(); track selectedBook) {
-                <mat-chip color="primary">
-                  {{ selectedBook }}
-                </mat-chip>
+              <mat-chip color="primary">
+                {{ selectedBook }}
+              </mat-chip>
               }
             </div>
           </div>
@@ -62,114 +61,118 @@
         <div class="filter-group">
           <div class="filters-form">
             @if (ingredients().length > 0) {
+            <form>
+              <mat-form-field>
+                <mat-label>
+                  {{ 'SELECT_INGREDIENT' | translate }}
+                </mat-label>
+                <input type="text" placeholder="Ingredients" matInput [formControl]="ingredientControl"
+                  id="filter-ingredient-input" />
+              </mat-form-field>
+            </form>
+            }
+
+            <!-- Wrap the mat-selection-list in a container -->
+            <div class="selection-list-container">
+              @if (ingredients().length > 0) {
               <form>
-                <mat-form-field>
-                  <mat-label>
-                    {{ 'SELECT_INGREDIENT' | translate }}
-                  </mat-label>
-                  <input type="text" placeholder="Ingredients" matInput
-                    [formControl]="ingredientControl" id="filter-ingredient-input" />
-                  </mat-form-field>
-                </form>
+                <mat-selection-list #ingredientList>
+                  @for (ingredient of filteredIngredients | async; track ingredient) {
+                  <mat-list-option [value]="ingredient" (click)="toggleIngredientSelection(ingredient)">
+                    {{ ingredient }}
+                  </mat-list-option>
+                  }
+                </mat-selection-list>
+              </form>
               }
-
-              <!-- Wrap the mat-selection-list in a container -->
-              <div class="selection-list-container">
-                @if (ingredients().length > 0) {
-                  <form>
-                    <mat-selection-list #ingredientList>
-                      @for (ingredient of filteredIngredients | async; track ingredient) {
-                        <mat-list-option
-                          [value]="ingredient" (click)="toggleIngredientSelection(ingredient)">
-                          {{ ingredient }}
-                        </mat-list-option>
-                      }
-                    </mat-selection-list>
-                  </form>
-                }
-              </div>
-            </div>
-
-            <!-- Display selected ingredients -->
-            <div class="selected-items-container">
-              <div class="selected-items" aria-label="Ingredient selection">
-                @for (selectedIngredient of getSelectedIngredients(); track selectedIngredient) {
-                  <mat-chip color="primary">
-                    {{ selectedIngredient }}
-                  </mat-chip>
-                }
-              </div>
             </div>
           </div>
-        </mat-expansion-panel>
 
-        <!-- Filter by type of meal -->
-        <mat-expansion-panel class="filters-mat-expansion-panel">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              {{ 'FILTERS_TYPE_OF_MEAL' | translate }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="filter-group">
-            <div class="filters-form">
-              @if (typeOfMeals.length > 0) {
-                <form>
-                  <mat-form-field>
-                    <mat-label>
-                      {{ 'SELECT_TYPE_OF_MEAL' | translate }}
-                    </mat-label>
-                    <input type="text" placeholder="Type of meal" matInput
-                      [formControl]="typeOfMealControl" id="filter-type-of-meal-input" />
-                    </mat-form-field>
-                  </form>
-                }
-
-                <!-- Wrap the mat-selection-list in a container -->
-                <div class="selection-list-container">
-                  @if (typeOfMeals.length > 0) {
-                    <form>
-                      <mat-selection-list #typeOfMealList [formControl]="typeOfMealControl">
-                        @for (typeOfMeal of typeOfMeals; track typeOfMeal) {
-                          <mat-list-option [value]="typeOfMeal.value"
-                            (click)="toggleTypeOfMealSelection(typeOfMeal.value)">
-                            {{ typeOfMeal.name }}
-                          </mat-list-option>
-                        }
-                      </mat-selection-list>
-                    </form>
-                  }
-                </div>
-              </div>
-
-              <!-- Display selected type of meal -->
-              <div class="selected-items-container">
-                <div class="selected-items" aria-label="Type of meal selection">
-                  @for (selectedTypeOfMeal of getSelectedTypeOfMeals(); track selectedTypeOfMeal) {
-                    <mat-chip color="primary">
-                      {{ selectedTypeOfMeal }}
-                    </mat-chip>
-                  }
-                </div>
-              </div>
+          <!-- Display selected ingredients -->
+          <div class="selected-items-container">
+            <div class="selected-items" aria-label="Ingredient selection">
+              @for (selectedIngredient of getSelectedIngredients(); track selectedIngredient) {
+              <mat-chip color="primary">
+                {{ selectedIngredient }}
+              </mat-chip>
+              }
             </div>
-          </mat-expansion-panel>
-
-        </mat-accordion>
-
-        <div class="action-buttons">
-          <button mat-stroked-button color="accent" (click)="clearFilters()">
-            {{ 'CLEAR' | translate }}
-          </button>
-
-          <button mat-stroked-button color="primary" (click)="applyFilters(); accordion.closeAll()">
-            {{ 'APPLY' | translate }}
-          </button>
-
-          <button mat-stroked-button color="basic" (click)="dismissFilters(); accordion.closeAll()">
-            {{ 'CANCEL' | translate }}
-          </button>
+          </div>
         </div>
-      </div>
-      <div class="background-overlay" (click)="dismissFilters()"></div>
+      </mat-expansion-panel>
 
+      <!-- Filter by type of meal -->
+      <mat-expansion-panel class="filters-mat-expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ 'FILTERS_TYPE_OF_MEAL' | translate }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="filter-group">
+          <div class="filters-form">
+            @if (typeOfMeals.length > 0) {
+            <form>
+              <mat-form-field>
+                <mat-label>
+                  {{ 'SELECT_TYPE_OF_MEAL' | translate }}
+                </mat-label>
+                <input type="text" placeholder="Type of meal" matInput [formControl]="typeOfMealControl"
+                  id="filter-type-of-meal-input" />
+              </mat-form-field>
+            </form>
+            }
+
+            <!-- Wrap the mat-selection-list in a container -->
+            <div class="selection-list-container">
+              @if (typeOfMeals.length > 0) {
+              <form>
+                <mat-selection-list #typeOfMealList [formControl]="typeOfMealControl">
+                  @for (typeOfMeal of typeOfMeals; track typeOfMeal) {
+                  <mat-list-option [value]="typeOfMeal.value" (click)="toggleTypeOfMealSelection(typeOfMeal.value)">
+                    {{ typeOfMeal.name }}
+                  </mat-list-option>
+                  }
+                </mat-selection-list>
+              </form>
+              }
+            </div>
+          </div>
+
+          <!-- Display selected type of meal -->
+          <div class="selected-items-container">
+            <div class="selected-items" aria-label="Type of meal selection">
+              @for (selectedTypeOfMeal of getSelectedTypeOfMeals(); track selectedTypeOfMeal) {
+              <mat-chip color="primary">
+                {{ selectedTypeOfMeal }}
+              </mat-chip>
+              }
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+    <div class="action-buttons">
+      <button mat-stroked-button color="accent" (click)="clearFilters()">
+        {{ 'CLEAR' | translate }}
+      </button>
+
+      <button mat-stroked-button color="primary" (click)="applyFilters(); accordion.closeAll()">
+        {{ 'APPLY' | translate }}
+      </button>
+
+      <button mat-stroked-button color="basic" (click)="dismissFilters(); accordion.closeAll()">
+        {{ 'CANCEL' | translate }}
+      </button>
     </div>
+  </div>
+  <div class="background-overlay" 
+       (click)="dismissFilters()" 
+       (keydown.enter)="dismissFilters()" 
+       (keydown.escape)="dismissFilters()"
+       tabindex="0"
+       role="button"
+       aria-label="Close filters"></div>
+
+</div>

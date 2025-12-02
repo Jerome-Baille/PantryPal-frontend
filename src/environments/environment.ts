@@ -1,9 +1,16 @@
-const apiBaseURL = 'http://localhost:3000/api';
+const authBaseURL = 'http://localhost:3000/api';
+const pantryPalBaseURL = 'http://localhost:3000/api';
 
 export const environment = {
   production: false,
-  apiBaseURL,
-  authURL: `${apiBaseURL}/auth`,
-  userURL: `${apiBaseURL}/user`,
-  redirectUrl: 'http://localhost:4200/login'
+  authBaseURL,
+  authFrontURL: `${authBaseURL}/auth`,
+  authURL: `${authBaseURL}/auth`,
+  userURL: `${authBaseURL}/user`,
+  pantryPalBaseURL,
+  recipesURL: `${pantryPalBaseURL}/recipes`,
+  booksURL: `${pantryPalBaseURL}/books`,
+  ingredientsURL: `${pantryPalBaseURL}/ingredients`,
+  itemsURL: `${pantryPalBaseURL}/items`,
+  favoriteURL: `${pantryPalBaseURL}/favorites`
 };

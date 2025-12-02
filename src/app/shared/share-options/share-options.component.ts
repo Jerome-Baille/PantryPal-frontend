@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { RecipeService } from 'src/app/services/recipe.service';
 
 import { MatMenuModule } from '@angular/material/menu';
@@ -16,12 +16,10 @@ import { SharingUsersDialogComponent } from '../sharing-users-dialog/sharing-use
     styleUrls: ['./share-options.component.scss']
 })
 export class ShareOptionsComponent {
-  @Input() recipe: any;
+  private recipeService = inject(RecipeService);
+  private dialog = inject(MatDialog);
 
-  constructor(
-    private recipeService: RecipeService,
-    private dialog: MatDialog
-  ) { }
+  @Input() recipe!: { id: number; title: string };
 
   downloadPDF(): void {
     const recipe = this.recipe;

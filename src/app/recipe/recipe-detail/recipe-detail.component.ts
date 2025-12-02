@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewContainerRef, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -19,6 +19,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { FavoriteService } from 'src/app/services/favorite.service';
 import { RecipeGuidedModeComponent } from './recipe-guided-mode/recipe-guided-mode.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Recipe } from 'src/app/models/recipe.model';
+
+interface RecipeIngredient {
+    quantity: number;
+    unit?: string;
+    displayOrder?: number;
+    adjustedQuantity?: number;
+    section?: { name: string; displayOrder?: number };
+    Ingredient?: { name: string };
+}
 
 @Component({
     selector: 'app-recipe-detail',
@@ -41,17 +51,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     styleUrls: ['./recipe-detail.component.scss']
 })
 export class RecipeDetailComponent implements OnInit, OnDestroy {
-    recipe: any = {};
-    id: number = 0;
-    error: any = null;
-    recipeTime: any[] = [];
-    dataSource: any;
+    private route = inject(ActivatedRoute);
+    private router = inject(Router);
+    private recipeService = inject(RecipeService);
+    private favoriteService = inject(FavoriteService);
+    private dialog = inject(MatDialog);
+    private languageService = inject(LanguageService);
+    private translateService = inject(TranslateService);
+    private viewContainerRef = inject(ViewContainerRef);
+
+    recipe: Recipe = {} as Recipe;
+    id = 0;
+    error: unknown = null;
+    recipeTime: { name: string; time: number; showTimer: boolean }[] = [];
+    dataSource: { name: string; time: number }[] = [];
     displayedColumns!: string[];
     names: string[] = [];
     timeUnits: string[] = [];
 
     activeTimerId: string | null = null;
-    timerStates: { [key: string]: { running: boolean; timeInSeconds: number } } = {};
+    timerStates: Record<string, { running: boolean; timeInSeconds: number }> = {};
 
     isFavorite = false;
 
@@ -62,19 +81,12 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     availableServings = [0.5, 1, 2, 3, 4];
 
     // Step tracking for checklist and guided mode
-    completedSteps: Set<number> = new Set();
+    completedSteps = new Set<number>();
     private storageKey = '';
 
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private recipeService: RecipeService,
-        private favoriteService: FavoriteService,
-        private dialog: MatDialog,
-            private languageService: LanguageService,
-            private translateService: TranslateService,
-        private viewContainerRef: ViewContainerRef
-    ) { 
+    constructor() {
+        const languageService = this.languageService;
+ 
         this.currentLang = languageService.getCurrentLanguage();
     }
 
@@ -95,14 +107,14 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         this.recipeService.getRecipe(id).subscribe({
             next: (response) => {
                 this.recipe = response;
-                this.isFavorite = response.isFavorited;
+                this.isFavorite = response.isFavorited ?? false;
                 this.error = null;
                 // Map timers without duplicating display logic
-                this.recipeTime = (this.recipe.timers || []).map((timer: any) => {
+                this.recipeTime = (this.recipe.timers || []).map((timer: { name: string; timeInSeconds?: number; time_in_seconds?: number }) => {
                     const timeInSeconds = timer.timeInSeconds || timer.time_in_seconds;
                     return {
                         name: timer.name,
-                        time: timeInSeconds,
+                        time: timeInSeconds || 0,
                         showTimer: false
                     };
                 });
@@ -114,9 +126,9 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                 this.loadCompletedSteps();
                 // Removed timeUnits mapping as it's not used anymore
             },
-            error: (error) => {
+            error: (error: unknown) => {
                 console.error(error);
-                this.recipe = {};
+                this.recipe = {} as Recipe;
                 this.error = error;
             }
         });
@@ -140,7 +152,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     }
 
     translateUnit(unit: string): string {
-        const translations: { [key: string]: string } = {
+        const translations: Record<string, string> = {
             'tablespoon': 'UNIT_TABLESPOON',
             'teaspoon': 'UNIT_TEASPOON',
             'leaves': 'UNIT_LEAVES',
@@ -167,7 +179,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         });
 
         // After the dialog is closed, check the result
-        dialogRef.afterClosed().subscribe((result) => {
+        dialogRef.afterClosed().subscribe((result: boolean) => {
             if (result) {
                 // User confirmed, proceed with recipe deletion
                 const id = parseInt(this.route.snapshot.paramMap.get('id') || '0', 10);
@@ -176,7 +188,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                     next: () => {
                         this.router.navigate(['/recipe/list']);
                     },
-                    error: (error) => {
+                    error: (error: unknown) => {
                         console.error(error);
                     }
                 });
@@ -199,7 +211,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     }
 
     // Method to create a timer state for an element
-    createTimerState(element: any): any {
+    createTimerState(element: { name: string; time: number }): { name: string; timeInSeconds: number; recipe: string } {
         return {
             name: element.name,
             timeInSeconds: element.time,
@@ -207,11 +219,11 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
         };
     }
 
-    public getTimerId(element: any): string {
+    public getTimerId(element: { name: string }): string {
         return `${this.recipe.id}-${element.name}`;
     }
 
-    toggleTimer(element: any): void {
+    toggleTimer(element: { showTimer: boolean }): void {
         element.showTimer = !element.showTimer;
     }
 
@@ -230,10 +242,10 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     }
 
     // Add a getter to group ingredients by section
-    get groupedIngredients(): { section: string, ingredients: any[] }[] {
+    get groupedIngredients(): { section: string, ingredients: RecipeIngredient[], sectionDisplayOrder: number }[] {
         if (!this.recipe?.RecipeIngredients) return [];
-        const groups: { [key: string]: any } = {};
-        this.recipe.RecipeIngredients.forEach((item: any) => {
+        const groups: Record<string, { sectionDisplayOrder: number; ingredients: RecipeIngredient[] }> = {};
+        this.recipe.RecipeIngredients.forEach((item: RecipeIngredient) => {
             const key = item.section ? item.section.name : '';
             if (!groups[key]) {
                 groups[key] = {
@@ -250,7 +262,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
 
         // Sort ingredients by displayOrder within each section
         Object.keys(groups).forEach(key => {
-            groups[key].ingredients.sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0));
+            groups[key].ingredients.sort((a: RecipeIngredient, b: RecipeIngredient) => (a.displayOrder || 0) - (b.displayOrder || 0));
         });
 
         // Convert to array and sort sections by their displayOrder
@@ -277,14 +289,14 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
                 next: () => {
                     this.isFavorite = false;
                 },
-                error: (error) => console.error('Error removing favorite:', error)
+                error: (error: unknown) => console.error('Error removing favorite:', error)
             });
         } else {
             this.favoriteService.createFavorite({ recipeId: this.recipe.id }).subscribe({
                 next: () => {
                     this.isFavorite = true;
                 },
-                error: (error) => console.error('Error adding favorite:', error)
+                error: (error: unknown) => console.error('Error adding favorite:', error)
             });
         }
     }

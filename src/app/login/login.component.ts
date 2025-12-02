@@ -1,32 +1,33 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { environment } from 'src/environments/environment';
 
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../services/language.service';
-import { SnackbarService } from '../services/snackbar.service';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [MatCardModule, ReactiveFormsModule, RouterLink, TranslateModule],
+    imports: [MatCardModule, MatButtonModule, RouterLink, TranslateModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
+    authService = inject(AuthService);
+    private router = inject(Router);
+    private languageService = inject(LanguageService);
+
     private languageSubscription?: Subscription;
     currentLang: string;
+    isDev = !environment.production;
 
-    constructor(
-        private formBuilder: FormBuilder,
-        public authService: AuthService,
-        private router: Router,
-        private snackbarService: SnackbarService,
-        private languageService: LanguageService
-    ) {
+    constructor() {
+        const languageService = this.languageService;
+
         this.currentLang = languageService.getCurrentLanguage();
     }
 

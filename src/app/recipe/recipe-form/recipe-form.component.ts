@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, merge, Subscription } from 'rxjs';
 import { Book as BookModel } from 'src/app/models/book.model';
+import { Recipe } from 'src/app/models/recipe.model';
 import { BookService } from 'src/app/services/book.service';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { ItemService } from 'src/app/services/item.service';
@@ -43,14 +44,24 @@ import { LanguageService } from '../../services/language.service';
   styleUrls: ['./recipe-form.component.scss']
 })
 export class RecipeFormComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private recipeService = inject(RecipeService);
+  private snackbarService = inject(SnackbarService);
+  private fb = inject(FormBuilder);
+  private bookService = inject(BookService);
+  private itemService = inject(ItemService);
+  private ingredientService = inject(IngredientService);
+  private languageService = inject(LanguageService);
+
   isUpdateMode = false;
   recipeForm!: FormGroup;
   ingredients!: FormArray;
   book!: BookModel;
   isFormModified = false;
 
-  recipe: any;
-  error: boolean = false;
+  recipe: Recipe | null = null;
+  error = false;
 
   isTimerModified = false;
   removedTimers: number[] = [];
@@ -60,17 +71,9 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
   private languageSubscription?: Subscription;
   currentLang: string;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private recipeService: RecipeService,
-    private snackbarService: SnackbarService,
-    private fb: FormBuilder,
-    private bookService: BookService,
-    private itemService: ItemService,
-    private ingredientService: IngredientService,
-    private languageService: LanguageService
-  ) {
+  constructor() {
+    const languageService = this.languageService;
+
     this.initializeForm();
     this.ingredients = this.recipeForm.get('ingredients') as FormArray;
     this.currentLang = languageService.getCurrentLanguage();
@@ -135,13 +138,13 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
 
       // Fetch the recipe data from the server using HTTP request
       this.recipeService.getRecipe(recipeId).subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.recipe = response;
           this.getInitializerUpdateForm();
           this.subscribeToFormChanges(); // subscribe after initial patching
           this.error = false; // Set the error flag to false when API call is successful
         },
-        error: (error) => {
+        error: (error: unknown) => {
           console.log('Error fetching recipe data:', error);
           this.error = true; // Set the error flag to true when API call fails
         }
@@ -153,9 +156,9 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     if (this.recipe) {
       this.recipeForm.patchValue({
         Book: {
-          id: this.recipe.Book.id,
-          title: this.recipe.Book.title,
-          author: this.recipe.Book.author
+          id: this.recipe.Book?.id,
+          title: this.recipe.Book?.title,
+          author: this.recipe.Book?.author
         },
         recipe: {
           title: this.recipe.title,
@@ -174,8 +177,8 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
       // Update timers FormArray including timer id
       if (this.recipe.timers && Array.isArray(this.recipe.timers)) {
         const timersFormArray = this.recipeForm.get('timers') as FormArray;
-        this.recipe.timers.forEach((timer: any) => {
-          const total = timer.time_in_seconds;
+        this.recipe.timers.forEach((timer) => {
+          const total = timer.time_in_seconds ?? timer.timeInSeconds ?? 0;
           const hours = Math.floor(total / 3600);
           const minutes = Math.floor((total % 3600) / 60);
           const seconds = total % 60;
@@ -262,7 +265,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     const recipe = this.recipeForm.get('recipe')!.value;
     const ingredients = (this.recipeForm.get('ingredients') as FormArray).value;
     // Extract timers from form without mapping them here
-    const timersRaw = (this.recipeForm.get('timers') as FormArray).value;
+    const timersRaw = (this.recipeForm.get('timers') as FormArray).value as { id?: number; name: string; hours: number; minutes: number; seconds: number }[];
 
     // Remove timers from initial recipe creation; they will be created separately.
     this.recipeService.createRecipe(this.book, recipe, ingredients, [], this.selectedImage || undefined).subscribe({
@@ -270,8 +273,8 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         const recipeId = recipeResponse.id;
         // Create timers separately for new ones (without an id)
         const timerObservables = timersRaw
-          .filter((t: any) => !t.id)
-          .map((t: any) => {
+          .filter((t) => !t.id)
+          .map((t) => {
             const newTimer = {
               name: t.name,
               timeInSeconds: (Number(t.hours) * 3600) + (Number(t.minutes) * 60) + Number(t.seconds),
@@ -286,7 +289,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
               this.snackbarService.showSuccess('Recipe and timers created successfully!');
               this.router.navigate(['/recipe/detail', recipeId]);
             },
-            error: (error) => this.snackbarService.showError(error)
+            error: (error: unknown) => this.snackbarService.showError(String(error))
           });
         } else {
           this.resetForm();
@@ -294,19 +297,21 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
           this.router.navigate(['/recipe/detail', recipeId]);
         }
       },
-      error: (error) => {
-        this.snackbarService.showError(error.error.error.errors[0].message);
+      error: (error: { error?: { error?: { errors?: { message: string }[] } } }) => {
+        this.snackbarService.showError(error.error?.error?.errors?.[0]?.message || 'Error creating recipe');
         console.error('Error creating recipe:', error);
       }
     });
   }
 
   handleUpdateSubmit() {
+    if (!this.recipe) return;
+    
     const recipeId = this.recipe.id;
     const updatedRecipe = { ...this.recipe, ...this.recipeForm.value };
     delete updatedRecipe.timers;
-    const recipeUpdates: Observable<any>[] = [];
-    const ingredientObservables: Observable<any>[] = [];
+    const recipeUpdates: Observable<unknown>[] = [];
+    const ingredientObservables: Observable<unknown>[] = [];
 
     if (this.isFormModified) {
       const currentRecipe = this.recipeForm.get('recipe')?.value;
@@ -354,7 +359,7 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
 
     // Process timers: update only dirty timers or create new ones.
     const timersFormArray = this.recipeForm.get('timers') as FormArray;
-    const timerObservables: Observable<any>[] = [];
+    const timerObservables: Observable<unknown>[] = [];
     timersFormArray.controls.forEach(timerCtrl => {
       const timerValue = timerCtrl.value;
       if (!timerValue.id) {
@@ -388,22 +393,22 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
               next: () => {
                 this.removedTimers = [];
                 this.snackbarService.showSuccess('Recipe updated successfully!');
-                this.router.navigate(['/recipe/detail', this.recipe.id]);
+                this.router.navigate(['/recipe/detail', this.recipe!.id]);
               },
-              error: (error) => {
+              error: (error: unknown) => {
                 console.error('Error deleting timers: ', error);
                 this.removedTimers = [];
                 this.snackbarService.showSuccess('Recipe updated successfully!');
-                this.router.navigate(['/recipe/detail', this.recipe.id]);
+                this.router.navigate(['/recipe/detail', this.recipe!.id]);
               }
             });
           } else {
             this.snackbarService.showSuccess('Recipe updated successfully!');
-            this.router.navigate(['/recipe/detail', this.recipe.id]);
+            this.router.navigate(['/recipe/detail', this.recipe!.id]);
           }
         },
-        error: (error) => {
-          this.snackbarService.showError(error);
+        error: (error: unknown) => {
+          this.snackbarService.showError(String(error));
           console.error('Error updating recipe: ', error);
         }
       });
@@ -414,12 +419,12 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.removedTimers = [];
           this.snackbarService.showSuccess('Timers deleted successfully!');
-          this.router.navigate(['/recipe/detail', this.recipe.id]);
+          this.router.navigate(['/recipe/detail', this.recipe!.id]);
         },
-        error: (error) => {
+        error: (error: unknown) => {
           console.error('Error deleting timers: ', error);
           this.removedTimers = [];
-          this.snackbarService.showError(error);
+          this.snackbarService.showError(String(error));
         }
       });
     }
@@ -495,8 +500,8 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
       
       // Create preview
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.imagePreview = e.target.result;
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        this.imagePreview = e.target?.result as string || null;
       };
       reader.readAsDataURL(file);
     }

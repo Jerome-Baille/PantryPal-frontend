@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BookService } from 'src/app/services/book.service';
 import { Book as BookModel } from 'src/app/models/book.model';
@@ -28,6 +28,10 @@ import { LanguageService } from '../../services/language.service';
   styleUrls: ['./book-form.component.scss'],
 })
 export class BookFormComponent implements OnInit, OnDestroy {
+  private bookService = inject(BookService);
+  private fb = inject(FormBuilder);
+  private languageService = inject(LanguageService);
+
   @Input() recipeForm!: FormGroup;
   @Output() bookSelected = new EventEmitter<BookModel>();
 
@@ -36,11 +40,9 @@ export class BookFormComponent implements OnInit, OnDestroy {
   private languageSubscription?: Subscription;
   currentLang: string;
 
-  constructor(
-    private bookService: BookService,
-    private fb: FormBuilder,
-    private languageService: LanguageService
-  ) {
+  constructor() {
+    const languageService = this.languageService;
+
     this.bookForm = this.fb.group({
       bookSelection: new FormControl('existing', Validators.required),
       id: new FormControl(''),

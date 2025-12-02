@@ -1,6 +1,7 @@
 import { Book } from './book.model';
 import { User } from './user.model';
 import { Timer } from './timer.model';
+import { RecipeIngredient } from './recipe-ingredient.model';
 
 export interface Recipe {
     id: number;
@@ -16,4 +17,6 @@ export interface Recipe {
     User?: User;
     timers?: Timer[];
     servings?: number;
+    RecipeIngredients?: RecipeIngredient[];
+    isFavorited?: boolean;
 }

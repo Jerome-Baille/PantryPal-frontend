@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -16,17 +16,19 @@ export interface GuidedModeData {
   selector: 'app-recipe-guided-mode',
   standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
     TranslateModule
-  ],
+],
   templateUrl: './recipe-guided-mode.component.html',
   styleUrls: ['./recipe-guided-mode.component.scss']
 })
 export class RecipeGuidedModeComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<RecipeGuidedModeComponent>>(MatDialogRef);
+  data = inject<GuidedModeData>(MAT_DIALOG_DATA);
+
   currentStepIndex = 0;
   instructions: string[] = [];
   recipeTitle = '';
@@ -34,10 +36,9 @@ export class RecipeGuidedModeComponent implements OnInit {
   touchStartX = 0;
   touchEndX = 0;
 
-  constructor(
-    public dialogRef: MatDialogRef<RecipeGuidedModeComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: GuidedModeData
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.instructions = data.instructions;
     this.recipeTitle = data.recipeTitle;
     this.completedSteps = new Set(data.completedSteps);

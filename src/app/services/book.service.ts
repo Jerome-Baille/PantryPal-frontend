@@ -1,18 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Book } from 'src/app/models/book.model';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookService {
-  private booksURL = environment.booksURL;
+  private http = inject(HttpClient);
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  private booksURL = environment.booksURL;
 
   createBook(book: Book): Observable<Book> {
     return this.http.post<Book>(`${this.booksURL}`, { title: book.title, author: book.author }, { withCredentials: true });
@@ -26,8 +24,8 @@ export class BookService {
     return this.http.get<Book>(`${this.booksURL}/${id}`, { withCredentials: true });
   }
 
-  updateBook(id: number, title: string, author: string): Observable<any> {
-    return this.http.put(`${this.booksURL}/${id}`, { title: title, author: author }, { withCredentials: true });
+  updateBook(id: number, title: string, author: string): Observable<Book> {
+    return this.http.put<Book>(`${this.booksURL}/${id}`, { title: title, author: author }, { withCredentials: true });
   }
 
   deleteBook(id: number): Observable<void> {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, map, switchMap, of, forkJoin } from 'rxjs';
-import { environment } from 'src/environments/environment.prod';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map, switchMap, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 export interface ShareLinkStats {
   total: number;
@@ -61,7 +61,7 @@ export interface SharingUsersResponse {
 }
 
 export interface RecipeSharesResponse {
-  shares: any[];
+  shares: RecipeShare[];
   totalShares: number;
   stats?: {
     specific: number;
@@ -70,38 +70,47 @@ export interface RecipeSharesResponse {
   }
 }
 
+interface RecipeShare {
+  sharedWithId: number;
+  permissionLevel?: 'read' | 'edit';
+  username?: string;
+  email?: string;
+  displayName?: string;
+  profilePicture?: string;
+  accessType?: string;
+  status?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ShareService {
+  private http = inject(HttpClient);
+
   private shareBaseUrl = 'https://pantry-pal.jerome-baille.fr/api/shares';
   private authBaseUrl = 'https://auth.jerome-baille.fr/api';
   private recipesURL = environment.recipesURL;
 
-  constructor(
-    private http: HttpClient
-  ) { }
-
-  createRecipeShareLink(recipeId?: number | null, permissionLevel: 'read' | 'edit' = 'read', expiresInDays: number = 7): Observable<any> {
-    return this.http.post(`${this.shareBaseUrl}/links/recipe`, {
+  createRecipeShareLink(recipeId?: number | null, permissionLevel: 'read' | 'edit' = 'read', expiresInDays = 7): Observable<{ token: string; shareUrl: string }> {
+    return this.http.post<{ token: string; shareUrl: string }>(`${this.shareBaseUrl}/links/recipe`, {
       ...(recipeId && { recipeId }),
       permissionLevel,
       expiresInDays
     }, { withCredentials: true });
   }
 
-  createAllRecipesShareLink(permissionLevel: 'read' | 'edit' = 'read', expiresInDays: number = 7): Observable<any> {
-    return this.http.post(`${this.shareBaseUrl}/links/all`, {
+  createAllRecipesShareLink(permissionLevel: 'read' | 'edit' = 'read', expiresInDays = 7): Observable<{ shareLink: { token: string; shareUrl: string } }> {
+    return this.http.post<{ shareLink: { token: string; shareUrl: string } }>(`${this.shareBaseUrl}/links/all`, {
       permissionLevel,
       expiresInDays
     }, { withCredentials: true });
   }
 
-  acceptShareLink(token: string): Observable<any> {
-    return this.http.post(`${this.shareBaseUrl}/links/${token}/accept`, {}, { withCredentials: true });
+  acceptShareLink(token: string): Observable<{ message: string; type?: 'global' | 'recipe'; recipeTitle?: string }> {
+    return this.http.post<{ message: string; type?: 'global' | 'recipe'; recipeTitle?: string }>(`${this.shareBaseUrl}/links/${token}/accept`, {}, { withCredentials: true });
   }
 
-  getMyShareLinks(includeAll: boolean = false): Observable<ShareLinksResponse> {
+  getMyShareLinks(includeAll = false): Observable<ShareLinksResponse> {
     return this.http.get<ShareLinksResponse>(`${this.shareBaseUrl}/links`, {
       params: { includeAll: includeAll.toString() },
       withCredentials: true
@@ -151,12 +160,12 @@ export class ShareService {
   }
   
   // Helper method to fetch user details
-  private getUserDetails(userIds: number[]): Observable<{users: any[]}> {
+  private getUserDetails(userIds: number[]): Observable<{users: { id: number; username?: string; email?: string; displayName?: string; profilePicture?: string }[]}> {
     if (!userIds.length) {
       return of({users: []});
     }
     
-    return this.http.post<{users: any[]}>(`${this.authBaseUrl}/user/public-info`, {
+    return this.http.post<{users: { id: number; username?: string; email?: string; displayName?: string; profilePicture?: string }[]}>(`${this.authBaseUrl}/user/public-info`, {
       userIds
     }, { 
       withCredentials: true 
@@ -164,15 +173,15 @@ export class ShareService {
   }
 
   // Delete a specific share link
-  deleteShareLink(token: string): Observable<any> {
-    return this.http.delete(`${this.shareBaseUrl}/links/${token}`, { 
+  deleteShareLink(token: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.shareBaseUrl}/links/${token}`, { 
       withCredentials: true 
     });
   }
 
   // Delete multiple share links by status
-  bulkDeleteShareLinks(status: 'expired' | 'used' | 'accepted'): Observable<any> {
-    return this.http.delete(`${this.shareBaseUrl}/links`, { 
+  bulkDeleteShareLinks(status: 'expired' | 'used' | 'accepted'): Observable<{ deletedCount: number }> {
+    return this.http.delete<{ deletedCount: number }>(`${this.shareBaseUrl}/links`, { 
       params: { status },
       withCredentials: true 
     });
@@ -180,8 +189,8 @@ export class ShareService {
 
   // Revoke recipe-specific access from a user by excluding it from global share
   // Changed to use POST /exclude instead of DELETE /recipe/{recipeId}/{sharedWithId}
-  revokeRecipeAccess(recipeId: number, userId: number): Observable<any> {
-    return this.http.post(`${this.shareBaseUrl}/exclude`, {
+  revokeRecipeAccess(recipeId: number, userId: number): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.shareBaseUrl}/exclude`, {
       recipeId,
       sharedWithId: userId
     }, {
@@ -190,22 +199,22 @@ export class ShareService {
   }
 
   // Remove recipe exclusion for a user with global access
-  removeRecipeExclusion(recipeId: number, userId: number): Observable<any> {
-    return this.http.delete(`${this.shareBaseUrl}/exclude/${recipeId}/${userId}`, {
+  removeRecipeExclusion(recipeId: number, userId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.shareBaseUrl}/exclude/${recipeId}/${userId}`, {
       withCredentials: true
     });
   }
 
   // Revoke global access from a user
-  revokeGlobalAccess(userId: number): Observable<any> {
-    return this.http.delete(`${this.shareBaseUrl}/all/${userId}`, {
+  revokeGlobalAccess(userId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.shareBaseUrl}/all/${userId}`, {
       withCredentials: true
     });
   }
 
   // Get recipe titles by array of IDs
-  getRecipeTitlesByIds(recipeIds: number[]): Observable<{ [key: string]: string }> {
-    return this.http.post<{ [key: string]: string }>(`${this.recipesURL}/titles`, {
+  getRecipeTitlesByIds(recipeIds: number[]): Observable<Record<number, string>> {
+    return this.http.post<Record<number, string>>(`${this.recipesURL}/titles`, {
       ids: recipeIds
     }, {
       withCredentials: true

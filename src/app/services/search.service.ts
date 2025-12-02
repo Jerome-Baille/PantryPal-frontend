@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, filter, catchError } from 'rxjs/operators';
 import { RecipeService } from './recipe.service';
 
@@ -7,17 +7,19 @@ import { RecipeService } from './recipe.service';
   providedIn: 'root'
 })
 export class SearchService {
+  private recipeService = inject(RecipeService);
+
   private searchValueSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   searchValue$ = this.searchValueSubject.asObservable();
 
   private searchInputSubject = new Subject<string>();
-  private dropdownResultsSubject = new BehaviorSubject<any[]>([]);
+  private dropdownResultsSubject = new BehaviorSubject<{ id: number; title: string; preparationTime?: number; preparationUnit?: string; servings?: number }[]>([]);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
 
   dropdownResults$ = this.dropdownResultsSubject.asObservable();
   isLoading$ = this.isLoadingSubject.asObservable();
 
-  constructor(private recipeService: RecipeService) {
+  constructor() {
     // Set up debounced search for dropdown
     this.searchInputSubject.pipe(
       debounceTime(300),

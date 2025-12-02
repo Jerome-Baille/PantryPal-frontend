@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RecipeService } from 'src/app/services/recipe.service';
 import { SnackbarService } from 'src/app/services/snackbar.service';
 import { getLocalStorageData, setLocalStorageData } from 'src/app/helpers/local-storage.helper';
@@ -26,28 +26,26 @@ import { TranslateModule } from '@ngx-translate/core';
     styleUrls: ['./shopping-list.component.scss'],
 })
 export class ShoppingListComponent implements OnInit {
-  shoppingList: { key: string, value: any }[] = [];
-  doneList: { key: string, value: any }[] = [];
-  selectedItems: { [key: string]: boolean } = {};
-  recipeIds: {id: number, multiplier: number}[] = [];
+  private recipeService = inject(RecipeService);
+  private snackbarService = inject(SnackbarService);
 
-  constructor(
-    private recipeService: RecipeService,
-    private snackbarService: SnackbarService
-  ) { }
+  shoppingList: { key: string, value: { quantity: number; unit: string }[] }[] = [];
+  doneList: { key: string, value: { quantity: number; unit: string }[] }[] = [];
+  selectedItems: Record<string, boolean> = {};
+  recipeIds: {id: number, multiplier: number}[] = [];
 
   ngOnInit(): void {
     // Load the "Done" list from local storage
-    const doneList = getLocalStorageData('doneList');
+    const doneList = getLocalStorageData<{ key: string, value: { quantity: number; unit: string }[] }[]>('doneList');
     if (doneList) {
       this.doneList = doneList;
     }
 
     // Load the shopping list from local storage
     try {
-      const requiredIngredients = getLocalStorageData('requiredIngredients');
-      const savedRecipeIds = getLocalStorageData('savedRecipeIds');
-      const shoppingList = getLocalStorageData('shoppingList');
+      const requiredIngredients = getLocalStorageData<{ key: string, value: { quantity: number; unit: string }[] }[]>('requiredIngredients');
+      const savedRecipeIds = getLocalStorageData<{id: number, multiplier: number}[]>('savedRecipeIds');
+      const shoppingList = getLocalStorageData<{id: number, multiplier: number}[]>('shoppingList');
 
       if (requiredIngredients && savedRecipeIds && shoppingList && JSON.stringify(savedRecipeIds) === JSON.stringify(shoppingList)) {
         this.shoppingList = requiredIngredients;
@@ -78,7 +76,7 @@ export class ShoppingListComponent implements OnInit {
           this.doneList = [];
           localStorage.removeItem('doneList');
         },
-        error: (error) => {
+        error: () => {
           this.snackbarService.showError('Error fetching ingredients');
         }
       });
@@ -88,7 +86,7 @@ export class ShoppingListComponent implements OnInit {
     }
   }
 
-  transformIngredients(ingredients: any): { key: string, value: any }[] {
+  transformIngredients(ingredients: Record<string, { quantity: number; unit: string }[]>): { key: string, value: { quantity: number; unit: string }[] }[] {
     // Transform the ingredients object into an array of objects with a unique key
     return Object.keys(ingredients).map((key) => ({ key, value: ingredients[key] }));
   }
@@ -114,7 +112,7 @@ export class ShoppingListComponent implements OnInit {
     setLocalStorageData('doneList', this.doneList);
   }
 
-  addToDoneList(item: { key: string, value: any }): void {
+  addToDoneList(item: { key: string, value: { quantity: number; unit: string }[] }): void {
     // Add the selected item to the "Done" list
     this.doneList.push(item);
 
@@ -148,7 +146,7 @@ export class ShoppingListComponent implements OnInit {
     this.selectedItems[itemKey] = true;
   }
 
-  findInsertionIndex(item: { key: string, value: any }): number {
+  findInsertionIndex(item: { key: string, value: { quantity: number; unit: string }[] }): number {
     // Find the correct insertion index to maintain alphabetical order
     return this.shoppingList.findIndex((shoppingItem) => item.key.localeCompare(shoppingItem.key) < 0);
   }
@@ -219,7 +217,7 @@ export class ShoppingListComponent implements OnInit {
   }
 
   translateUnit(unit: string): string {
-    const translations: { [key: string]: string } = {
+    const translations: Record<string, string> = {
       'tablespoon': 'UNIT_TABLESPOON',
       'teaspoon': 'UNIT_TEASPOON',
       'leaves': 'UNIT_LEAVES',

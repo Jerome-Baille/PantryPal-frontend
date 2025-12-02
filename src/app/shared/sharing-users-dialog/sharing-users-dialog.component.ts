@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,9 +44,7 @@ interface DialogData {
     }
   `]
 })
-export class SharingUsersDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<SharingUsersDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+export class SharingUsersDialogComponent {  dialogRef = inject<MatDialogRef<SharingUsersDialogComponent>>(MatDialogRef);
+  data = inject<DialogData>(MAT_DIALOG_DATA);
+
 }

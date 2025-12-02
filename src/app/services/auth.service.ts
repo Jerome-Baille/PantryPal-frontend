@@ -1,17 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { tap, map } from 'rxjs/operators';
 import { Observable, combineLatest } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { filter, take } from 'rxjs/operators';
-
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  accessTokenExpireDate: Date;
-  refreshTokenExpireDate: Date;
-}
 
 interface VerifyResponse {
   message: string;
@@ -23,6 +16,8 @@ interface VerifyResponse {
   providedIn: 'root'
 })
 export class AuthService {
+  private http = inject(HttpClient);
+
   private authURL = environment.authURL;
   private authFrontURL = environment.authFrontURL;
   
@@ -38,9 +33,7 @@ export class AuthService {
   readonly authState$ = toObservable(this.isAuthenticated);
   readonly verificationCompleted$ = toObservable(this.verificationCompleted.asReadonly());
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor() {
     this.verifyAuthState();
   }
 
@@ -61,8 +54,8 @@ export class AuthService {
   // Wait until verification is complete then emit the authState value
   waitForAuthState(): Observable<boolean> {
     return combineLatest([this.authState$, this.verificationCompleted$]).pipe(
-      filter(([_, verified]) => verified),
-      map(([auth, _]) => auth),
+      filter(([, verified]) => verified),
+      map(([auth]) => auth),
       take(1)
     );
   }

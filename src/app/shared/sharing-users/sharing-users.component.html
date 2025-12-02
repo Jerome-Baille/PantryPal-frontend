@@ -31,6 +31,9 @@
                   <span
                     class="permission-badge partial-excluded clickable"
                     (click)="showExcludedRecipes(user)"
+                    (keydown.enter)="showExcludedRecipes(user)"
+                    tabindex="0"
+                    role="button"
                     matTooltip="{{ 'VIEW_EXCLUDED_RECIPES' | translate }}">
                     <mat-icon>block</mat-icon>
                     {{ getExcludedRecipeCount(user) }} {{ 'RECIPES_EXCLUDED' | translate }}

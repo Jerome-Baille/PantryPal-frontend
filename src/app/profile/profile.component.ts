@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -53,6 +53,13 @@ import { SharingUsersComponent } from '../shared/sharing-users/sharing-users.com
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  private languageService = inject(LanguageService);
+  private authService = inject(AuthService);
+  private shareService = inject(ShareService);
+  private router = inject(Router);
+  private snackbarService = inject(SnackbarService);
+  private fb = inject(FormBuilder);
+
   currentLang: string;
   private languageSubscription?: Subscription;
   favorites: Recipe[] = [];
@@ -64,14 +71,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isDeletingLink = false;
   isDeletingAllLinks = false;
 
-  constructor(
-    private languageService: LanguageService,
-    private authService: AuthService,
-    private shareService: ShareService,
-    private router: Router,
-    private snackbarService: SnackbarService,
-    private fb: FormBuilder
-  ) {
+  constructor() {
+    const languageService = this.languageService;
+
     this.currentLang = languageService.getCurrentLanguage();
     this.shareForm = this.fb.group({
       permissionLevel: ['read'],
@@ -188,7 +190,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.isDeletingAllLinks = true;
     this.shareService.bulkDeleteShareLinks(status).subscribe({
       next: (response) => {
-        this.snackbarService.showSuccess(`${response.count || 'All'} ${status} share links deleted successfully`);
+        this.snackbarService.showSuccess(`${response.deletedCount || 'All'} ${status} share links deleted successfully`);
         this.loadShareLinks();
         this.isDeletingAllLinks = false;
       },

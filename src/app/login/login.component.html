@@ -1,37 +1,34 @@
 <div class="login-container">
   @if (authService.isAuthenticated()) {
-    <div>
-      <mat-card>
-        <mat-card-title>
-          {{ 'WELCOME' | translate }}
-        </mat-card-title>
-        <mat-card-subtitle>
-          {{ 'WELCOME_SUBTITLE' | translate }}
-        </mat-card-subtitle>
-        <mat-card-actions>
-          <button mat-raised-button color="accent" routerLink="/">
-            {{ 'VIEW_RECIPES' | translate }}
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>{{ 'WELCOME' | translate }}</mat-card-title>
+        <mat-card-subtitle>{{ 'WELCOME_SUBTITLE' | translate }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-actions align="end">
+        <button mat-raised-button color="accent" routerLink="/">
+          {{ 'VIEW_RECIPES' | translate }}
+        </button>
+        <button mat-raised-button color="primary" (click)="onLogout()">
+          {{ 'LOGOUT' | translate }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  } @else {
+    <div class="form-container">
+      <h1>{{ 'LOGIN' | translate }}</h1>
+      <div class="auth-buttons">
+        <button mat-raised-button color="primary" (click)="onLoginClick()">
+          {{ 'LOGIN' | translate }}
+        </button>
+        <button mat-raised-button color="accent" (click)="onRegisterClick()">
+          {{ 'SIGN_UP' | translate }}
+        </button>
+        @if (isDev) {
+          <button mat-stroked-button color="warn" routerLink="/auth/dev-login">
+            Dev login
           </button>
-          <button mat-raised-button color="primary" (click)="onLogout()">
-            {{ 'LOGOUT' | translate }}
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </div>
-  }
-
-  @if (!authService.isAuthenticated()) {
-    <div>
-      <div class="form-container">
-        <h1>{{ 'LOGIN' | translate }}</h1>
-        <div class="auth-buttons">
-          <button mat-raised-button color="primary" (click)="onLoginClick()">
-            {{ 'LOGIN' | translate }}
-          </button>
-          <button mat-raised-button color="accent" (click)="onRegisterClick()">
-            {{ 'SIGN_UP' | translate }}
-          </button>
-        </div>
+        }
       </div>
     </div>
   }

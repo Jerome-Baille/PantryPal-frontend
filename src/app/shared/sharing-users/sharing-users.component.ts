@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ShareService, SharingUser, UserShare } from '../../services/share.service';
+import { ShareService, SharingUser } from '../../services/share.service';
 import { SnackbarService } from '../../services/snackbar.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
@@ -27,6 +27,11 @@ import { ExcludedRecipesDialogComponent } from '../excluded-recipes-dialog/exclu
   styleUrl: './sharing-users.component.scss'
 })
 export class SharingUsersComponent implements OnInit {
+  private shareService = inject(ShareService);
+  private snackbarService = inject(SnackbarService);
+  private dialog = inject(MatDialog);
+  private translateService = inject(TranslateService);
+
   @Input() recipeId?: number; // Optional: if provided, only show shares for this recipe
 
   sharingWithUsers: SharingUser[] = [];
@@ -35,14 +40,7 @@ export class SharingUsersComponent implements OnInit {
   isRevokingAccess = false;
   
   // New property to track excluded recipe IDs for each user in global view
-  excludedRecipeIds: Map<number, number[]> = new Map();
-
-  constructor(
-    private shareService: ShareService,
-    private snackbarService: SnackbarService,
-    private dialog: MatDialog,
-    private translateService: TranslateService
-  ) {}
+  excludedRecipeIds = new Map<number, number[]>();
 
   ngOnInit(): void {
     this.loadSharingUsers();
@@ -88,7 +86,7 @@ export class SharingUsersComponent implements OnInit {
   /**
    * Processes the global sharing response and identifies any exclusions
    */
-  private processGlobalSharingResponse(response: any): void {
+  private processGlobalSharingResponse(response: { sharingWithUsers: SharingUser[]; sharingWithMeUsers: SharingUser[] }): void {
     const { sharingWithUsers, sharingWithMeUsers } = response;
     
     // Process sharingWithUsers to identify exclusions
@@ -127,9 +125,9 @@ export class SharingUsersComponent implements OnInit {
   /**
    * Processes recipe shares response into the format expected by the component
    */
-  private processRecipeSharesResponse(response: any): void {
+  private processRecipeSharesResponse(response: { shares: { sharedWithId: number; username?: string; email?: string; displayName?: string; profilePicture?: string; permissionLevel?: 'read' | 'edit'; accessType?: string; status?: string }[] }): void {
     // Transform the getRecipeShares response into matching SharingUser format
-    this.sharingWithUsers = response.shares.map((share: any) => {
+    this.sharingWithUsers = response.shares.map((share) => {
       return {
         id: share.sharedWithId,
         username: share.username,
@@ -141,13 +139,13 @@ export class SharingUsersComponent implements OnInit {
         isExcluded: share.accessType === 'excluded' || share.status === 'revoked',
         shares: [{
           permissionLevel: share.permissionLevel || 'read',
-          recipeId: this.recipeId,
+          recipeId: this.recipeId ?? null,
           // Mark as global share if accessType is 'global'
           isGlobal: share.accessType === 'global'
         }],
         // Add new properties from the updated API response
-        accessType: share.accessType,
-        shareStatus: share.status
+        accessType: share.accessType as 'global' | 'specific' | 'excluded' | undefined,
+        shareStatus: share.status as 'granted' | 'revoked' | undefined
       };
     });
     

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, OnDestroy, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy, ElementRef, ViewChild, HostListener, inject } from '@angular/core';
 
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
-import { trigger, state, style, transition, animate } from '@angular/animations';
+import { trigger, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-search',
@@ -33,12 +33,16 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   ]
 })
 export class SearchComponent implements OnInit, OnDestroy {
-  @Output() onSearch = new EventEmitter<string>();
+  private formBuilder = inject(FormBuilder);
+  private searchService = inject(SearchService);
+  private router = inject(Router);
+
+  @Output() searchTriggered = new EventEmitter<string>();
   @Output() afterSearch = new EventEmitter<void>();
   @ViewChild('searchInput', { static: true }) searchInput!: ElementRef;
   
   searchForm: FormGroup;
-  dropdownResults: any[] = [];
+  dropdownResults: { id: number; title: string; preparationTime?: number; preparationUnit?: string; servings?: number }[] = [];
   isLoading = false;
   showDropdown = false;
   showNoResults = false;
@@ -48,11 +52,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   
   private subscriptions: Subscription[] = [];
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private searchService: SearchService,
-    private router: Router
-  ) {
+  constructor() {
     this.searchForm = this.formBuilder.group({
       search: ['']
     });
@@ -120,9 +120,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: any) {
+  onDocumentClick(event: MouseEvent) {
     const searchContainer = this.searchInput.nativeElement.closest('.search-container');
-    if (!searchContainer || !searchContainer.contains(event.target)) {
+    if (!searchContainer || !searchContainer.contains(event.target as Node)) {
       // Mark as manually closed to prevent immediate reopen from async updates
       this.manuallyClosed = true;
       this.hideDropdown();
@@ -169,7 +169,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectRecipe(recipe: any) {
+  selectRecipe(recipe: { id: number }) {
     this.hideDropdown();
     this.router.navigate(['/recipe/detail', recipe.id]);
     this.searchForm.get('search')?.setValue('');
@@ -179,7 +179,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   submitSearch() {
     const searchValue = this.searchForm.get('search')?.value;
     if (searchValue && searchValue.trim().length > 0) {
-      this.onSearch.emit(searchValue);
+      this.searchTriggered.emit(searchValue);
       this.searchService.setSearchValue(searchValue);
       this.hideDropdown();
       this.searchForm.reset();

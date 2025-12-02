@@ -10,9 +10,9 @@ let isRefreshing = false;
 const refreshTokenSignal = signal<boolean>(false);
 
 // A queue to store pending requests during refresh
-const pendingRequests: Array<{
+const pendingRequests: {
   resolve: (value: boolean) => void;
-}> = [];
+}[] = [];
 
 // Function to notify waiting requests. Pass `success` to indicate whether refresh succeeded.
 function notifyRefreshComplete(success: boolean) {
@@ -40,12 +40,13 @@ export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
   }
 
   // Helper to determine whether the error should trigger a token refresh
-  function shouldAttemptRefresh(error: HttpErrorResponse | any) {
+  function shouldAttemptRefresh(error: HttpErrorResponse | unknown) {
     if (!error) return false;
+    const errObj = error as HttpErrorResponse;
     // Backend explicit flag
-    if (error?.error?.shouldRefresh) return true;
+    if (errObj?.error?.shouldRefresh) return true;
     // Backend returns JSON error shape: { error: 'no_token' } or { error: 'token_expired' }
-    if (error?.error?.error === 'no_token' || error?.error?.error === 'token_expired') return true;
+    if (errObj?.error?.error === 'no_token' || errObj?.error?.error === 'token_expired') return true;
     // Generic 401 Unauthorized — only attempt refresh if body indicates token issue
     if (error instanceof HttpErrorResponse && error.status === 401) {
       const body = error.error;
@@ -61,7 +62,7 @@ export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
   }
 
   const injector = inject(EnvironmentInjector);
-  
+
   // We'll use the injector inside the pipes where we need the services
   const modifiedRequest = req.clone({
     withCredentials: true
@@ -93,7 +94,7 @@ export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
                 notifyRefreshComplete(false);
                 // Log out the user and redirect to login
                 // authService.logout() returns an observable; call it but don't block
-                try { authService.logout().subscribe({ next: () => {}, error: () => {} }); } catch {}
+                try { authService.logout().subscribe({ next: () => { /* logout complete */ }, error: () => { /* logout failed, continue anyway */ } }); } catch { /* ignore logout errors */ }
                 router.navigate(['/auth/login']);
                 return throwError(() => refreshError);
               }),

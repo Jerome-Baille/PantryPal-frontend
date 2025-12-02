@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -97,16 +97,14 @@ export interface ExcludedRecipesDialogData {
   `]
 })
 export class ExcludedRecipesDialogComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<ExcludedRecipesDialogComponent>>(MatDialogRef);
+  data = inject<ExcludedRecipesDialogData>(MAT_DIALOG_DATA);
+  private shareService = inject(ShareService);
+  private snackbarService = inject(SnackbarService);
+
   recipes: { id: number; title: string }[] = [];
   isLoading = true;
   restoringRecipeIds: number[] = [];
-
-  constructor(
-    public dialogRef: MatDialogRef<ExcludedRecipesDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ExcludedRecipesDialogData,
-    private shareService: ShareService,
-    private snackbarService: SnackbarService
-  ) {}
 
   ngOnInit(): void {
     this.loadRecipeTitles();

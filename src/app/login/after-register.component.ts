@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
@@ -28,12 +28,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   `]
 })
 export class AfterRegisterComponent implements OnInit {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private snackbarService: SnackbarService,
-    private translate: TranslateService
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackbarService = inject(SnackbarService);
+  private translate = inject(TranslateService);
+
 
   ngOnInit(): void {
     // Verify auth state after redirection from auth service

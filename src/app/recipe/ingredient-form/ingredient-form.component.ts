@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { ItemService } from 'src/app/services/item.service';
 import { ActivatedRoute } from '@angular/router';
@@ -21,33 +21,41 @@ import { LanguageService } from '../../services/language.service';
 import { CdkDragDrop, moveItemInArray, DragDropModule } from '@angular/cdk/drag-drop';
 
 @Component({
-    selector: 'app-ingredient-form',
-    standalone: true,
-    imports: [
-      CommonModule, 
-      ReactiveFormsModule, 
-      MatFormFieldModule, 
-      MatOptionModule, 
-      MatIconModule, 
-      MatInputModule,
-      MatSelectModule,
-      MatButtonModule,
-      MatAutocompleteModule,
-      TranslateModule,
-      DragDropModule
-    ],
-    templateUrl: './ingredient-form.component.html',
-    styleUrls: ['./ingredient-form.component.scss'],
+  selector: 'app-ingredient-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    MatIconModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    TranslateModule,
+    DragDropModule
+  ],
+  templateUrl: './ingredient-form.component.html',
+  styleUrls: ['./ingredient-form.component.scss'],
 })
 export class IngredientFormComponent implements OnInit, OnDestroy {
+  private formBuilder = inject(FormBuilder);
+  private itemService = inject(ItemService);
+  private ingredientService = inject(IngredientService);
+  private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
+  private languageService = inject(LanguageService);
+  private translateService = inject(TranslateService);
+
   @Input() recipeForm!: FormGroup;
 
   ingredients!: FormArray;
-  recipeSections: any[] = [];
+  recipeSections: { id: number; name: string; displayOrder?: number }[] = [];
   private recipeId: number | null = null;
   private languageSubscription?: Subscription;
   currentLang: string;
-  
+
   // Available units for autocomplete
   units: { value: string; key: string }[] = [
     { value: 'teaspoon', key: 'UNIT_TEASPOON' },
@@ -80,18 +88,12 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     { value: 'leaf', key: 'UNIT_LEAF' },
     { value: 'leaves', key: 'UNIT_LEAVES' }
   ];
-  
-  filteredUnitsMap: Map<number, Observable<{ value: string; key: string }[]>> = new Map();
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private itemService: ItemService,
-    private ingredientService: IngredientService, // <-- new injection
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-    private languageService: LanguageService,
-    private translateService: TranslateService
-  ) {
+  filteredUnitsMap = new Map<number, Observable<{ value: string; key: string }[]>>();
+
+  constructor() {
+    const languageService = this.languageService;
+
     this.currentLang = languageService.getCurrentLanguage();
   }
 
@@ -131,7 +133,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
   loadIngredients() {
     if (!this.recipeId) return;
     this.itemService.getRecipeIngredientsByRecipeId(this.recipeId).subscribe({
-      next: (ingredientsData: any[]) => {
+      next: (ingredientsData: { id?: number; Ingredient: { id: number; name: string }; quantity: number; unit?: string; RecipeSection?: { id: number }; recipeSectionId?: number | null; displayOrder?: number }[]) => {
         this.ingredients.clear();
         // Sort ingredients by section and displayOrder
         ingredientsData.sort((a, b) => {
@@ -140,7 +142,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
           }
           return (a.displayOrder || 0) - (b.displayOrder || 0);
         });
-        
+
         ingredientsData.forEach((ing, index) => {
           const sectionId = ing.RecipeSection ? ing.RecipeSection.id : (ing.recipeSectionId || null);
           const control = this.formBuilder.group({
@@ -158,22 +160,23 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
           this.setupUnitAutocomplete(this.ingredients.length - 1);
         });
       },
-      error: (error) => {
+      error: (error: unknown) => {
         console.error('Error loading ingredients:', error);
       }
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   drop(event: CdkDragDrop<any>) {
     moveItemInArray(this.ingredients.controls, event.previousIndex, event.currentIndex);
-    
+
     // Update displayOrder for all ingredients in the same section
     const targetSectionId = event.container.data;
     const sectionIngredients = this.ingredients.controls
       .filter(control => control.get('recipeSectionId')?.value === targetSectionId);
 
-    const observables: Observable<any>[] = [];
-    
+    const observables: Observable<unknown>[] = [];
+
     sectionIngredients.forEach((control, index) => {
       const id = control.get('id')?.value;
       if (id) {
@@ -194,7 +197,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
         next: () => {
           this.loadIngredients();
         },
-        error: (error) => {
+        error: (error: unknown) => {
           console.error('Error updating ingredient order:', error);
         }
       });
@@ -203,10 +206,10 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
 
   loadRecipeSections(recipeId: number) {
     this.itemService.getRecipeSectionsByRecipeId(recipeId).subscribe({
-      next: (sections) => { 
-        this.recipeSections = sections.sort((a: any, b: any) => (a.displayOrder || 0) - (b.displayOrder || 0));
+      next: (sections) => {
+        this.recipeSections = sections.sort((a: { displayOrder?: number }, b: { displayOrder?: number }) => (a.displayOrder || 0) - (b.displayOrder || 0));
       },
-      error: (error) => {
+      error: (error: unknown) => {
         console.error('Error loading recipe sections:', error);
       }
     });
@@ -241,7 +244,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
             next: () => {
               this.ingredients.removeAt(index);
             },
-            error: (error) => {
+            error: (error: unknown) => {
               console.error('Error deleting ingredient:', error);
             }
           });
@@ -263,7 +266,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     selForm.markAsDirty();
     this.ingredients.push(selForm);
     this.setupUnitAutocomplete(saltIndex);
-    
+
     const pepperIndex = this.ingredients.length;
     const poivreForm = this.formBuilder.group({
       Ingredient: this.formBuilder.group({ name: ['Poivre'] }),
@@ -319,7 +322,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
   }
 
   getIngredientsForSection(sectionId: number | null) {
-    return this.ingredients.controls.filter(control => 
+    return this.ingredients.controls.filter(control =>
       control.get('recipeSectionId')?.value === sectionId
     );
   }
@@ -341,7 +344,7 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
 
   private _filterUnits(value: string): { value: string; key: string }[] {
     const filterValue = value.toLowerCase();
-    return this.units.filter(unit => 
+    return this.units.filter(unit =>
       unit.value.toLowerCase().includes(filterValue)
     );
   }
@@ -350,6 +353,6 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     if (!this.filteredUnitsMap.has(index)) {
       this.setupUnitAutocomplete(index);
     }
-    return this.filteredUnitsMap.get(index) || new Observable();
+    return this.filteredUnitsMap.get(index) || new Observable<{ value: string; key: string }[]>();
   }
 }

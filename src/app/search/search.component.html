@@ -34,7 +34,11 @@
                 class="dropdown-item"
                 [class.selected]="i === selectedIndex"
                 (click)="selectRecipe(recipe)"
-                (mouseenter)="selectedIndex = i">
+                (keydown.enter)="selectRecipe(recipe)"
+                (mouseenter)="selectedIndex = i"
+                tabindex="0"
+                role="option"
+                [attr.aria-selected]="i === selectedIndex">
                 <div class="recipe-info">
                   <div class="recipe-title">{{ recipe.title }}</div>
                   <div class="recipe-meta">
@@ -56,7 +60,12 @@
               </div>
             }
             <!-- View all results -->
-            <div class="dropdown-item view-all" (click)="viewAllResults()">
+            <div class="dropdown-item view-all" 
+                 (click)="viewAllResults()"
+                 (keydown.enter)="viewAllResults()"
+                 tabindex="0"
+                 role="button"
+                 aria-label="View all search results">
               <div class="view-all-text">
                 <mat-icon>search</mat-icon>
                 {{ 'VIEW_ALL_RESULTS' | translate }}
