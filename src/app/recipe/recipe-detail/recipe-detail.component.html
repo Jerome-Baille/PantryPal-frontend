@@ -36,7 +36,7 @@
           </mat-card-header>
           <mat-card-content>
             <div class="time-container">
-              @for (element of recipeTime; track element; let i = $index) {
+              @for (element of recipeTime; track i; let i = $index) {
                 @if (!element.showTimer) {
                   <mat-card (click)="toggleTimer(element)">
                     <mat-card-title>{{ getTranslatedTimerName(element.name) | translate
@@ -82,13 +82,13 @@
               [multiplier]="servingsMultiplier"></app-add-to-shopping-list>
             </div>
             <div class="ingredients-grid">
-              @for (group of groupedIngredients; track group) {
+              @for (group of groupedIngredients; track group.section) {
                 <div class="ingredient-section">
                   @if (group.section) {
                     <h3 class="section-title">{{ group.section }}</h3>
                   }
                   <ul>
-                    @for (ingredient of group.ingredients; track ingredient) {
+                    @for (ingredient of group.ingredients; track i; let i = $index) {
                       <li>
                         {{ ingredient?.Ingredient?.name }}{{ ((ingredient?.Ingredient?.name?.toLowerCase()
                         === 'sel' || ingredient?.Ingredient?.name?.toLowerCase() === 'poivre') &&
@@ -127,7 +127,7 @@
             </div>
           </mat-card-header>
           <mat-card-content>
-            @for (instruction of isolatedInstructions; track instruction; let i = $index; let last = $last) {
+            @for (instruction of isolatedInstructions; track i; let i = $index; let last = $last) {
               <div class="instruction-item" [class.completed]="isStepCompleted(i)">
                 <button 
                   class="step-checkbox"

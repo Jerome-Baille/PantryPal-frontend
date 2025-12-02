@@ -18,7 +18,7 @@
       </mat-card-header>
       <mat-card-content>
         <div formArrayName="timers" class="timers-section">
-          @for (timerCtrl of timers.controls; track timerCtrl; let i = $index) {
+          @for (timerCtrl of timers.controls; track i; let i = $index) {
             <div [formGroupName]="i"
               class="timer-card">
               <div class="timer-group">

@@ -15,7 +15,7 @@
           {{ 'SELECT_BOOK' | translate }}
         </mat-label>
         <mat-select formControlName="id" (selectionChange)="onBookSelectionChange()" id="book-select">
-          @for (book of bookList; track book) {
+          @for (book of bookList; track book.id) {
             <mat-option [value]="book.id">{{ book.title }} {{ 'BY' | translate }} {{ book.author
             }}</mat-option>
           }

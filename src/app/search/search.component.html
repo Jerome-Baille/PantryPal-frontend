@@ -29,7 +29,7 @@
         <!-- Search results -->
         @if (!isLoading && dropdownResults.length > 0) {
           <div class="dropdown-results">
-            @for (recipe of dropdownResults; track recipe; let i = $index) {
+            @for (recipe of dropdownResults; track recipe.id; let i = $index) {
               <div
                 class="dropdown-item"
                 [class.selected]="i === selectedIndex"

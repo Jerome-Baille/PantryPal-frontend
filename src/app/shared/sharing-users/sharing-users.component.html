@@ -9,7 +9,7 @@
             {{ 'NO_SHARING_WITH_USERS' | translate }}
           </div>
         }
-        @for (user of sharingWithUsers; track user) {
+        @for (user of sharingWithUsers; track user.id) {
           <div class="user-item" [class.excluded]="user.isExcluded">
             <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
               @if (!user.profilePicture) {
@@ -91,7 +91,7 @@
             {{ 'NO_SHARING_WITH_ME_USERS' | translate }}
           </div>
         }
-        @for (user of sharingWithMeUsers; track user) {
+        @for (user of sharingWithMeUsers; track user.id) {
           <div class="user-item">
             <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
               @if (!user.profilePicture) {

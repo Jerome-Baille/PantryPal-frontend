@@ -26,7 +26,7 @@
       </mat-card-title>
       <mat-card-content>
         <mat-selection-list>
-          @for (item of shoppingList; track item) {
+          @for (item of shoppingList; track item.key) {
             <mat-list-option
               [ngClass]="{ 'strikethrough': isItemSelected(item.key) }"
               (click)="toggleItemSelection(item.key)">
@@ -54,7 +54,7 @@
         </mat-card-title>
         <mat-card-content>
           <mat-selection-list>
-            @for (item of doneList; track item) {
+            @for (item of doneList; track item.key) {
               <mat-list-option [ngClass]="{ 'strikethrough': true }" (click)="onDoneItemSelected(item.key)">
                 <strong>{{ item.key }}:</strong>
                 @for (ingredient of item.value; track ingredient; let last = $last) {

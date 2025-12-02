@@ -8,7 +8,7 @@
         [cdkDropListData]="null"
         (cdkDropListDropped)="drop($event)"
         cdkDropListGroup>
-        @for (ingredientForm of getIngredientsForSection(null); track ingredientForm; let i = $index) {
+        @for (ingredientForm of getIngredientsForSection(null); track i; let i = $index) {
           <div
             [formGroupName]="getFormGroupIndex(ingredientForm)"
             class="ingredient-container"
@@ -44,7 +44,7 @@
                     id="ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
                     [matAutocomplete]="unitAuto">
                     <mat-autocomplete #unitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
-                      @for (unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async; track unit) {
+                      @for (unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async; track unit.value) {
                         <mat-option [value]="unit.value">
                           {{ unit.key | translate }}
                         </mat-option>
@@ -62,7 +62,7 @@
                   <mat-select formControlName="recipeSectionId"
                     (selectionChange)="onSectionChange(ingredientForm, $event)" id="ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
                     <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
-                    @for (section of recipeSections; track section) {
+                    @for (section of recipeSections; track section.id) {
                       <mat-option [value]="section.id">
                         {{ section.name }}
                       </mat-option>
@@ -85,7 +85,7 @@
       }
 
       <!-- Sections groups - only show non-empty sections -->
-      @for (section of recipeSections; track section) {
+      @for (section of recipeSections; track section.id) {
         @if (getIngredientsForSection(section.id).length > 0) {
           <div
             class="section-group"
@@ -93,7 +93,7 @@
             [cdkDropListData]="section.id"
             (cdkDropListDropped)="drop($event)">
             <div class="section-header">{{ section.name }}</div>
-            @for (ingredientForm of getIngredientsForSection(section.id); track ingredientForm; let i = $index) {
+            @for (ingredientForm of getIngredientsForSection(section.id); track i; let i = $index) {
               <div
                 [formGroupName]="getFormGroupIndex(ingredientForm)"
                 class="ingredient-container"
@@ -129,7 +129,7 @@
                         id="section-ingredient-unit-{{getFormGroupIndex(ingredientForm)}}"
                         [matAutocomplete]="sectionUnitAuto">
                         <mat-autocomplete #sectionUnitAuto="matAutocomplete" [displayWith]="displayUnit.bind(this)">
-                          @for (unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async; track unit) {
+                          @for (unit of getFilteredUnits(getFormGroupIndex(ingredientForm)) | async; track unit.value) {
                             <mat-option [value]="unit.value">
                               {{ unit.key | translate }}
                             </mat-option>
@@ -147,7 +147,7 @@
                       <mat-select formControlName="recipeSectionId"
                         (selectionChange)="onSectionChange(ingredientForm, $event)" id="section-ingredient-section-{{getFormGroupIndex(ingredientForm)}}">
                         <mat-option [value]="null">{{ 'NO_SECTION' | translate }}</mat-option>
-                        @for (section of recipeSections; track section) {
+                        @for (section of recipeSections; track section.id) {
                           <mat-option [value]="section.id">
                             {{ section.name }}
                           </mat-option>

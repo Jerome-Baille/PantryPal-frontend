@@ -12,7 +12,7 @@
       }
       @if (users.length) {
       <ul>
-        @for (u of users; track u) {
+        @for (u of users; track u.id) {
         <li>
           <button mat-stroked-button color="primary" (click)="loginAs(u)">Login as {{ u.username }}</button>
           <span class="muted"> — {{ u.email }}</span>

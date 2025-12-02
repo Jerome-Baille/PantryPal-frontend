@@ -24,7 +24,7 @@
               <mat-icon matPrefix>menu_book</mat-icon>
               <mat-autocomplete #bookAuto="matAutocomplete"
                 (optionSelected)="onBookSelected($event.option.value)">
-                @for (book of filteredBooks | async; track book) {
+                @for (book of filteredBooks | async; track book.id) {
                   <mat-option [value]="book">
                     {{ book.title }} - {{ book.author }}
                   </mat-option>
@@ -34,7 +34,7 @@
             @if (selectedBooks.length > 0) {
               <div class="selected-chips">
                 <mat-chip-set>
-                  @for (book of selectedBooks; track book) {
+                  @for (book of selectedBooks; track book.id) {
                     <mat-chip
                       (removed)="removeBook(book)"
                       removable
@@ -92,7 +92,7 @@
                   <mat-icon matPrefix>fastfood</mat-icon>
                   <mat-autocomplete #mealTypeAuto="matAutocomplete"
                     (optionSelected)="onMealTypeSelected($event.option.value)">
-                    @for (mealType of filteredMealTypes | async; track mealType) {
+                    @for (mealType of filteredMealTypes | async; track mealType.value) {
                       <mat-option [value]="mealType">
                         {{ mealType.name | translate }}
                       </mat-option>
@@ -121,7 +121,7 @@
         @if (recipes && recipes.length > 0) {
           <div class="container">
             <div class="recipe-container">
-              @for (recipe of recipes; track recipe) {
+              @for (recipe of recipes; track recipe.id) {
                 <mat-card class="recipe-card">
                   <div class="recipe-image-container" 
                        (click)="goToRecipeDetails(recipe.id)"

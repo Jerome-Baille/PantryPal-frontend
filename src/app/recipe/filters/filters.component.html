@@ -27,7 +27,7 @@
               @if (books().length > 0) {
               <form>
                 <mat-selection-list #bookList>
-                  @for (book of filteredBooks | async; track book) {
+                  @for (book of filteredBooks | async; track book.id) {
                   <mat-list-option [value]="book.id" (click)="toggleSelection(book.id)">
                     {{ book.title }}
                   </mat-list-option>
@@ -127,7 +127,7 @@
               @if (typeOfMeals.length > 0) {
               <form>
                 <mat-selection-list #typeOfMealList [formControl]="typeOfMealControl">
-                  @for (typeOfMeal of typeOfMeals; track typeOfMeal) {
+                  @for (typeOfMeal of typeOfMeals; track typeOfMeal.value) {
                   <mat-list-option [value]="typeOfMeal.value" (click)="toggleTypeOfMealSelection(typeOfMeal.value)">
                     {{ typeOfMeal.name }}
                   </mat-list-option>
