@@ -5,7 +5,13 @@
     button {
         background-color: transparent;
         border: none;
-        padding: 0.5rem;
+        /* ensure icon inside mat-icon-button is centered */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
         border-radius: 0.25rem;
         margin-right: 0.5rem;
     }
