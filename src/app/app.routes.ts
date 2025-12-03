@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { ShoppingListComponent } from './shopping-list/shopping-list.component';
-import { RecipeListComponent } from './recipe/recipe-list/recipe-list.component';
-import { RecipeFormComponent } from './recipe/recipe-form/recipe-form.component';
-import { LoginComponent } from './login/login.component';
-import { AfterLoginComponent } from './login/after-login.component';
-import { AfterRegisterComponent } from './login/after-register.component';
-import { RecipeDetailComponent } from './recipe/recipe-detail/recipe-detail.component';
-import { ProfileComponent } from './profile/profile.component';
-import { ShareAcceptComponent } from './share/share-accept/share-accept.component';
-import { authGuard } from './guards/auth.guard';
+import { ShoppingListComponent } from './features/shopping-list/shopping-list.component';
+import { RecipeListComponent } from './features/recipe/recipe-list/recipe-list.component';
+import { RecipeFormComponent } from './features/recipe/recipe-form/recipe-form.component';
+import { RecipeDetailComponent } from './features/recipe/recipe-detail/recipe-detail.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { authGuard } from './core/guards/auth.guard';
 import { environment } from 'src/environments/environment';
+import { LoginComponent } from './features/login/login.component';
+import { AfterLoginComponent } from './features/login/after-login.component';
+import { AfterRegisterComponent } from './features/login/after-register.component';
+import { ShareAcceptComponent } from './features/share/share-accept/share-accept.component';
 
 const baseRoutes: Routes = [
     { path: 'shopping/list', component: ShoppingListComponent, canActivate: [authGuard] },
@@ -31,7 +31,7 @@ export const routes: Routes = ((): Routes => {
     if (!environment.production) {
         return [
             ...baseRoutes,
-            { path: 'auth/dev-login', loadComponent: () => import('./login/dev-login.component').then(m => m.DevLoginComponent) }
+            { path: 'auth/dev-login', loadComponent: () => import('./features/login/dev-login.component').then(m => m.DevLoginComponent) }
         ];
     }
     return baseRoutes;

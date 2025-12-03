@@ -7,13 +7,13 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MATERIAL_SANITY_CHECKS } from '@angular/material/core';
-import { IconService } from './services/icon.service';
+import { IconService } from './core/services/icon.service';
 
 import { routes } from './app.routes';
-import { loaderInterceptor } from './interceptors/loader.interceptor';
-import { authInterceptor } from './interceptors/token-interceptor.interceptor';
-import { AuthService } from './services/auth.service';
-import { LoaderService } from './services/loader.service';
+import { AuthService } from './core/services/auth.service';
+import { LoaderService } from './core/services/loader.service';
+import { loaderInterceptor } from './core/interceptors/loader.interceptor';
+import { authInterceptor } from './core/interceptors/token-interceptor.interceptor';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {

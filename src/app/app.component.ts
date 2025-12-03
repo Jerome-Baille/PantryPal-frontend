@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { HeaderComponent } from './header/header.component';
+import { HeaderComponent } from './core/header/header.component';
 import { RouterOutlet } from '@angular/router';
-import { LoaderComponent } from './shared/loader/loader.component';
-import { IconService } from './services/icon.service';
+import { IconService } from './core/services/icon.service';
+import { LoaderComponent } from './shared/components/loader/loader.component';
 
 @Component({
     selector: 'app-root',
