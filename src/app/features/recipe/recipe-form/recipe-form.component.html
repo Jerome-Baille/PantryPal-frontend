@@ -51,8 +51,8 @@
               </div>
               <mat-divider class="divider"></mat-divider>
               <div class="timer-group">
-                <button mat-icon-button (click)="removeTimer(i)" class="icon-delete">
-                  <mat-icon svgIcon="delete"></mat-icon>
+                  <button mat-icon-button (click)="removeTimer(i)" class="icon-delete">
+                  <span class="material-symbols-outlined">delete</span>
                 </button>
                 <button mat-raised-button color="warn" (click)="removeTimer(i)" class="text-delete">
                   {{ 'DELETE' | translate }}
@@ -76,13 +76,13 @@
         <div formGroupName="recipe" class="full-width">
           <!-- Image Upload Section -->
           <div class="image-upload-section">
-            <span class="image-upload-label">{{ 'RECIPE_IMAGE' | translate }}</span>
+            <label class="image-upload-label" for="image-upload">{{ 'RECIPE_IMAGE' | translate }}</label>
 
             @if (imagePreview || recipe?.thumbnail) {
               <div class="image-preview-container">
                 <img [src]="imagePreview || recipe?.thumbnail" alt="Recipe preview" class="image-preview">
                 <button mat-icon-button class="remove-image-btn" (click)="removeImage()" type="button">
-                  <mat-icon>close</mat-icon>
+                  <span class="material-symbols-outlined">close</span>
                 </button>
               </div>
             }
@@ -97,7 +97,7 @@
                 <button mat-raised-button
                   type="button"
                   (click)="imageInput.click()">
-                  <mat-icon>add_photo_alternate</mat-icon>
+                  <span class="material-symbols-outlined">add_photo_alternate</span>
                   {{ (imagePreview || recipe?.thumbnail) ? ('CHANGE_IMAGE' | translate) : ('ADD_IMAGE' | translate) }}
                 </button>
                 <span class="image-hint">{{ 'IMAGE_UPLOAD_HINT' | translate }}</span>

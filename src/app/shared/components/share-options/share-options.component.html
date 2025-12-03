@@ -1,20 +1,20 @@
 <div class="sharing-buttons">
   <button mat-icon-button [matMenuTriggerFor]="shareMenu">
-    <mat-icon svgIcon="more_vert"></mat-icon>
+    <span class="material-symbols-outlined">more_vert</span>
   </button>
   <mat-menu #shareMenu="matMenu">
     <button mat-menu-item (click)="downloadPDF()">
-      <mat-icon svgIcon="picture_as_pdf"></mat-icon>
+      <span class="material-symbols-outlined">picture_as_pdf</span>
       <span>{{ 'DOWNLOAD_PDF' | translate }}</span>
     </button>
     @if (isWebShareSupported) {
       <button mat-menu-item (click)="shareContent()">
-        <mat-icon svgIcon="share"></mat-icon>
+        <span class="material-symbols-outlined">share</span>
         <span>{{ 'SHARE' | translate }}</span>
       </button>
     }
     <button mat-menu-item (click)="manageSharing()">
-      <mat-icon>people</mat-icon>
+      <span class="material-symbols-outlined">people</span>
       <span>{{ 'MANAGE_SHARING' | translate }}</span>
     </button>
   </mat-menu>

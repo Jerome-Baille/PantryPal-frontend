@@ -2,13 +2,13 @@
     <div class="timer">{{ displayTime }}</div>
     <div class="timer-controls">
         <button mat-icon-button (click)="startTimer()" [disabled]="timerRunning">
-            <mat-icon>play_arrow</mat-icon>
+            <span class="material-symbols-outlined">play_arrow</span>
         </button>
         <button mat-icon-button (click)="pauseTimer()" [disabled]="!timerRunning">
-            <mat-icon>pause</mat-icon>
+            <span class="material-symbols-outlined">pause</span>
         </button>
         <button mat-icon-button (click)="stopTimer()">
-            <mat-icon>stop</mat-icon>
+            <span class="material-symbols-outlined">stop</span>
         </button>
     </div>
 </div>

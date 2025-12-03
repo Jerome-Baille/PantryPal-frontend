@@ -176,5 +176,6 @@
     "MARK_INCOMPLETE": "Marquer l'étape comme non terminée",
     "SWIPE_OR_ARROW_KEYS": "Glissez ou utilisez les flèches pour naviguer",
     "STEP_COMPLETED": "Étape terminée",
-    "STEPS_COMPLETED": "étapes terminées"
+    "STEPS_COMPLETED": "étapes terminées",
+    "ADD_RECIPE": "Ajouter une recette"
 }

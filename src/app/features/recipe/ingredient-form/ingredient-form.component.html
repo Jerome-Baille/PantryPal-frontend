@@ -13,7 +13,7 @@
             [formGroupName]="getFormGroupIndex(ingredientForm)"
             class="ingredient-container"
             cdkDrag>
-            <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
+            <span cdkDragHandle class="material-symbols-outlined drag-handle">drag_indicator</span>
             <div class="content-wrapper">
               <div formGroupName="Ingredient">
                 <mat-form-field>
@@ -73,7 +73,7 @@
               </div>
               <div class="remove-button-container">
                 <button mat-icon-button color="warn" class="desktop-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
-                  <mat-icon svgIcon="delete"></mat-icon>
+                  <span class="material-symbols-outlined">delete</span>
                 </button>
                 <button mat-raised-button color="warn" class="mobile-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
                   {{ 'REMOVE' | translate }}
@@ -98,7 +98,7 @@
                 [formGroupName]="getFormGroupIndex(ingredientForm)"
                 class="ingredient-container"
                 cdkDrag>
-                <mat-icon cdkDragHandle class="drag-handle">drag_indicator</mat-icon>
+                <span cdkDragHandle class="material-symbols-outlined drag-handle">drag_indicator</span>
                 <div class="content-wrapper">
                   <div formGroupName="Ingredient">
                     <mat-form-field>
@@ -158,7 +158,7 @@
                   </div>
                   <div class="remove-button-container">
                     <button mat-icon-button color="warn" class="desktop-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
-                      <mat-icon svgIcon="delete"></mat-icon>
+                      <span class="material-symbols-outlined">delete</span>
                     </button>
                     <button mat-raised-button color="warn" class="mobile-only" (click)="onRemoveIngredient(getFormGroupIndex(ingredientForm))">
                       {{ 'REMOVE' | translate }}

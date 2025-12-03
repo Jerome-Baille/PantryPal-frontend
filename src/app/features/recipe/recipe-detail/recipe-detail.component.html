@@ -4,7 +4,7 @@
       <div class="option-buttons">
         <button class="favorite-button" [class.favorite]="isFavorite" [class.favorite-animation]="isFavorite"
           (click)="toggleFavorite()" mat-icon-button>
-          <mat-icon class="heart-icon">favorite</mat-icon>
+          <span class="material-symbols-outlined heart-icon">favorite</span>
         </button>
         <mat-card-title class="card-title">{{ recipe.title }}</mat-card-title>
         <app-share-options [recipe]="recipe"></app-share-options>
@@ -50,7 +50,7 @@
                   <div class="timer-container">
                     <app-timer [timerInfo]="createTimerState(element)"></app-timer>
                     <button mat-icon-button class="timer-button" (click)="toggleTimer(element)">
-                      <mat-icon>close</mat-icon>
+                      <span class="material-symbols-outlined">close</span>
                     </button>
                   </div>
                 }
@@ -120,7 +120,7 @@
                   (click)="openGuidedMode()"
                   class="guided-mode-button"
                   [matTooltip]="'START_GUIDED_MODE' | translate">
-                  <mat-icon>play_circle_outline</mat-icon>
+                  <span class="material-symbols-outlined"> play_circle </span>
                   {{ 'GUIDED_MODE' | translate }}
                 </button>
               </div>
@@ -135,7 +135,7 @@
                   [attr.aria-label]="(isStepCompleted(i) ? 'MARK_INCOMPLETE' : 'MARK_COMPLETE') | translate"
                   [attr.aria-pressed]="isStepCompleted(i)"
                   mat-icon-button>
-                  <mat-icon>{{ isStepCompleted(i) ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                  <span class="material-symbols-outlined">{{ isStepCompleted(i) ? 'check_circle' : 'radio_button_unchecked' }}</span>
                 </button>
                 <p class="instruction-text" [class.completed-text]="isStepCompleted(i)">
                   {{ instruction }}
@@ -151,7 +151,7 @@
                   mat-stroked-button 
                   (click)="clearCompletedSteps()"
                   class="clear-button">
-                  <mat-icon>restart_alt</mat-icon>
+                  <span class="material-symbols-outlined">restart_alt</span>
                   {{ 'CLEAR' | translate }}
                 </button>
               </div>

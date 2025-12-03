@@ -20,7 +20,7 @@
     margin-left: 10px;
     margin-right: 10px;
 
-    mat-icon {
+    .material-symbols-outlined {
       vertical-align: middle;
     }
   }
@@ -51,31 +51,40 @@
   }
 
   .desktop-menu {
+    display: flex;
+    align-items: center;
+
     button {
-      mat-icon {
-        height: 32px;
-        width: 32px;
-        font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      padding: 8px;
+
+      .material-symbols-outlined {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 28px;
+        width: 28px;
+        font-size: 28px;
+        line-height: 1;
+
+        svg {
+          height: 100%;
+          width: 100%;
+        }
       }
 
       &.active {
         color: #009c0e !important;
         
-        svg {
-          fill: #009c0e;
-        }
-        mat-icon,
-        mat-icon svg {
+        .material-symbols-outlined {
           color: #009c0e;
-          fill: #009c0e;
         }
-        mat-icon svg {
+
+        ::ng-deep svg {
           fill: #009c0e !important;
-          color: #009c0e !important;
-        }
-        ::ng-deep mat-icon svg {
-          fill: #009c0e !important;
-          color: #009c0e !important;
         }
       }
     }
@@ -130,30 +139,40 @@
       min-width: 0;
       margin: 0;
       padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      mat-icon {
+        .material-symbols-outlined {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 24px;
         height: 24px;
         width: 24px;
+        line-height: 1;
+
+        svg {
+          height: 100%;
+          width: 100%;
+        }
       }
 
-      &.active {       
-        svg {
-          fill: #009c0e;
-        }
+      &.active {
         color: #009c0e;
-        mat-icon {
+
+        .material-symbols-outlined {
           color: #009c0e;
         }
-        mat-icon svg {
+
+        ::ng-deep svg {
           fill: #009c0e !important;
-          color: #009c0e !important;
-        }
-        ::ng-deep mat-icon svg {
-          fill: #009c0e !important;
-          color: #009c0e !important;
         }
       }
     }
   }
+}
+
+.mobile-icon {
+  font-size: 32px;
 }

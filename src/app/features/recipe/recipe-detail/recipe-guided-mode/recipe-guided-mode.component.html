@@ -11,7 +11,7 @@
             (click)="close()" 
             class="close-button"
             [attr.aria-label]="'CLOSE' | translate">
-      <mat-icon>close</mat-icon>
+      <span class="material-symbols-outlined">close</span>
     </button>
     <div class="header-content">
       <h2 class="recipe-title">{{ recipeTitle }}</h2>
@@ -41,7 +41,7 @@
           (click)="toggleStepCompletion()"
           [attr.aria-label]="(isCurrentStepCompleted ? 'MARK_INCOMPLETE' : 'MARK_COMPLETE') | translate"
           [attr.aria-pressed]="isCurrentStepCompleted">
-          <mat-icon>{{ isCurrentStepCompleted ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          <span class="material-symbols-outlined">{{ isCurrentStepCompleted ? 'check_circle' : 'radio_button_unchecked' }}</span>
         </button>
       </div>
       <p class="instruction-text" [class.completed-text]="isCurrentStepCompleted">
@@ -58,7 +58,7 @@
       [disabled]="isFirstStep"
       class="nav-button"
       [attr.aria-label]="'PREVIOUS_STEP' | translate">
-      <mat-icon>arrow_back</mat-icon>
+      <span class="material-symbols-outlined">arrow_back</span>
       <span class="button-text">{{ 'PREVIOUS' | translate }}</span>
     </button>
 
@@ -74,7 +74,7 @@
         class="nav-button"
         [attr.aria-label]="'NEXT_STEP' | translate">
         <span class="button-text">{{ 'NEXT' | translate }}</span>
-        <mat-icon>arrow_forward</mat-icon>
+        <span class="material-symbols-outlined">arrow_forward</span>
       </button>
     } @else {
       <button 
@@ -84,7 +84,7 @@
         class="nav-button close-nav-button"
         [attr.aria-label]="'CLOSE' | translate">
         <span class="button-text">{{ 'CLOSE' | translate }}</span>
-        <mat-icon>check</mat-icon>
+        <span class="material-symbols-outlined">check</span>
       </button>
     }
   </div>

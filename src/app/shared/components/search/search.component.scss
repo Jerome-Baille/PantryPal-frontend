@@ -64,7 +64,7 @@
             transform: scale(1.1);
         }
 
-        mat-icon {
+        .material-symbols-outlined {
             font-size: 20px;
             width: 20px;
             height: 20px;
@@ -175,7 +175,7 @@
             align-items: center;
             gap: 4px;
 
-            mat-icon {
+            .material-symbols-outlined {
                 font-size: 14px;
                 width: 14px;
                 height: 14px;
@@ -214,7 +214,7 @@
         .view-all-text {
             color: white;
 
-            mat-icon {
+            .material-symbols-outlined {
                 color: white;
             }
         }
@@ -230,7 +230,7 @@
         letter-spacing: 0.5px;
         text-transform: uppercase;
 
-        mat-icon {
+            .material-symbols-outlined {
             font-size: 16px;
             width: 16px;
             height: 16px;
@@ -250,7 +250,7 @@
     border-radius: 8px;
     margin: 8px;
 
-    mat-icon {
+    .material-symbols-outlined {
         margin-right: 8px;
         color: #999;
         font-size: 18px;

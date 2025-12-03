@@ -1,184 +1,199 @@
 <div class="list-container">
   @if (!isFavoritesView) {
-    <div class="inline-filter-bar">
-      <div class="filter-header">
-        <h3 class="filter-title">{{ 'FILTERS' | translate }}</h3>
-        <button mat-raised-button
-          color="warn"
-          (click)="clearAllFilters()"
-          [disabled]="!hasActiveFilters()"
-          class="clear-filters-btn">
-          <mat-icon>clear_all</mat-icon>
-          {{ 'CLEAR' | translate }}
-        </button>
-      </div>
-      <div class="filters-grid">
-        <!-- Books Filter -->
-        <div class="filter-group">
-          <mat-form-field appearance="fill" class="filter-field">
-            <mat-label>{{ 'FILTERS_BOOK' | translate }}</mat-label>
-            <input matInput
-              [formControl]="bookSearchControl"
-              [matAutocomplete]="bookAuto"
-              placeholder="{{ 'SELECT_BOOK' | translate }}">
-              <mat-icon matPrefix>menu_book</mat-icon>
-              <mat-autocomplete #bookAuto="matAutocomplete"
-                (optionSelected)="onBookSelected($event.option.value)">
-                @for (book of filteredBooks | async; track book.id) {
-                  <mat-option [value]="book">
-                    {{ book.title }} - {{ book.author }}
-                  </mat-option>
-                }
-              </mat-autocomplete>
-            </mat-form-field>
-            @if (selectedBooks.length > 0) {
-              <div class="selected-chips">
-                <mat-chip-set>
-                  @for (book of selectedBooks; track book.id) {
-                    <mat-chip
-                      (removed)="removeBook(book)"
-                      removable
-                      class="custom-chip">
-                      {{ book.title }}
-                      <mat-icon matChipRemove>cancel</mat-icon>
-                    </mat-chip>
-                  }
-                </mat-chip-set>
-              </div>
+  <div class="inline-filter-bar">
+    <div class="filter-header">
+      <h3 class="filter-title">{{ "FILTERS" | translate }}</h3>
+      <button
+        mat-raised-button
+        color="warn"
+        (click)="clearAllFilters()"
+        [disabled]="!hasActiveFilters()"
+        class="clear-filters-btn"
+      >
+        <span class="material-symbols-outlined">clear_all</span>
+        {{ "CLEAR" | translate }}
+      </button>
+    </div>
+    <div class="filters-grid">
+      <!-- Books Filter -->
+      <div class="filter-group">
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>{{ "FILTERS_BOOK" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="bookSearchControl"
+            [matAutocomplete]="bookAuto"
+            placeholder="{{ 'SELECT_BOOK' | translate }}"
+          />
+          <span class="material-symbols-outlined" matPrefix>menu_book</span>
+          <mat-autocomplete
+            #bookAuto="matAutocomplete"
+            (optionSelected)="onBookSelected($event.option.value)"
+          >
+            @for (book of filteredBooks | async; track book.id) {
+            <mat-option [value]="book">
+              {{ book.title }} - {{ book.author }}
+            </mat-option>
             }
-          </div>
-          <!-- Ingredients Filter -->
-          <div class="filter-group">
-            <mat-form-field appearance="fill" class="filter-field">
-              <mat-label>{{ 'FILTERS_INGREDIENTS' | translate }}</mat-label>
-              <input matInput
-                [formControl]="ingredientSearchControl"
-                [matAutocomplete]="ingredientAuto"
-                placeholder="{{ 'SELECT_INGREDIENT' | translate }}">
-                <mat-icon matPrefix>restaurant</mat-icon>
-                <mat-autocomplete #ingredientAuto="matAutocomplete"
-                  (optionSelected)="onIngredientSelected($event.option.value)">
-                  @for (ingredient of filteredIngredients | async; track ingredient) {
-                    <mat-option [value]="ingredient">
-                      {{ ingredient }}
-                    </mat-option>
-                  }
-                </mat-autocomplete>
-              </mat-form-field>
-              @if (selectedIngredients.length > 0) {
-                <div class="selected-chips">
-                  <mat-chip-set>
-                    @for (ingredient of selectedIngredients; track ingredient) {
-                      <mat-chip
-                        (removed)="removeIngredient(ingredient)"
-                        removable
-                        class="custom-chip">
-                        {{ ingredient }}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                      </mat-chip>
-                    }
-                  </mat-chip-set>
-                </div>
-              }
-            </div>
-            <!-- Type of Meal Filter -->
-            <div class="filter-group">
-              <mat-form-field appearance="fill" class="filter-field">
-                <mat-label>{{ 'FILTERS_TYPE_OF_MEAL' | translate }}</mat-label>
-                <input matInput
-                  [formControl]="mealTypeSearchControl"
-                  [matAutocomplete]="mealTypeAuto"
-                  placeholder="{{ 'SELECT_TYPE_OF_MEAL' | translate }}">
-                  <mat-icon matPrefix>fastfood</mat-icon>
-                  <mat-autocomplete #mealTypeAuto="matAutocomplete"
-                    (optionSelected)="onMealTypeSelected($event.option.value)">
-                    @for (mealType of filteredMealTypes | async; track mealType.value) {
-                      <mat-option [value]="mealType">
-                        {{ mealType.name | translate }}
-                      </mat-option>
-                    }
-                  </mat-autocomplete>
-                </mat-form-field>
-                @if (selectedMealTypes.length > 0) {
-                  <div class="selected-chips">
-                    <mat-chip-set>
-                      @for (mealTypeValue of selectedMealTypes; track mealTypeValue) {
-                        <mat-chip
-                          (removed)="removeMealType(mealTypeValue)"
-                          removable
-                          class="custom-chip">
-                          {{ getMealTypeLabel(mealTypeValue) | translate }}
-                          <mat-icon matChipRemove>cancel</mat-icon>
-                        </mat-chip>
-                      }
-                    </mat-chip-set>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        }
-        @if (recipes && recipes.length > 0) {
-          <div class="container">
-            <div class="recipe-container">
-              @for (recipe of recipes; track recipe.id) {
-                <mat-card class="recipe-card">
-                  <div class="recipe-image-container" 
-                       (click)="goToRecipeDetails(recipe.id)"
-                       (keydown.enter)="goToRecipeDetails(recipe.id)"
-                       tabindex="0"
-                       role="button"
-                       [attr.aria-label]="'View ' + recipe.title">
-                    <img [src]="getThumbnailUrl(recipe)"
-                      [alt]="recipe.title"
-                      class="recipe-thumbnail"
-                      loading="lazy">
-                    </div>
-                    <div class="recipe-content" 
-                         (click)="goToRecipeDetails(recipe.id)"
-                         (keydown.enter)="goToRecipeDetails(recipe.id)"
-                         tabindex="0"
-                         role="button"
-                         [attr.aria-label]="'View ' + recipe.title">
-                      <mat-card-title>{{ recipe.title }}</mat-card-title>
-                      <mat-card-actions (click)="$event.stopPropagation()">
-                        <app-add-to-shopping-list [recipe]="recipe" [recipes]="recipes"></app-add-to-shopping-list>
-                      </mat-card-actions>
-                    </div>
-                  </mat-card>
-                }
-              </div>
-              <div class="pagination-container">
-                <mat-paginator
-                  [length]="totalRecipes"
-                  [pageSize]="pageSize"
-                  [pageIndex]="currentPage"
-                  [pageSizeOptions]="pageSizeOptions"
-                  [showFirstLastButtons]="true"
-                  (page)="handlePageEvent($event)"
-                  aria-label="Select page">
-                </mat-paginator>
-              </div>
-            </div>
-          } @else {
-            <div class="container">
-              <div class="recipe-container no-recipe-container">
-                <mat-card class="recipe-card">
-                  <mat-card-title>
-                    No recipes found
-                  </mat-card-title>
-                  <mat-card-subtitle>
-                    Try changing your filters
-                  </mat-card-subtitle>
-                </mat-card>
-              </div>
-            </div>
-          }
-
+          </mat-autocomplete>
+        </mat-form-field>
+        @if (selectedBooks.length > 0) {
+        <div class="selected-chips">
+          <mat-chip-set>
+            @for (book of selectedBooks; track book.id) {
+            <mat-chip
+              (removed)="removeBook(book)"
+              removable
+              class="custom-chip"
+            >
+              {{ book.title }}
+              <span class="material-symbols-outlined" matChipRemove>cancel</span>
+            </mat-chip>
+            }
+          </mat-chip-set>
         </div>
-
-        @if (!isFavoritesView) {
-          <button mat-fab class="fab-button" (click)="createRecipe()">
-            <mat-icon svgIcon="add" class="add-icon"></mat-icon>
-          </button>
         }
+      </div>
+      <!-- Ingredients Filter -->
+      <div class="filter-group">
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>{{ "FILTERS_INGREDIENTS" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="ingredientSearchControl"
+            [matAutocomplete]="ingredientAuto"
+            placeholder="{{ 'SELECT_INGREDIENT' | translate }}"
+          />
+          <span class="material-symbols-outlined" matPrefix>restaurant</span>
+          <mat-autocomplete
+            #ingredientAuto="matAutocomplete"
+            (optionSelected)="onIngredientSelected($event.option.value)"
+          >
+            @for (ingredient of filteredIngredients | async; track ingredient) {
+            <mat-option [value]="ingredient">
+              {{ ingredient }}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        @if (selectedIngredients.length > 0) {
+        <div class="selected-chips">
+          <mat-chip-set>
+            @for (ingredient of selectedIngredients; track ingredient) {
+            <mat-chip
+              (removed)="removeIngredient(ingredient)"
+              removable
+              class="custom-chip"
+            >
+              {{ ingredient }}
+              <span class="material-symbols-outlined" matChipRemove>cancel</span>
+            </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+        }
+      </div>
+      <!-- Type of Meal Filter -->
+      <div class="filter-group">
+        <mat-form-field appearance="fill" class="filter-field">
+          <mat-label>{{ "FILTERS_TYPE_OF_MEAL" | translate }}</mat-label>
+          <input
+            matInput
+            [formControl]="mealTypeSearchControl"
+            [matAutocomplete]="mealTypeAuto"
+            placeholder="{{ 'SELECT_TYPE_OF_MEAL' | translate }}"
+          />
+          <span class="material-symbols-outlined" matPrefix>fastfood</span>
+          <mat-autocomplete
+            #mealTypeAuto="matAutocomplete"
+            (optionSelected)="onMealTypeSelected($event.option.value)"
+          >
+            @for (mealType of filteredMealTypes | async; track mealType.value) {
+            <mat-option [value]="mealType">
+              {{ mealType.name | translate }}
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+        @if (selectedMealTypes.length > 0) {
+        <div class="selected-chips">
+          <mat-chip-set>
+            @for (mealTypeValue of selectedMealTypes; track mealTypeValue) {
+            <mat-chip
+              (removed)="removeMealType(mealTypeValue)"
+              removable
+              class="custom-chip"
+            >
+              {{ getMealTypeLabel(mealTypeValue) | translate }}
+              <span class="material-symbols-outlined" matChipRemove>cancel</span>
+            </mat-chip>
+            }
+          </mat-chip-set>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  } @if (recipes && recipes.length > 0) {
+  <div class="container">
+    <div class="recipe-container">
+      @for (recipe of recipes; track recipe.id) {
+      <mat-card class="recipe-card">
+        <div
+          class="recipe-image-container"
+          (click)="goToRecipeDetails(recipe.id)"
+          (keydown.enter)="goToRecipeDetails(recipe.id)"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'View ' + recipe.title"
+        >
+          <img
+            [src]="getThumbnailUrl(recipe)"
+            [alt]="recipe.title"
+            class="recipe-thumbnail"
+            loading="lazy"
+          />
+        </div>
+        <div
+          class="recipe-content"
+          (click)="goToRecipeDetails(recipe.id)"
+          (keydown.enter)="goToRecipeDetails(recipe.id)"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'View ' + recipe.title"
+        >
+          <mat-card-title>{{ recipe.title }}</mat-card-title>
+          <mat-card-actions (click)="$event.stopPropagation()">
+            <app-add-to-shopping-list
+              [recipe]="recipe"
+              [recipes]="recipes"
+            ></app-add-to-shopping-list>
+          </mat-card-actions>
+        </div>
+      </mat-card>
+      }
+    </div>
+    <div class="pagination-container">
+      <mat-paginator
+        [length]="totalRecipes"
+        [pageSize]="pageSize"
+        [pageIndex]="currentPage"
+        [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
+        (page)="handlePageEvent($event)"
+        aria-label="Select page"
+      >
+      </mat-paginator>
+    </div>
+  </div>
+  } @else {
+  <div class="container">
+    <div class="recipe-container no-recipe-container">
+      <mat-card class="recipe-card">
+        <mat-card-title> No recipes found </mat-card-title>
+        <mat-card-subtitle> Try changing your filters </mat-card-subtitle>
+      </mat-card>
+    </div>
+  </div>
+  }
+</div>

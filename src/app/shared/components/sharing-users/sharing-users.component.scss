@@ -76,7 +76,7 @@ h3 {
       border: 2px solid #ffffff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 
-      mat-icon {
+      .material-symbols-outlined {
         font-size: 20px;
         color: #9e9e9e;
         text-align: center;
@@ -117,7 +117,7 @@ h3 {
             color: #1976d2;
             border: 1px solid #bbdefb;
             
-            mat-icon {
+            .material-symbols-outlined {
               color: #1976d2;
               font-size: 0.9rem;
               height: 0.9rem;
@@ -131,7 +131,7 @@ h3 {
             color: #2e7d32;
             border: 1px solid #c8e6c9;
             
-            mat-icon {
+            .material-symbols-outlined {
               color: #2e7d32;
               font-size: 0.9rem;
               height: 0.9rem;
@@ -145,7 +145,7 @@ h3 {
             color: #d32f2f;
             border: 1px solid #ffcdd2;
             
-            mat-icon {
+            .material-symbols-outlined {
               color: #d32f2f;
               font-size: 0.9rem;
               height: 0.9rem;
@@ -159,7 +159,7 @@ h3 {
             color: #e65100;
             border: 1px solid #ffe0b2;
             
-            mat-icon {
+            .material-symbols-outlined {
               color: #e65100;
               font-size: 0.9rem;
               height: 0.9rem;
@@ -200,7 +200,7 @@ h3 {
           transform: scale(1.1);
         }
         
-        mat-icon {
+        .material-symbols-outlined {
           font-size: 1.2rem;
         }
       }

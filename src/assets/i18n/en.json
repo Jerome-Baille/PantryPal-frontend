@@ -176,5 +176,6 @@
     "MARK_INCOMPLETE": "Mark step as incomplete",
     "SWIPE_OR_ARROW_KEYS": "Swipe or use arrow keys to navigate",
     "STEP_COMPLETED": "Step completed",
-    "STEPS_COMPLETED": "steps completed"
+    "STEPS_COMPLETED": "steps completed",
+    "ADD_RECIPE": "Add Recipe"
 }

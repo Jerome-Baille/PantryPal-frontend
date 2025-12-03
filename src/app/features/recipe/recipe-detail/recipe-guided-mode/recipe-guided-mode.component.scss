@@ -104,7 +104,7 @@
         align-items: center;
         justify-content: center;
 
-        mat-icon {
+        .material-symbols-outlined {
           font-size: 32px;
           width: 32px;
           height: 32px;
@@ -114,12 +114,12 @@
           justify-content: center;
         }
 
-        &.completed mat-icon {
+        &.completed .material-symbols-outlined {
           color: #4caf50;
           animation: checkPulse 0.3s ease;
         }
 
-        &:hover mat-icon {
+        &:hover .material-symbols-outlined {
           transform: scale(1.1);
         }
       }
@@ -169,7 +169,7 @@
     border-radius: 24px;
     transition: all 0.3s ease;
 
-    mat-icon {
+    .material-symbols-outlined {
       font-size: 20px;
       width: 20px;
       height: 20px;
@@ -265,7 +265,7 @@
         display: none;
       }
 
-      mat-icon {
+      .material-symbols-outlined {
         margin: 0;
       }
     }

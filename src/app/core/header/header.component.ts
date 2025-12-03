@@ -1,14 +1,11 @@
-
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButton } from '@angular/material/button';
+import { MatToolbar } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { SearchService } from 'src/app/core/services/search.service';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
-import { MatInputModule } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
 import { Subscription } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../services/language.service';
@@ -21,12 +18,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     imports: [
     RouterLink,
     RouterLinkActive,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatInputModule,
+    MatToolbar,
+    MatButton,
     TranslateModule,
+    MatTooltip,
     SearchComponent
 ],
     templateUrl: './header.component.html',

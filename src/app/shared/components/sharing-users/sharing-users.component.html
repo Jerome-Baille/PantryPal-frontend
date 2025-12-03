@@ -12,8 +12,8 @@
         @for (user of sharingWithUsers; track user.id) {
           <div class="user-item" [class.excluded]="user.isExcluded">
             <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
-              @if (!user.profilePicture) {
-                <mat-icon>person</mat-icon>
+                @if (!user.profilePicture) {
+                <span class="material-symbols-outlined">person</span>
               }
             </div>
             <div class="user-info">
@@ -22,7 +22,7 @@
                 <!-- Show exclusion badge if excluded in recipe-specific view -->
                 @if (user.isExcluded) {
                   <span class="permission-badge excluded">
-                    <mat-icon>block</mat-icon>
+                    <span class="material-symbols-outlined">block</span>
                     {{ 'ACCESS_EXCLUDED' | translate }}
                   </span>
                 }
@@ -35,14 +35,14 @@
                     tabindex="0"
                     role="button"
                     matTooltip="{{ 'VIEW_EXCLUDED_RECIPES' | translate }}">
-                    <mat-icon>block</mat-icon>
+                    <span class="material-symbols-outlined">block</span>
                     {{ getExcludedRecipeCount(user) }} {{ 'RECIPES_EXCLUDED' | translate }}
                   </span>
                 }
                 <!-- Otherwise show regular permission badge -->
                 @if (!user.isExcluded) {
                   <span class="permission-badge" [ngClass]="user.highestPermission">
-                    <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
+                    <span class="material-symbols-outlined">{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</span>
                     {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
                   </span>
                 }
@@ -62,7 +62,7 @@
                   (click)="cancelExclusion(user)"
                   [disabled]="isRevokingAccess"
                   matTooltip="{{ 'RESTORE_ACCESS' | translate }}">
-                  <mat-icon>settings_backup_restore</mat-icon>
+                  <span class="material-symbols-outlined">settings_backup_restore</span>
                 </button>
               }
               <!-- Show revoke access button for non-excluded users -->
@@ -72,7 +72,7 @@
                   (click)="revokeAccess(user)"
                   [disabled]="isRevokingAccess"
                   matTooltip="{{ 'REVOKE_ACCESS' | translate }}">
-                  <mat-icon>no_accounts</mat-icon>
+                  <span class="material-symbols-outlined">no_accounts</span>
                 </button>
               }
             </div>
@@ -95,14 +95,14 @@
           <div class="user-item">
             <div class="user-avatar" [ngStyle]="{'background-image': user.profilePicture ? 'url(' + user.profilePicture + ')' : 'none'}">
               @if (!user.profilePicture) {
-                <mat-icon>person</mat-icon>
+                <span class="material-symbols-outlined">person</span>
               }
             </div>
             <div class="user-info">
               <span class="user-name">{{ getUserDisplayName(user) }}</span>
               <div class="permission-container">
                 <span class="permission-badge" [ngClass]="user.highestPermission">
-                  <mat-icon>{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</mat-icon>
+                  <span class="material-symbols-outlined">{{ user.highestPermission === 'edit' ? 'edit' : 'visibility' }}</span>
                   {{ (user.highestPermission === 'edit' ? 'READ_WRITE' : 'READ_ONLY') | translate }}
                 </span>
                 @if (user.shares && hasGlobalAccess(user)) {
@@ -120,7 +120,7 @@
 }
 @if (isLoadingSharingUsers) {
   <div class="loading-container">
-    <mat-icon class="loading-icon">sync</mat-icon>
+    <span class="material-symbols-outlined loading-icon">sync</span>
     <span>{{ 'LOADING_SHARING_USERS' | translate }}</span>
   </div>
 }

@@ -1,21 +1,25 @@
 @if (recipe) {
-<button class="add-button" 
-                (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()"
-                [@buttonClick]="buttonState"
-                (@buttonClick.done)="onAnimationDone()">
-        <div class="icon-container">
-                @if (isRecipeInShoppingList(recipe.id)) {
-                        <!-- Show a green check when the recipe is in the shopping list -->
-                        <mat-icon class="check-icon"
-                                          [@iconAnimation]="'visible'">
-                                check
-                        </mat-icon>
-                } @else {
-                        <!-- Default / add icon when recipe is not in the list -->
-                        <mat-icon svgIcon="add_shopping_cart"
-                                          [@iconAnimation]="'visible'">
-                        </mat-icon>
-                }
-        </div>
+<button
+  class="add-button"
+  (click)="addRecipeToShoppingList(recipe.id); $event.stopPropagation()"
+  [@buttonClick]="buttonState"
+  (@buttonClick.done)="onAnimationDone()"
+>
+  <div class="icon-container">
+    @if (isRecipeInShoppingList(recipe.id)) {
+    <!-- Show a green check when the recipe is in the shopping list -->
+    <span
+      class="material-symbols-outlined check-icon"
+      [@iconAnimation]="'visible'"
+    >
+      check
+    </span>
+    } @else {
+    <!-- Default / add icon when recipe is not in the list -->
+    <span class="material-symbols-outlined" [@iconAnimation]="'visible'">
+      add_shopping_cart
+    </span>
+    }
+  </div>
 </button>
 }

@@ -12,7 +12,7 @@
       (focus)="onInputFocus()"
       autocomplete="off">
       <button type="button" (click)="submitSearch()">
-        <mat-icon svgIcon="search"></mat-icon>
+        <span class="material-symbols-outlined">search</span>
       </button>
     </form>
 
@@ -44,19 +44,19 @@
                   <div class="recipe-meta">
                     @if (recipe.preparationTime) {
                       <span>
-                        <mat-icon>schedule</mat-icon>
+                        <span class="material-symbols-outlined">schedule</span>
                         {{ recipe.preparationTime }} {{ recipe.preparationUnit }}
                       </span>
                     }
                     @if (recipe.servings) {
                       <span>
-                        <mat-icon>people</mat-icon>
+                        <span class="material-symbols-outlined">people</span>
                         {{ recipe.servings }} {{ 'SERVINGS' | translate }}
                       </span>
                     }
                   </div>
                 </div>
-                <mat-icon class="arrow-icon">chevron_right</mat-icon>
+                <span class="material-symbols-outlined arrow-icon">chevron_right</span>
               </div>
             }
             <!-- View all results -->
@@ -67,7 +67,7 @@
                  role="button"
                  aria-label="View all search results">
               <div class="view-all-text">
-                <mat-icon>search</mat-icon>
+                <span class="material-symbols-outlined">search</span>
                 {{ 'VIEW_ALL_RESULTS' | translate }}
               </div>
             </div>
@@ -76,7 +76,7 @@
         <!-- No results -->
         @if (showNoResults) {
           <div class="dropdown-no-results">
-            <mat-icon>search_off</mat-icon>
+            <span class="material-symbols-outlined">search_off</span>
             <span>{{ 'NO_RECIPES_FOUND' | translate }}</span>
           </div>
         }

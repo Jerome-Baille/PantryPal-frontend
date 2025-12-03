@@ -18,7 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { FavoriteService } from 'src/app/core/services/favorite.service';
 import { RecipeGuidedModeComponent } from './recipe-guided-mode/recipe-guided-mode.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltip } from '@angular/material/tooltip';
 import { Recipe } from 'src/app/shared/models/recipe.model';
 
 interface RecipeIngredient {
@@ -45,7 +45,7 @@ interface RecipeIngredient {
         TimerComponent,
         TranslateModule,
         MatSelectModule,
-        MatTooltipModule,
+        MatTooltip,
     ],
     templateUrl: './recipe-detail.component.html',
     styleUrls: ['./recipe-detail.component.scss']

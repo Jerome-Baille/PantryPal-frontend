@@ -40,7 +40,7 @@ export interface ExcludedRecipesDialogData {
     
       @if (!isLoading && recipes.length === 0) {
         <div class="empty-state">
-          <mat-icon>info</mat-icon>
+          <span class="material-symbols-outlined">info</span>
           <p>{{ 'NO_EXCLUDED_RECIPES' | translate }}</p>
         </div>
       }
@@ -55,7 +55,7 @@ export interface ExcludedRecipesDialogData {
                   [disabled]="restoringRecipeIds.includes(recipe.id)"
                   matTooltip="{{ 'RESTORE_ACCESS' | translate }}">
                   @if (!restoringRecipeIds.includes(recipe.id)) {
-                    <mat-icon>settings_backup_restore</mat-icon>
+                    <span class="material-symbols-outlined">settings_backup_restore</span>
                   }
                   @if (restoringRecipeIds.includes(recipe.id)) {
                     <mat-spinner diameter="20"></mat-spinner>
@@ -88,7 +88,7 @@ export interface ExcludedRecipesDialogData {
       text-align: center;
     }
     
-    .empty-state mat-icon {
+    .empty-state .material-symbols-outlined {
       font-size: 48px;
       width: 48px;
       height: 48px;

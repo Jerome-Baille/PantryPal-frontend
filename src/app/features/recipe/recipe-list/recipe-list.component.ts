@@ -269,11 +269,6 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     }
 
 
-
-    createRecipe(): void {
-        this.router.navigate(['/recipe/create']);
-    }
-
     // Filter-related methods
     loadFilterData(): void {
         let booksLoaded = false;

@@ -4,7 +4,7 @@
     <!-- Language Settings Card -->
     <mat-card class="language-settings bento-item">
       <mat-card-header>
-        <mat-icon mat-card-avatar>language</mat-icon>
+        <span class="material-symbols-outlined" mat-card-avatar>language</span>
         <mat-card-title>
           {{ 'LANGUAGE' | translate }}
         </mat-card-title>
@@ -20,14 +20,21 @@
     <!-- Logout Section -->
     <mat-card class="logout-section bento-item">
       <mat-card-header>
-        <mat-icon mat-card-avatar>exit_to_app</mat-icon>
+        <span class="material-symbols-outlined" mat-card-avatar>exit_to_app</span>
         <mat-card-title>{{ 'ACCOUNT' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <button mat-raised-button color="warn" (click)="onLogout()">
-          <mat-icon>logout</mat-icon>
-          {{ 'LOGOUT' | translate }}
-        </button>
+        <div class="account-actions">
+          <button mat-raised-button color="primary" routerLink="/favorites">
+            <span class="material-symbols-outlined">favorite</span>
+            {{ 'FAVORITES' | translate }}
+          </button>
+
+          <button mat-raised-button color="warn" (click)="onLogout()">
+            <span class="material-symbols-outlined">logout</span>
+            {{ 'LOGOUT' | translate }}
+          </button>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>
@@ -37,7 +44,7 @@
     <!-- Share Settings Card -->
     <mat-card class="share-settings bento-item">
       <mat-card-header>
-        <mat-icon mat-card-avatar>settings</mat-icon>
+        <span class="material-symbols-outlined" mat-card-avatar>settings</span>
         <mat-card-title>{{ 'SHARE_SETTINGS' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -56,7 +63,7 @@
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit">
-            <mat-icon>link</mat-icon>
+            <span class="material-symbols-outlined">link</span>
             {{ 'CREATE_SHARE_LINK' | translate }}
           </button>
         </form>
@@ -67,7 +74,7 @@
               <mat-label>{{ 'SHARE_URL' | translate }}</mat-label>
               <input matInput [value]="shareUrl" readonly id="share-url">
               <button matSuffix mat-icon-button (click)="copyShareUrl()" matTooltip="{{ 'COPY_TO_CLIPBOARD' | translate }}">
-                <mat-icon>content_copy</mat-icon>
+                  <span class="material-symbols-outlined">content_copy</span>
               </button>
             </mat-form-field>
           </div>
@@ -78,7 +85,7 @@
     <!-- Share Links Section -->
     <mat-card class="share-links-section bento-item">
       <mat-card-header>
-        <mat-icon mat-card-avatar>link</mat-icon>
+        <span class="material-symbols-outlined" mat-card-avatar>link</span>
         <mat-card-title>{{ 'SHARE_LINKS' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -93,24 +100,24 @@
           @if (shareStats && showAllLinks) {
             <div class="bulk-actions">
               <button mat-icon-button [matMenuTriggerFor]="bulkMenu" [disabled]="isDeletingAllLinks" class="bulk-actions-button">
-                <mat-icon svgIcon="more_vert"></mat-icon>
+                <span class="material-symbols-outlined">more_vert</span>
               </button>
               <mat-menu #bulkMenu="matMenu">
                 @if (shareStats.expired > 0) {
                   <button mat-menu-item (click)="bulkDeleteShareLinks('expired')">
-                    <mat-icon>auto_delete</mat-icon>
+                    <span class="material-symbols-outlined">auto_delete</span>
                     {{ 'DELETE_EXPIRED_LINKS' | translate }} ({{shareStats.expired}})
                   </button>
                 }
                 @if (shareStats.used > 0) {
                   <button mat-menu-item (click)="bulkDeleteShareLinks('used')">
-                    <mat-icon>delete_forever</mat-icon>
+                    <span class="material-symbols-outlined">delete_forever</span>
                     {{ 'DELETE_USED_LINKS' | translate }} ({{shareStats.used}})
                   </button>
                 }
                 @if (shareStats.accepted > 0) {
                   <button mat-menu-item (click)="bulkDeleteShareLinks('accepted')">
-                    <mat-icon>delete_outline</mat-icon>
+                    <span class="material-symbols-outlined">delete_outline</span>
                     {{ 'DELETE_ACCEPTED_LINKS' | translate }} ({{shareStats.accepted}})
                   </button>
                 }
@@ -143,22 +150,22 @@
               </div>
               <div class="link-content">
                 <div class="link-permissions">
-                  <mat-icon>{{ link.permissionLevel === 'read' ? 'visibility' : 'edit' }}</mat-icon>
+                  <span class="material-symbols-outlined">{{ link.permissionLevel === 'read' ? 'visibility' : 'edit' }}</span>
                   <span>{{ (link.permissionLevel === 'read' ? 'READ_ONLY' : 'READ_WRITE') | translate }}</span>
                 </div>
                 <div class="link-expiry">
-                  <mat-icon>schedule</mat-icon>
+                  <span class="material-symbols-outlined">schedule</span>
                   <span>{{ 'EXPIRES_AT' | translate }}: {{ link.expiresAt | date:'short' }}</span>
                 </div>
               </div>
               <div class="link-actions">
                 <button mat-stroked-button (click)="copyShareUrl(link.shareUrl)" color="primary">
-                  <mat-icon>content_copy</mat-icon>
+                  <span class="material-symbols-outlined">content_copy</span>
                   {{ 'COPY_LINK' | translate }}
                 </button>
                 <!-- New: Delete button -->
                 <button mat-stroked-button color="warn" (click)="deleteShareLink(link)" [disabled]="isDeletingLink">
-                  <mat-icon>delete</mat-icon>
+                  <span class="material-symbols-outlined">delete</span>
                   {{ 'DELETE' | translate }}
                 </button>
               </div>
@@ -174,7 +181,7 @@
     <!-- Sharing Users Section - Using the new component -->
     <mat-card class="sharing-users-section bento-item">
       <mat-card-header>
-        <mat-icon mat-card-avatar>people</mat-icon>
+        <span class="material-symbols-outlined" mat-card-avatar>people</span>
         <mat-card-title>{{ 'SHARING_USERS' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>

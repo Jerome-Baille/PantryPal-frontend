@@ -3,27 +3,24 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
+import { MatFormField, MatSelect, MatLabel, MatOption } from '@angular/material/select';
+import { MatInput } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatTooltip } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { LanguageService } from '../../core/services/language.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ShareService } from '../../core/services/share.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SnackbarService } from '../../core/services/snackbar.service';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
 import { Recipe } from '../../shared/models/favorite.interface';
 import { ShareLink, ShareLinkStats } from '../../core/services/share.service';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { SharingUsersComponent } from '../../shared/components/sharing-users/sharing-users.component';
 
 @Component({
@@ -36,19 +33,21 @@ import { SharingUsersComponent } from '../../shared/components/sharing-users/sha
     MatButtonToggleModule,
     MatCardModule,
     MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
+    MatFormField,
+    MatSelect,
+    MatInput,
     MatChipsModule,
-    MatSlideToggleModule,
-    MatTooltipModule,
-    MatDividerModule,
+    MatSlideToggle,
+    MatTooltip,
     MatDialogModule,
-    MatMenuModule,
+    MatMenu,
     TranslateModule,
-    SharingUsersComponent
-  ],
+    SharingUsersComponent,
+    RouterLink,
+    MatLabel,
+    MatOption,
+    MatMenuTrigger
+],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })

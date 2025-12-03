@@ -32,7 +32,7 @@
   @if (bookForm.get('bookSelection')?.value === 'new') {
     <div class="full-width new-book-container">
       <mat-form-field>
-        <mat-label>
+        <mat-label for="book-title">
           {{ 'TITLE' | translate }}
         </mat-label>
         <input matInput formControlName="title" placeholder="Enter book title" aria-label="Title of the book"
@@ -44,7 +44,7 @@
           }
         </mat-form-field>
         <mat-form-field>
-          <mat-label>
+          <mat-label for="book-author">
             {{ 'AUTHOR' | translate }}
           </mat-label>
           <input matInput formControlName="author" placeholder="Enter author" aria-label="Author of the book" required
