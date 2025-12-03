@@ -377,4 +377,28 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
             }
         });
     }
+
+    // Handle clicks on the overall instruction item (for mobile UX)
+    onInstructionClick(event: Event, index: number): void {
+        // If the device is mobile-sized, toggle the step. On larger screens, clicking the
+        // surrounding area should do nothing (the visible checkbox is used there).
+        const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+        if (isMobile) {
+            this.toggleStepCompletion(index);
+        }
+    }
+
+    // Handle clicks on the checkbox button without letting the click bubble up
+    onCheckboxClick(event: Event, index: number): void {
+        event.stopPropagation();
+        this.toggleStepCompletion(index);
+    }
+
+    onInstructionKeydown(event: KeyboardEvent, index: number): void {
+        const key = event.key;
+        if (key === 'Enter' || key === ' ') {
+            event.preventDefault();
+            this.onInstructionClick(event, index);
+        }
+    }
 }

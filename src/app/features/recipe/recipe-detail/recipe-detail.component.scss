@@ -97,7 +97,7 @@ li:before {
 .option-buttons {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   padding: 16px;
 
   app-add-to-shopping-list {
@@ -500,6 +500,16 @@ mat-card.section-card mat-card-content:has(> .instructions) {
     .instruction-text {
       font-size: 15px;
     }
+  }
+
+  /* Hide the explicit checkbox button on smaller screens; the whole item becomes tappable. */
+  .step-checkbox {
+    display: none;
+  }
+
+  /* Make the entire item look tappable on mobile */
+  .instruction-item {
+    cursor: pointer;
   }
 }
 

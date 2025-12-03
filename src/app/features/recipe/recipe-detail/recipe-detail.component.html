@@ -128,10 +128,10 @@
           </mat-card-header>
           <mat-card-content>
             @for (instruction of isolatedInstructions; track i; let i = $index; let last = $last) {
-              <div class="instruction-item" [class.completed]="isStepCompleted(i)">
+              <div class="instruction-item" [class.completed]="isStepCompleted(i)" (click)="onInstructionClick($event, i)" tabindex="0" role="button" (keydown)="onInstructionKeydown($event, i)">
                 <button 
                   class="step-checkbox"
-                  (click)="toggleStepCompletion(i)"
+                  (click)="onCheckboxClick($event, i)"
                   [attr.aria-label]="(isStepCompleted(i) ? 'MARK_INCOMPLETE' : 'MARK_COMPLETE') | translate"
                   [attr.aria-pressed]="isStepCompleted(i)"
                   mat-icon-button>
