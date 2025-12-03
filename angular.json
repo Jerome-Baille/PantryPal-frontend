@@ -42,8 +42,12 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/app/login/dev-login.component.ts",
-                  "with": "src/app/login/dev-login.component.prod.ts"
+                  "replace": "src/app/features/login/dev-login.component.ts",
+                  "with": "src/app/features/login/dev-login.component.prod.ts"
+                },
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ],
               "budgets": [
