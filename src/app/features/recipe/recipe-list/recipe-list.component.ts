@@ -475,7 +475,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
     getThumbnailUrl(recipe: { id: number; title: string; thumbnail?: string }): string {
         if (recipe.thumbnail) {
-            return `https://pantry-pal.jerome-baille.fr/backend${recipe.thumbnail}`;
+            return `${recipe.thumbnail}`;
         }
         return 'assets/icons/icon-512x512.png'; // Fallback image
     }

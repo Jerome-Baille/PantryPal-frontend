@@ -147,12 +147,10 @@
           role="button"
           [attr.aria-label]="'View ' + recipe.title"
         >
-          <img
-            [src]="getThumbnailUrl(recipe)"
-            [alt]="recipe.title"
-            class="recipe-thumbnail"
-            loading="lazy"
-          />
+        <picture>
+          <source [srcset]="getThumbnailUrl(recipe)">
+          <img [src]="getThumbnailUrl(recipe)" [alt]="recipe.title" class="recipe-thumbnail" loading="lazy">
+        </picture>
         </div>
         <div
           class="recipe-content"
