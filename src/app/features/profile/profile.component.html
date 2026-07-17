@@ -1,105 +1,141 @@
 <div class="profile-container">
-  <!-- First row: Language Settings and Logout Section side by side -->
-  <div class="bento-row">
-    <!-- Language Settings Card -->
-    <mat-card class="language-settings bento-item">
-      <mat-card-header>
-        <span class="material-symbols-outlined" mat-card-avatar>language</span>
-        <mat-card-title>
-          {{ 'LANGUAGE' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-button-toggle-group [value]="currentLang" (change)="switchLanguage($event.value)">
-          <mat-button-toggle value="en">English</mat-button-toggle>
-          <mat-button-toggle value="fr">Français</mat-button-toggle>
-        </mat-button-toggle-group>
-      </mat-card-content>
-    </mat-card>
 
-    <!-- Logout Section -->
-    <mat-card class="logout-section bento-item">
-      <mat-card-header>
-        <span class="material-symbols-outlined" mat-card-avatar>exit_to_app</span>
-        <mat-card-title>{{ 'ACCOUNT' | translate }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="account-actions">
+  <!-- ============ Profile Header ============ -->
+  <section class="card profile-header">
+    <div class="profile-hero">
+      <div class="avatar-wrapper">
+        <div class="avatar-circle">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <button class="avatar-edit-btn" disabled>
+          <span class="material-symbols-outlined">edit</span>
+        </button>
+      </div>
+      <div class="profile-info">
+        <h1>John Doe</h1>
+        <p class="profile-bio">Mastering the art of pantry-first cooking.</p>
+        <div class="profile-actions">
           <button mat-raised-button color="primary" routerLink="/favorites">
             <span class="material-symbols-outlined">favorite</span>
             {{ 'FAVORITES' | translate }}
           </button>
-
-          <button mat-raised-button color="warn" (click)="onLogout()">
-            <span class="material-symbols-outlined">logout</span>
-            {{ 'LOGOUT' | translate }}
+          <button mat-stroked-button disabled>
+            <span class="material-symbols-outlined">edit</span>
+            Edit Profile
           </button>
         </div>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Account & Preferences Grid ============ -->
+  <div class="two-col-grid">
+
+    <!-- Account Settings -->
+    <section class="card account-section">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-symbols-outlined">manage_accounts</span>
+        </div>
+        <h2>{{ 'ACCOUNT' | translate }}</h2>
+      </div>
+      <div class="account-fields">
+        <div class="field-row">
+          <span class="field-label">Email Address</span>
+          <span class="field-value">user&#64;example.com</span>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Member Since</span>
+          <span class="field-value">October 2021</span>
+        </div>
+        <button mat-button color="primary" class="text-action-btn" disabled>Change Password</button>
+      </div>
+      <div class="section-footer">
+        <button mat-raised-button color="warn" class="full-width-btn" (click)="onLogout()">
+          <span class="material-symbols-outlined">logout</span>
+          {{ 'LOGOUT' | translate }}
+        </button>
+      </div>
+    </section>
+
+    <!-- Language & Preferences -->
+    <section class="card preferences-section">
+      <div class="section-header">
+        <div class="section-icon">
+          <span class="material-symbols-outlined">language</span>
+        </div>
+        <h2>{{ 'LANGUAGE' | translate }}</h2>
+      </div>
+      <div class="preferences-content">
+        <label class="pref-label">Application Language</label>
+        <mat-button-toggle-group [value]="currentLang" (change)="switchLanguage($event.value)" class="lang-toggle">
+          <mat-button-toggle value="en">English</mat-button-toggle>
+          <mat-button-toggle value="fr">Français</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </section>
+
   </div>
 
-  <!-- Second row: Share Settings and Share Links side by side -->
-  <div class="bento-row">
-    <!-- Share Settings Card -->
-    <mat-card class="share-settings bento-item">
-      <mat-card-header>
-        <span class="material-symbols-outlined" mat-card-avatar>settings</span>
-        <mat-card-title>{{ 'SHARE_SETTINGS' | translate }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="shareForm" (ngSubmit)="createShareLink()">
-          <mat-form-field class="full-width" appearance="outline">
-            <mat-label>{{ 'PERMISSION_LEVEL' | translate }}</mat-label>
-            <mat-select formControlName="permissionLevel" id="share-permission-level">
-              <mat-option value="read">{{ 'READ_ONLY' | translate }}</mat-option>
-              <mat-option value="edit">{{ 'READ_WRITE' | translate }}</mat-option>
-            </mat-select>
-          </mat-form-field>
+  <!-- ============ Sharing Hub ============ -->
+  <section class="card sharing-hub">
+    <div class="sharing-hub-header">
+      <div class="sharing-hub-title">
+        <div class="section-icon">
+          <span class="material-symbols-outlined">share</span>
+        </div>
+        <h2>{{ 'SHARE_SETTINGS' | translate }}</h2>
+      </div>
+    </div>
 
-          <mat-form-field class="full-width" appearance="outline">
-            <mat-label>{{ 'EXPIRES_IN_DAYS' | translate }}</mat-label>
-            <input matInput type="number" formControlName="expiresInDays" min="1" max="30" id="share-expires-in-days">
-          </mat-form-field>
+    <div class="sharing-hub-body">
 
-          <button mat-raised-button color="primary" type="submit">
+      <!-- Create Share Link Form -->
+      <form [formGroup]="shareForm" (ngSubmit)="createShareLink()" class="share-create-form">
+        <mat-form-field appearance="outline" class="share-form-field">
+          <mat-label>{{ 'PERMISSION_LEVEL' | translate }}</mat-label>
+          <mat-select formControlName="permissionLevel" id="share-permission-level">
+            <mat-option value="read">{{ 'READ_ONLY' | translate }}</mat-option>
+            <mat-option value="edit">{{ 'READ_WRITE' | translate }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="share-form-field">
+          <mat-label>{{ 'EXPIRES_IN_DAYS' | translate }}</mat-label>
+          <input matInput type="number" formControlName="expiresInDays" min="1" max="30" id="share-expires-in-days">
+        </mat-form-field>
+
+        <div class="share-btn-wrapper">
+          <button mat-stroked-button color="primary" type="submit" class="full-width-btn">
             <span class="material-symbols-outlined">link</span>
             {{ 'CREATE_SHARE_LINK' | translate }}
           </button>
-        </form>
+        </div>
+      </form>
 
-        @if (shareUrl) {
-          <div class="share-url-container">
-            <mat-form-field class="full-width" appearance="outline">
-              <mat-label>{{ 'SHARE_URL' | translate }}</mat-label>
-              <input matInput [value]="shareUrl" readonly id="share-url">
-              <button matSuffix mat-icon-button (click)="copyShareUrl()" matTooltip="{{ 'COPY_TO_CLIPBOARD' | translate }}">
-                  <span class="material-symbols-outlined">content_copy</span>
-              </button>
-            </mat-form-field>
-          </div>
-        }
-      </mat-card-content>
-    </mat-card>
+      @if (shareUrl) {
+        <div class="share-url-display">
+          <mat-form-field appearance="outline" class="share-form-field">
+            <mat-label>{{ 'SHARE_URL' | translate }}</mat-label>
+            <input matInput [value]="shareUrl" readonly id="share-url">
+            <button matSuffix mat-icon-button (click)="copyShareUrl()" matTooltip="{{ 'COPY_TO_CLIPBOARD' | translate }}">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </mat-form-field>
+        </div>
+      }
 
-    <!-- Share Links Section -->
-    <mat-card class="share-links-section bento-item">
-      <mat-card-header>
-        <span class="material-symbols-outlined" mat-card-avatar>link</span>
-        <mat-card-title>{{ 'SHARE_LINKS' | translate }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="share-links-header">
-          <div class="toggle-container">
+      <!-- Share Links Block -->
+      <div class="hub-block">
+        <div class="hub-block-header">
+          <h3>{{ 'SHARE_LINKS' | translate }}</h3>
+          <div class="hub-block-controls">
             <mat-slide-toggle [(ngModel)]="showAllLinks" (change)="loadShareLinks()">
               {{ 'SHOW_ALL_LINKS' | translate }}
             </mat-slide-toggle>
-          </div>
 
-          <!-- New: Bulk management options -->
-          @if (shareStats && showAllLinks) {
-            <div class="bulk-actions">
-              <button mat-icon-button [matMenuTriggerFor]="bulkMenu" [disabled]="isDeletingAllLinks" class="bulk-actions-button">
+            @if (shareStats && showAllLinks) {
+              <button mat-icon-button [matMenuTriggerFor]="bulkMenu" [disabled]="isDeletingAllLinks">
                 <span class="material-symbols-outlined">more_vert</span>
               </button>
               <mat-menu #bulkMenu="matMenu">
@@ -122,71 +158,73 @@
                   </button>
                 }
               </mat-menu>
-            </div>
-          }
+            }
+          </div>
         </div>
 
-        <div class="share-links-list">
-          @if (shareLinks.length === 0) {
-            <div class="no-links-message">
-              {{ 'NO_SHARE_LINKS' | translate }}
-            </div>
-          }
+        @if (shareLinks.length === 0) {
+          <div class="empty-state">
+            <span class="material-symbols-outlined empty-icon">link_off</span>
+            <p>{{ 'NO_SHARE_LINKS' | translate }}</p>
+          </div>
+        } @else {
+          <div class="share-links-table-wrap">
+            <table class="share-links-table">
+              <thead>
+                <tr>
+                  <th>Recipe</th>
+                  <th>{{ 'PERMISSION_LEVEL' | translate }}</th>
+                  <th>Status</th>
+                  <th>{{ 'EXPIRES_AT' | translate }}</th>
+                  <th class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (link of shareLinks; track link.token) {
+                  <tr>
+                    <td>
+                      @if (link.type === 'recipe') {
+                        <span class="link-recipe-title">{{ link.recipe?.title }}</span>
+                      }
+                      @if (link.type === 'global') {
+                        <span class="link-global">{{ 'ALL_RECIPES' | translate }}</span>
+                      }
+                    </td>
+                    <td>
+                      <span [class]="'permission-badge ' + link.permissionLevel">
+                        <span class="material-symbols-outlined">{{ link.permissionLevel === 'read' ? 'visibility' : 'edit' }}</span>
+                        {{ (link.permissionLevel === 'read' ? 'READ_ONLY' : 'READ_WRITE') | translate }}
+                      </span>
+                    </td>
+                    <td>
+                      <span [class]="'status-badge ' + link.status">{{ link.status | uppercase }}</span>
+                    </td>
+                    <td class="col-date">{{ link.expiresAt | date:'shortDate' }}</td>
+                    <td class="col-actions">
+                      <button mat-icon-button color="primary" (click)="copyShareUrl(link.shareUrl)" matTooltip="{{ 'COPY_LINK' | translate }}">
+                        <span class="material-symbols-outlined">content_copy</span>
+                      </button>
+                      <button mat-icon-button color="warn" (click)="deleteShareLink(link)" [disabled]="isDeletingLink" matTooltip="{{ 'DELETE' | translate }}">
+                        <span class="material-symbols-outlined">delete</span>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
 
-          @for (link of shareLinks; track link.token) {
-            <mat-card class="share-link-item">
-              <div class="link-header">
-                <div class="link-title">
-                  @if (link.type === 'recipe') {
-                    <span class="recipe-title">{{ link.recipe?.title }}</span>
-                  }
-                  @if (link.type === 'global') {
-                    <span class="all-recipes">{{ 'ALL_RECIPES' | translate }}</span>
-                  }
-                </div>
-                <div class="link-status">
-                  <span [class]="'status-badge ' + link.status">{{ link.status | uppercase }}</span>
-                </div>
-              </div>
-              <div class="link-content">
-                <div class="link-permissions">
-                  <span class="material-symbols-outlined">{{ link.permissionLevel === 'read' ? 'visibility' : 'edit' }}</span>
-                  <span>{{ (link.permissionLevel === 'read' ? 'READ_ONLY' : 'READ_WRITE') | translate }}</span>
-                </div>
-                <div class="link-expiry">
-                  <span class="material-symbols-outlined">schedule</span>
-                  <span>{{ 'EXPIRES_AT' | translate }}: {{ link.expiresAt | date:'short' }}</span>
-                </div>
-              </div>
-              <div class="link-actions">
-                <button mat-stroked-button (click)="copyShareUrl(link.shareUrl)" color="primary">
-                  <span class="material-symbols-outlined">content_copy</span>
-                  {{ 'COPY_LINK' | translate }}
-                </button>
-                <!-- New: Delete button -->
-                <button mat-stroked-button color="warn" (click)="deleteShareLink(link)" [disabled]="isDeletingLink">
-                  <span class="material-symbols-outlined">delete</span>
-                  {{ 'DELETE' | translate }}
-                </button>
-              </div>
-            </mat-card>
-          }
+      <!-- Sharing Users Block -->
+      <div class="hub-block">
+        <div class="hub-block-header">
+          <h3>{{ 'SHARING_USERS' | translate }}</h3>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <!-- Third row: Sharing Users Section (full width) -->
-  <div class="bento-row full-width">
-    <!-- Sharing Users Section - Using the new component -->
-    <mat-card class="sharing-users-section bento-item">
-      <mat-card-header>
-        <span class="material-symbols-outlined" mat-card-avatar>people</span>
-        <mat-card-title>{{ 'SHARING_USERS' | translate }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
         <app-sharing-users></app-sharing-users>
-      </mat-card-content>
-    </mat-card>
-  </div>
+      </div>
+
+    </div>
+  </section>
+
 </div>
