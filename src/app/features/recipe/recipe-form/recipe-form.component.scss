@@ -6,9 +6,9 @@
   padding: 24px;
   margin: auto;
   background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ccc;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
+  border: 1px solid #e5e7eb;
   box-sizing: border-box;
 
   @media screen and (max-width: 960px) {
@@ -20,79 +20,8 @@
   }
 }
 
-/* Input styles */
 .mat-mdc-form-field {
   width: 100%;
-  margin-bottom: 8px;
-
-  input.mat-input-element,
-  textarea.mat-input-element {
-    background-color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-
-    /* Add a box-shadow on focus */
-    &:focus {
-      box-shadow: 0 0 0 2px #007bff;
-    }
-  }
-}
-
-button.mat-raised-button {
-  font-size: 14px;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-
-  /* Add a box-shadow on hover */
-  &:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  &.color-primary {
-    background-color: #007bff;
-    color: #fff;
-  }
-
-  /* Updated styles for "Add Ingredient" button */
-  &.color-accent {
-    background-color: #17a2b8;
-    color: #fff;
-  }
-}
-
-/* Error message styles */
-.mat-form-field.mat-form-field-invalid {
-  .mat-input-container {
-    color: #dc3545;
-  }
-
-  .mat-form-field-underline {
-    background-color: #dc3545;
-  }
-
-  .mat-form-field-ripple {
-    background-color: #dc3545;
-  }
-}
-
-/* Additional styles for time-unit-container */
-.time-unit-container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-
-  mat-form-field {
-    flex: 1;
-  }
-
-  mat-select {
-    width: 100px;
-  }
 }
 
 .recipe-title {
@@ -106,7 +35,9 @@ button.mat-raised-button {
   align-items: center;
   gap: 12px;
   width: 100%;
-  margin-top: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f1f4;
   box-sizing: border-box;
 
   &__end {
@@ -116,90 +47,10 @@ button.mat-raised-button {
     gap: 12px;
   }
 }
-/* Updated styles for textarea */
-textarea.mat-input-element {
-  background-color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 14px;
-  line-height: 1.5;
-  resize: vertical;
-  /* Allow vertical resizing */
-  min-height: 40px;
-  /* Set a minimum height to avoid it becoming too small */
-  overflow-y: hidden;
-  /* Hide vertical scrollbar */
-}
-
-/* Remove button styles */
-button.mat-icon-button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-}
 
 .full-width {
   width: 100%;
 }
-
-.timers-section {
-  /* Updated timers-section styles to align with template aesthetics */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  background-color: transparent;
-  padding: 0;
-  border: none;
-  box-shadow: none;
-
-  .timer-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-width: 0;
-    gap: 10px;
-    padding: 5px 0;
-    justify-content: center;
-  }
-
-  .time-input-group {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-
-    .mat-mdc-form-field {
-      flex: 1 1 90px;
-      min-width: 90px;
-      width: auto;
-    }
-  }
-
-  .timer-card {
-    display: flex;
-    justify-content: space-between;
-    background-color: #fff;
-    padding: 16px;
-    margin-bottom: 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-
-    @media screen and (max-width: 768px) {
-      flex-direction: column;
-    }
-  }
-}
-
-.timers-section .divider {
-  margin: 10px 0;
-}
-
-.timer-container {
-  width: 100%;
-}
-
 .recipe-stepper {
   background-color: transparent;
 
@@ -289,42 +140,6 @@ button.mat-icon-button {
   }
 }
 
-.step-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  padding-top: 16px;
-}
-
-.step-section-title {
-  margin: 16px 0 8px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #2c3e50;
-}
-.icon-delete {
-  display: none;
-
-  @media screen and (min-width: 769px) {
-    display: block;
-  }
-}
-
-.text-delete {
-  display: none;
-
-  @media screen and (max-width: 768px) {
-    display: block;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  ::ng-deep .icon-delete svg {
-    fill: #c56c5c;
-  }
-}
 
 /* Step 1: The Basics */
 $basics-border: #e5e7eb;
@@ -335,7 +150,7 @@ $basics-accent: #3f51b5;
 $basics-accent-soft: #eef0fb;
 $basics-danger: #dc3545;
 
-.basics {
+.step-panel {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -378,7 +193,7 @@ $basics-danger: #dc3545;
   }
 }
 
-.basics-card {
+.step-card {
   box-sizing: border-box;
   padding: 24px;
   background-color: #fff;
@@ -662,5 +477,77 @@ $basics-danger: #dc3545;
   .servings,
   .servings__btn {
     transition: none;
+  }
+}
+
+.step-card {
+  &__hint {
+    margin: -8px 0 16px;
+    font-size: 13px;
+    color: $basics-muted;
+  }
+
+  &__add {
+    .material-symbols-outlined {
+      margin-right: 6px;
+      font-size: 20px;
+    }
+  }
+}
+
+/* Timers */
+.timers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.timer-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 40px;
+  align-items: start;
+  gap: 12px;
+  padding: 12px;
+  background-color: $basics-surface;
+  border: 1px solid $basics-border;
+  border-radius: 8px;
+
+  mat-form-field {
+    margin-bottom: 0;
+  }
+
+  &__time {
+    display: grid;
+    grid-template-columns: repeat(3, 88px);
+    gap: 8px;
+  }
+
+  &__remove {
+    margin-top: 8px;
+    color: $basics-muted;
+
+    &:hover {
+      color: $basics-danger;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: minmax(0, 1fr) 40px;
+
+    &__name {
+      grid-column: 1;
+    }
+
+    &__time {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    &__remove {
+      grid-column: 2;
+      grid-row: 1;
+    }
   }
 }

@@ -27,15 +27,15 @@
       <mat-step [hasError]="hasStepError(0)">
         <ng-template matStepLabel>{{ 'STEP_BASICS' | translate }}</ng-template>
 
-        <div class="basics">
-          <header class="basics__header">
-            <h2 class="basics__title">{{ 'STEP_BASICS' | translate }}</h2>
-            <p class="basics__subtitle">{{ 'STEP_BASICS_SUBTITLE' | translate }}</p>
+        <div class="step-panel">
+          <header class="step-panel__header">
+            <h2 class="step-panel__title">{{ 'STEP_BASICS' | translate }}</h2>
+            <p class="step-panel__subtitle">{{ 'STEP_BASICS_SUBTITLE' | translate }}</p>
           </header>
 
-          <div formGroupName="recipe" class="basics__grid">
+          <div formGroupName="recipe" class="step-panel__grid">
             <!-- Photo -->
-            <section class="basics-card basics-photo" [attr.aria-label]="'RECIPE_IMAGE' | translate">
+            <section class="step-card basics-photo" [attr.aria-label]="'RECIPE_IMAGE' | translate">
               <input type="file"
                 #imageInput
                 class="basics-photo__input"
@@ -69,8 +69,8 @@
             </section>
 
             <!-- Details -->
-            <section class="basics-card basics-details">
-              <h3 class="basics-card__title">
+            <section class="step-card basics-details">
+              <h3 class="step-card__title">
                 <span class="material-symbols-outlined" aria-hidden="true">restaurant_menu</span>
                 {{ 'RECIPE_DETAILS' | translate }}
               </h3>
@@ -113,8 +113,8 @@
           </div>
 
           <!-- Book -->
-          <section class="basics-card basics-book">
-            <h3 class="basics-card__title">
+          <section class="step-card basics-book">
+            <h3 class="step-card__title">
               <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
               {{ 'BOOK_SECTION' | translate }}
             </h3>
@@ -137,7 +137,12 @@
       <mat-step [hasError]="hasStepError(1)">
         <ng-template matStepLabel>{{ 'INGREDIENTS' | translate }}</ng-template>
 
-        <div class="step-content">
+        <div class="step-panel">
+          <header class="step-panel__header">
+            <h2 class="step-panel__title">{{ 'INGREDIENTS' | translate }}</h2>
+            <p class="step-panel__subtitle">{{ 'STEP_INGREDIENTS_SUBTITLE' | translate }}</p>
+          </header>
+
           <app-ingredient-form class="full-width" [recipeForm]="recipeForm">
           </app-ingredient-form>
         </div>
@@ -156,11 +161,20 @@
       <mat-step [hasError]="hasStepError(2)">
         <ng-template matStepLabel>{{ 'STEP_METHOD' | translate }}</ng-template>
 
-        <div class="step-content">
-          <div formGroupName="recipe" class="full-width">
-            <mat-form-field>
-              <mat-label>Instructions</mat-label>
-              <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="5"
+        <div class="step-panel">
+          <header class="step-panel__header">
+            <h2 class="step-panel__title">{{ 'STEP_METHOD' | translate }}</h2>
+            <p class="step-panel__subtitle">{{ 'STEP_METHOD_SUBTITLE' | translate }}</p>
+          </header>
+
+          <section class="step-card" formGroupName="recipe">
+            <h3 class="step-card__title">
+              <span class="material-symbols-outlined" aria-hidden="true">format_list_numbered</span>
+              {{ 'INSTRUCTIONS_SECTION' | translate }}
+            </h3>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'INSTRUCTIONS_SECTION' | translate }}</mat-label>
+              <textarea matInput placeholder="Instructions" aria-label="Instructions for the recipe" rows="8"
                 required formControlName="instructions" id="recipe-instructions"></textarea>
               @if (recipeForm.get('recipe.instructions')?.invalid && recipeForm.get('recipe.instructions')?.touched) {
                 <mat-error>
@@ -168,56 +182,50 @@
                 </mat-error>
               }
             </mat-form-field>
-          </div>
+          </section>
 
           <!-- Timers Section -->
-          <h3 class="step-section-title">{{ 'TIMERS_SECTION' | translate }}</h3>
-          <div formArrayName="timers" class="timers-section">
-            @for (timerCtrl of timers.controls; track $index; let i = $index) {
-              <div [formGroupName]="i" class="timer-card">
-                <div class="timer-group">
-                  <mat-form-field>
-                    <mat-label>
-                      {{ 'TIMER_NAME' | translate }}
-                    </mat-label>
+          <section class="step-card">
+            <h3 class="step-card__title">
+              <span class="material-symbols-outlined" aria-hidden="true">timer</span>
+              {{ 'TIMERS_SECTION' | translate }}
+            </h3>
+            <p class="step-card__hint">{{ 'TIMERS_HINT' | translate }}</p>
+
+            <div formArrayName="timers" class="timers">
+              @for (timerCtrl of timers.controls; track $index; let i = $index) {
+                <div [formGroupName]="i" class="timer-row">
+                  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="timer-row__name">
+                    <mat-label>{{ 'TIMER_NAME' | translate }}</mat-label>
                     <input matInput placeholder="Timer Name" formControlName="name" id="timer-name-{{i}}">
                   </mat-form-field>
-                  <div class="time-input-group">
-                    <mat-form-field>
-                      <mat-label>
-                        {{ 'HOURS' | translate }}
-                      </mat-label>
-                      <input matInput type="number" placeholder="Hours" formControlName="hours" id="timer-hours-{{i}}">
+                  <div class="timer-row__time">
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>{{ 'HOURS' | translate }}</mat-label>
+                      <input matInput type="number" inputmode="numeric" min="0" placeholder="0" formControlName="hours" id="timer-hours-{{i}}">
                     </mat-form-field>
-                    <mat-form-field>
-                      <mat-label>
-                        {{ 'MINUTES' | translate }}
-                      </mat-label>
-                      <input matInput type="number" placeholder="Minutes" formControlName="minutes" id="timer-minutes-{{i}}">
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>{{ 'MINUTES' | translate }}</mat-label>
+                      <input matInput type="number" inputmode="numeric" min="0" placeholder="0" formControlName="minutes" id="timer-minutes-{{i}}">
                     </mat-form-field>
-                    <mat-form-field>
-                      <mat-label>
-                        {{ 'SECONDS' | translate }}
-                      </mat-label>
-                      <input matInput type="number" placeholder="Seconds" formControlName="seconds" id="timer-seconds-{{i}}">
+                    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                      <mat-label>{{ 'SECONDS' | translate }}</mat-label>
+                      <input matInput type="number" inputmode="numeric" min="0" placeholder="0" formControlName="seconds" id="timer-seconds-{{i}}">
                     </mat-form-field>
                   </div>
-                </div>
-                <mat-divider class="divider"></mat-divider>
-                <div class="timer-group">
-                  <button mat-icon-button type="button" (click)="removeTimer(i)" class="icon-delete">
-                    <span class="material-symbols-outlined">delete</span>
-                  </button>
-                  <button mat-raised-button color="warn" type="button" (click)="removeTimer(i)" class="text-delete">
-                    {{ 'DELETE' | translate }}
+                  <button mat-icon-button type="button" class="timer-row__remove" (click)="removeTimer(i)"
+                    [attr.aria-label]="'REMOVE_TIMER' | translate">
+                    <span class="material-symbols-outlined" aria-hidden="true">delete</span>
                   </button>
                 </div>
-              </div>
-            }
-            <button mat-raised-button type="button" (click)="addTimer()">
+              }
+            </div>
+
+            <button mat-stroked-button type="button" class="step-card__add" (click)="addTimer()">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
               {{ 'ADD_TIMER' | translate }}
             </button>
-          </div>
+          </section>
         </div>
 
         <div class="step-actions">
@@ -234,19 +242,29 @@
       <mat-step [hasError]="hasStepError(3)">
         <ng-template matStepLabel>{{ 'STEP_FINISHING' | translate }}</ng-template>
 
-        <div class="step-content">
-          <div formGroupName="recipe" class="full-width">
-            <mat-form-field>
-              <mat-label>Notes</mat-label>
+        <div class="step-panel">
+          <header class="step-panel__header">
+            <h2 class="step-panel__title">{{ 'STEP_FINISHING' | translate }}</h2>
+            <p class="step-panel__subtitle">{{ 'STEP_FINISHING_SUBTITLE' | translate }}</p>
+          </header>
+
+          <section class="step-card" formGroupName="recipe">
+            <h3 class="step-card__title">
+              <span class="material-symbols-outlined" aria-hidden="true">sticky_note_2</span>
+              {{ 'NOTES_SECTION' | translate }}
+            </h3>
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>{{ 'NOTES_SECTION' | translate }}</mat-label>
               <textarea matInput placeholder="Notes" aria-label="Notes for the recipe" formControlName="notes"
-                rows="5" id="recipe-notes"></textarea>
+                rows="6" id="recipe-notes"></textarea>
+              <mat-hint>{{ 'NOTES_HINT' | translate }}</mat-hint>
               @if (recipeForm.get('recipe.notes')?.invalid && recipeForm.get('recipe.notes')?.touched) {
                 <mat-error>
                   {{ 'NOTES_REQUIRED' | translate }}
                 </mat-error>
               }
             </mat-form-field>
-          </div>
+          </section>
         </div>
 
         <!-- Action Buttons -->
@@ -266,7 +284,6 @@
             </button>
           </div>
         </div>
-      </mat-step>
-    </mat-stepper>
+      </mat-step>    </mat-stepper>
   </form>
 </div>

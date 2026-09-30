@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule, MatSelectChange } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -279,11 +279,11 @@ export class IngredientFormComponent implements OnInit, OnDestroy {
     this.setupUnitAutocomplete(pepperIndex);
   }
 
-  onSectionChange(ingredientControl: AbstractControl, event: MatSelectChange) {
+  onSectionChange(ingredientControl: AbstractControl, event: { value: unknown }) {
     const sectionId = event.value;
     if (sectionId === 'create') {
       const activeEl = document.activeElement as HTMLElement;
-      if (activeEl && activeEl.tagName.toLowerCase() === 'mat-select') {
+      if (activeEl && ['select', 'mat-select'].includes(activeEl.tagName.toLowerCase())) {
         activeEl.blur();
       }
       // Delay opening the dialog to let blur complete.
