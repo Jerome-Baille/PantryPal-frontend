@@ -14,12 +14,12 @@
         <mat-label>
           {{ 'SELECT_BOOK' | translate }}
         </mat-label>
-        <mat-select formControlName="id" (selectionChange)="onBookSelectionChange()" id="book-select">
+        <select matNativeControl formControlName="id" (change)="onBookSelectionChange()" id="book-select">
+          <option [ngValue]="''"></option>
           @for (book of bookList; track book.id) {
-            <mat-option [value]="book.id">{{ book.title }} {{ 'BY' | translate }} {{ book.author
-            }}</mat-option>
+            <option [ngValue]="book.id">{{ book.title }} {{ 'BY' | translate }} {{ book.author }}</option>
           }
-        </mat-select>
+        </select>
         @if (bookForm.get('id')?.invalid && bookForm.get('id')?.touched) {
           <mat-error>
             {{ 'BOOK_REQUIRED' | translate }}

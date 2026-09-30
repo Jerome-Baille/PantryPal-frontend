@@ -178,6 +178,12 @@
     "STEP_COMPLETED": "Étape terminée",
     "STEPS_COMPLETED": "étapes terminées",
     "ADD_RECIPE": "Ajouter une recette",
+    "STEP_PROGRESS": "Étape {{current}} sur {{total}}",
+    "DECREASE_SERVINGS": "Diminuer le nombre de portions",
+    "INCREASE_SERVINGS": "Augmenter le nombre de portions",
+    "STEP_BASICS_SUBTITLE": "Donnez un nom et une photo à votre recette, et indiquez d'où elle vient.",
+    "RECIPE_DETAILS": "Détails de la recette",
+    "REMOVE_IMAGE": "Supprimer l'image",
     "STEP_BASICS": "Les bases",
     "STEP_METHOD": "Méthode et minuteurs",
     "STEP_FINISHING": "Touches finales"

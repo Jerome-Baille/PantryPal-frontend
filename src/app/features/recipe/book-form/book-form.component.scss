@@ -1,10 +1,53 @@
 .book-form-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 16px;
+    background-color: #eef0f3;
+    border-radius: 999px;
 
-    @media screen and (max-width: 768px) {
-        margin-bottom: 10px;
+    ::ng-deep .mdc-form-field {
+        width: 100%;
+    }
+
+    ::ng-deep .mdc-radio {
+        display: none;
+    }
+
+    mat-radio-button {
+        flex: 1;
+        text-align: center;
+        border-radius: 999px;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+        &.mat-mdc-radio-checked {
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.15);
+        }
+
+        ::ng-deep label {
+            padding: 6px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        display: flex;
+        width: 100%;
+        box-sizing: border-box;
+
+        mat-radio-button {
+            min-width: 0;
+
+            ::ng-deep label {
+                padding: 6px 8px;
+                font-size: 13px;
+                white-space: normal;
+            }
+        }
     }
 }
 
@@ -14,7 +57,12 @@
 
 .new-book-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
-    gap: 20px;
+    gap: 16px;
+
+    @media screen and (max-width: 600px) {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
 }

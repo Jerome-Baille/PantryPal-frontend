@@ -178,6 +178,12 @@
     "STEP_COMPLETED": "Step completed",
     "STEPS_COMPLETED": "steps completed",
     "ADD_RECIPE": "Add Recipe",
+    "STEP_PROGRESS": "Step {{current}} of {{total}}",
+    "DECREASE_SERVINGS": "Decrease servings",
+    "INCREASE_SERVINGS": "Increase servings",
+    "STEP_BASICS_SUBTITLE": "Give your recipe a name, a photo and tell us where it comes from.",
+    "RECIPE_DETAILS": "Recipe details",
+    "REMOVE_IMAGE": "Remove image",
     "STEP_BASICS": "The Basics",
     "STEP_METHOD": "Method & Timers",
     "STEP_FINISHING": "Finishing Touches"

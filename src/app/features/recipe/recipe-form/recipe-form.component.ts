@@ -83,6 +83,10 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     ['recipe.notes']
   ];
 
+  readonly stepLabels = ['STEP_BASICS', 'INGREDIENTS', 'STEP_METHOD', 'STEP_FINISHING'];
+  readonly minServings = 1;
+  readonly maxServings = 99;
+
   constructor() {
     const languageService = this.languageService;
 
@@ -277,6 +281,28 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
     // Removed duplicate timer processing loop from here.
   }
 
+  changeServings(delta: number): void {
+    this.setServings(this.currentServings() + delta);
+  }
+
+  // Keeps typed or stepped values within the allowed range
+  normalizeServings(): void {
+    this.setServings(this.currentServings());
+  }
+
+  currentServings(): number {
+    const value = Math.round(Number(this.recipeForm.get('recipe.servings')?.value));
+    return Number.isFinite(value) ? value : this.minServings;
+  }
+
+  private setServings(value: number): void {
+    const control = this.recipeForm.get('recipe.servings');
+    const clamped = Math.min(this.maxServings, Math.max(this.minServings, value));
+    if (control && control.value !== clamped) {
+      control.setValue(clamped);
+      control.markAsDirty();
+    }
+  }
   hasStepError(stepIndex: number): boolean {
     return this.stepControls[stepIndex].some(path => {
       const control = this.recipeForm.get(path);

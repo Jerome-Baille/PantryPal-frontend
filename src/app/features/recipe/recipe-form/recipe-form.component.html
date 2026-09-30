@@ -1,89 +1,132 @@
 <div class="main-container">
   <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" (keydown.enter)="preventImplicitSubmit($event)" class="form">
-    <mat-stepper [linear]="false" class="recipe-stepper">
+    <!-- Compact progress header (mobile only; the full stepper header is hidden there) -->
+    <div class="stepper-compact">
+      <div class="stepper-compact__label" aria-live="polite">
+        <span class="stepper-compact__count">{{ 'STEP_PROGRESS' | translate: { current: stepper.selectedIndex + 1, total: stepLabels.length } }}</span>
+        <span aria-hidden="true">·</span>
+        <span class="stepper-compact__name">{{ stepLabels[stepper.selectedIndex] | translate }}</span>
+      </div>
+      <nav class="stepper-compact__nav" [attr.aria-label]="'STEP' | translate">
+        @for (label of stepLabels; track label; let i = $index) {
+          <button type="button" class="stepper-compact__segment"
+            [class.is-done]="i <= stepper.selectedIndex"
+            [class.is-current]="i === stepper.selectedIndex"
+            [class.has-error]="hasStepError(i)"
+            [attr.aria-current]="i === stepper.selectedIndex ? 'step' : null"
+            [attr.aria-label]="(i + 1) + '. ' + (label | translate)"
+            (click)="stepper.selectedIndex = i">
+            <span class="stepper-compact__fill"></span>
+          </button>
+        }
+      </nav>
+    </div>
+
+    <mat-stepper [linear]="false" class="recipe-stepper" #stepper>
       <!-- Step 1: The Basics -->
       <mat-step [hasError]="hasStepError(0)">
         <ng-template matStepLabel>{{ 'STEP_BASICS' | translate }}</ng-template>
 
-        <div class="step-content">
-          <div formGroupName="recipe" class="full-width">
-            <!-- Image Upload Section -->
-            <div class="image-upload-section">
-              <label class="image-upload-label" for="image-upload">{{ 'RECIPE_IMAGE' | translate }}</label>
+        <div class="basics">
+          <header class="basics__header">
+            <h2 class="basics__title">{{ 'STEP_BASICS' | translate }}</h2>
+            <p class="basics__subtitle">{{ 'STEP_BASICS_SUBTITLE' | translate }}</p>
+          </header>
+
+          <div formGroupName="recipe" class="basics__grid">
+            <!-- Photo -->
+            <section class="basics-card basics-photo" [attr.aria-label]="'RECIPE_IMAGE' | translate">
+              <input type="file"
+                #imageInput
+                class="basics-photo__input"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
+                (change)="onImageSelected($event)"
+                id="image-upload">
 
               @if (imagePreview || recipe?.thumbnail) {
-                <div class="image-preview-container">
-                  <img [src]="imagePreview || recipe?.thumbnail" alt="Recipe preview" class="image-preview">
-                  <button mat-icon-button class="remove-image-btn" (click)="removeImage()" type="button">
-                    <span class="material-symbols-outlined">close</span>
-                  </button>
+                <div class="basics-photo__preview">
+                  <img [src]="imagePreview || recipe?.thumbnail" alt="Recipe preview" class="basics-photo__img">
+                  <div class="basics-photo__overlay">
+                    <button type="button" class="basics-photo__btn" (click)="imageInput.click()">
+                      <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                      {{ 'CHANGE_IMAGE' | translate }}
+                    </button>
+                    <button type="button" class="basics-photo__btn basics-photo__btn--danger"
+                      [attr.aria-label]="'REMOVE_IMAGE' | translate" (click)="removeImage()">
+                      <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                    </button>
+                  </div>
                 </div>
-              }
-
-              <div class="image-upload-actions">
-                <input type="file"
-                  #imageInput
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/avif"
-                  (change)="onImageSelected($event)"
-                  style="display: none"
-                  id="image-upload">
-                <button mat-raised-button
-                  type="button"
-                  (click)="imageInput.click()">
-                  <span class="material-symbols-outlined">add_photo_alternate</span>
-                  {{ (imagePreview || recipe?.thumbnail) ? ('CHANGE_IMAGE' | translate) : ('ADD_IMAGE' | translate) }}
+              } @else {
+                <button type="button" class="basics-photo__dropzone" (click)="imageInput.click()">
+                  <span class="basics-photo__icon">
+                    <span class="material-symbols-outlined" aria-hidden="true">add_photo_alternate</span>
+                  </span>
+                  <span class="basics-photo__cta">{{ 'ADD_IMAGE' | translate }}</span>
+                  <span class="basics-photo__hint">{{ 'IMAGE_UPLOAD_HINT' | translate }}</span>
                 </button>
-                <span class="image-hint">{{ 'IMAGE_UPLOAD_HINT' | translate }}</span>
-              </div>
-            </div>
-
-            <mat-form-field>
-              <mat-label>
-                {{ 'RECIPE_TITLE' | translate }}
-              </mat-label>
-              <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
-                formControlName="title" class="recipe-title" id="recipe-title">
-              @if (recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched) {
-                <mat-error>
-                  {{ 'RECIPE_TITLE_REQUIRED' | translate }}
-                </mat-error>
               }
-            </mat-form-field>
+            </section>
 
-            <mat-form-field>
-              <mat-label>
-                {{ 'TYPE_OF_MEAL' | translate }}
-              </mat-label>
-              <mat-select placeholder="Type of Meal" formControlName="typeOfMeal" id="type-of-meal">
-                <mat-option value="starter">
-                  {{ 'STARTER' | translate }}
-                </mat-option>
-                <mat-option value="main-course">
-                  {{ 'MAIN_COURSE' | translate }}
-                </mat-option>
-                <mat-option value="dessert">
-                  {{ 'DESSERT' | translate }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <!-- Details -->
+            <section class="basics-card basics-details">
+              <h3 class="basics-card__title">
+                <span class="material-symbols-outlined" aria-hidden="true">restaurant_menu</span>
+                {{ 'RECIPE_DETAILS' | translate }}
+              </h3>
 
-            <mat-form-field>
-              <mat-label>
-                {{ 'SERVINGS' | translate }}
-              </mat-label>
-              <input matInput type="number" min="1" placeholder="Number of servings"
-                formControlName="servings" id="recipe-servings">
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="basics-details__title-field">
+                <mat-label>{{ 'RECIPE_TITLE' | translate }}</mat-label>
+                <input matInput placeholder="Title of the recipe" aria-label="Title of the recipe" required
+                  formControlName="title" class="recipe-title" id="recipe-title">
+                @if (recipeForm.get('recipe.title')?.invalid && recipeForm.get('recipe.title')?.touched) {
+                  <mat-error>{{ 'RECIPE_TITLE_REQUIRED' | translate }}</mat-error>
+                }
+              </mat-form-field>
+
+              <div class="basics-details__row">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ 'TYPE_OF_MEAL' | translate }}</mat-label>
+                  <select matNativeControl formControlName="typeOfMeal" id="type-of-meal">
+                    <option value=""></option>
+                    <option value="starter">{{ 'STARTER' | translate }}</option>
+                    <option value="main-course">{{ 'MAIN_COURSE' | translate }}</option>
+                    <option value="dessert">{{ 'DESSERT' | translate }}</option>
+                  </select>
+                </mat-form-field>
+
+                <div class="servings" role="group" aria-labelledby="servings-label">
+                  <span class="servings__label" id="servings-label">{{ 'SERVINGS' | translate }}</span>
+                  <button type="button" class="servings__btn" (click)="changeServings(-1)"
+                    [disabled]="currentServings() <= minServings" [attr.aria-label]="'DECREASE_SERVINGS' | translate">
+                    <span class="material-symbols-outlined" aria-hidden="true">remove</span>
+                  </button>
+                  <input class="servings__value" type="number" inputmode="numeric" formControlName="servings"
+                    id="recipe-servings" [min]="minServings" [max]="maxServings" aria-labelledby="servings-label"
+                    (blur)="normalizeServings()" (keydown.enter)="normalizeServings()">
+                  <button type="button" class="servings__btn" (click)="changeServings(1)"
+                    [disabled]="currentServings() >= maxServings" [attr.aria-label]="'INCREASE_SERVINGS' | translate">
+                    <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                  </button>
+                </div>              </div>
+            </section>
           </div>
 
-          <!-- Book Section -->
-          <h3 class="step-section-title">{{ 'BOOK_SECTION' | translate }}</h3>
-          <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
-            class="full-width"></app-book-form>
+          <!-- Book -->
+          <section class="basics-card basics-book">
+            <h3 class="basics-card__title">
+              <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
+              {{ 'BOOK_SECTION' | translate }}
+            </h3>
+            <app-book-form [recipeForm]="recipeForm" (bookSelected)="handleBookSelected($event)"
+              class="full-width"></app-book-form>
+          </section>
         </div>
-
         <div class="step-actions">
-          <span></span>
+          <button mat-stroked-button type="button"
+            [routerLink]="isUpdateMode ? ['/recipe/detail', recipe?.id] : ['/recipe/list']">
+            {{ 'CANCEL' | translate }}
+          </button>
           <button mat-flat-button color="primary" type="button" matStepperNext>
             {{ 'NEXT' | translate }}
           </button>
