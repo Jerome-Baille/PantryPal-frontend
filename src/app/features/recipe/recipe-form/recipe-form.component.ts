@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, viewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, forkJoin, merge, Subscription } from 'rxjs';
@@ -9,12 +9,12 @@ import { RecipeService } from 'src/app/core/services/recipe.service';
 import { ItemService } from 'src/app/core/services/item.service';
 import { IngredientService } from 'src/app/core/services/ingredient.service';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
-import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { MatCardModule } from '@angular/material/card';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { BookFormComponent } from '../book-form/book-form.component';
 import { IngredientFormComponent } from '../ingredient-form/ingredient-form.component';
 import { MatInputModule } from '@angular/material/input';
@@ -26,7 +26,6 @@ import { LanguageService } from '../../../core/services/language.service';
   selector: 'app-recipe-form',
   standalone: true,
   imports: [
-    CommonModule,
     RouterLink,
     ReactiveFormsModule,
     MatButtonModule,
@@ -35,10 +34,13 @@ import { LanguageService } from '../../../core/services/language.service';
     MatIconModule,
     MatInputModule,
     MatSelectModule,
-    MatCardModule,
+    MatStepperModule,
     BookFormComponent,
     IngredientFormComponent,
     TranslateModule
+  ],
+  providers: [
+    { provide: STEPPER_GLOBAL_OPTIONS, useValue: { showError: true } }
   ],
   templateUrl: './recipe-form.component.html',
   styleUrls: ['./recipe-form.component.scss']
@@ -70,6 +72,16 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
 
   private languageSubscription?: Subscription;
   currentLang: string;
+
+  private readonly stepper = viewChild.required(MatStepper);
+
+  // Form controls belonging to each stepper step (same order as the template)
+  private readonly stepControls = [
+    ['Book', 'recipe.title', 'recipe.typeOfMeal', 'recipe.servings'],
+    ['ingredients'],
+    ['recipe.instructions', 'timers'],
+    ['recipe.notes']
+  ];
 
   constructor() {
     const languageService = this.languageService;
@@ -250,6 +262,10 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (!this.recipeForm.valid) {
       this.recipeForm.markAllAsTouched();
+      const firstInvalidStep = this.stepControls.findIndex((_, i) => this.hasStepError(i));
+      if (firstInvalidStep >= 0) {
+        this.stepper().selectedIndex = firstInvalidStep;
+      }
       return;
     }
 
@@ -259,6 +275,20 @@ export class RecipeFormComponent implements OnInit, OnDestroy {
       this.handleUpdateSubmit();
     }
     // Removed duplicate timer processing loop from here.
+  }
+
+  hasStepError(stepIndex: number): boolean {
+    return this.stepControls[stepIndex].some(path => {
+      const control = this.recipeForm.get(path);
+      return !!control && control.invalid && control.touched;
+    });
+  }
+
+  // Pressing Enter in a text input must not submit the recipe from an earlier step
+  preventImplicitSubmit(event: Event): void {
+    if ((event.target as HTMLElement).tagName === 'INPUT') {
+      event.preventDefault();
+    }
   }
 
   handleCreateSubmit() {

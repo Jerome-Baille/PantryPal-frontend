@@ -177,5 +177,8 @@
     "SWIPE_OR_ARROW_KEYS": "Swipe or use arrow keys to navigate",
     "STEP_COMPLETED": "Step completed",
     "STEPS_COMPLETED": "steps completed",
-    "ADD_RECIPE": "Add Recipe"
+    "ADD_RECIPE": "Add Recipe",
+    "STEP_BASICS": "The Basics",
+    "STEP_METHOD": "Method & Timers",
+    "STEP_FINISHING": "Finishing Touches"
 }

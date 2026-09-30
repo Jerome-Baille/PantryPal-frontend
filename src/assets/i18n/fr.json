@@ -177,5 +177,8 @@
     "SWIPE_OR_ARROW_KEYS": "Glissez ou utilisez les flèches pour naviguer",
     "STEP_COMPLETED": "Étape terminée",
     "STEPS_COMPLETED": "étapes terminées",
-    "ADD_RECIPE": "Ajouter une recette"
+    "ADD_RECIPE": "Ajouter une recette",
+    "STEP_BASICS": "Les bases",
+    "STEP_METHOD": "Méthode et minuteurs",
+    "STEP_FINISHING": "Touches finales"
 }
